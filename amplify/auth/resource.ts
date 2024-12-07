@@ -6,6 +6,20 @@ import { defineAuth } from '@aws-amplify/backend';
  */
 export const auth = defineAuth({
   loginWith: {
-    email: true,
+    email: {
+      verificationEmailStyle: "CODE",
+      verificationEmailSubject: "amplify-vite-react-sampleにようこそ! メルアドを認証しましょう!",
+      verificationEmailBody: (code) => `認証コードは ${code()} です。`,
+      userInvitation: {
+        emailSubject: "amplify-vite-react-sampleにようこそ!",
+        emailBody: (user, code) => `あなたのユーザー名は ${user()} で、\n仮パスワードは ${code()} です。`,
+      }
+    },
   },
+  userAttributes: {
+    preferredUsername: {
+      mutable: true,
+      required: true
+    }
+  }
 });
