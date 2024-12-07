@@ -1,4 +1,4 @@
-import { defineAuth } from '@aws-amplify/backend';
+import { defineAuth } from '@aws-amplify/backend'
 
 /**
  * Define and configure your auth resource
@@ -7,11 +7,11 @@ import { defineAuth } from '@aws-amplify/backend';
 export const auth = defineAuth({
   loginWith: {
     email: {
-      verificationEmailStyle: "CODE",
-      verificationEmailSubject: "amplify-vite-react-sampleにようこそ! メルアドを認証しましょう!",
+      verificationEmailStyle: 'CODE',
+      verificationEmailSubject: 'amplify-vite-react-sampleにようこそ! メルアドを認証しましょう!',
       verificationEmailBody: (code) => `認証コードは ${code()} です。`,
       userInvitation: {
-        emailSubject: "amplify-vite-react-sampleにようこそ!",
+        emailSubject: 'amplify-vite-react-sampleにようこそ!',
         emailBody: (user, code) => `あなたのユーザー名は ${user()} で、\n仮パスワードは ${code()} です。`,
       }
     },
@@ -22,4 +22,4 @@ export const auth = defineAuth({
       required: true
     }
   }
-});
+})
