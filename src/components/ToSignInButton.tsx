@@ -1,7 +1,7 @@
 import {Button, useAuthenticator} from '@aws-amplify/ui-react'
 
 export default function ToSignInButton() {
-  const { toSignIn } = useAuthenticator();
+  const { toSignIn } = useAuthenticator()
   return (
     <Button
       onClick={toSignIn}
@@ -10,5 +10,5 @@ export default function ToSignInButton() {
     >
       サインインに戻る
     </Button>
-  );
+  )
 }

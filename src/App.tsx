@@ -1,30 +1,31 @@
-import { useEffect, useState } from "react";
-import { useAuthenticator } from '@aws-amplify/ui-react';
-import type { Schema } from "../amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
-import { FetchUserAttributesOutput, fetchUserAttributes } from 'aws-amplify/auth';
+import { useEffect, useState } from 'react'
+import { useAuthenticator } from '@aws-amplify/ui-react'
+import { type FetchUserAttributesOutput, fetchUserAttributes } from 'aws-amplify/auth'
+import { generateClient } from 'aws-amplify/data'
+import type { Schema } from '../amplify/data/resource'
 
-const client = generateClient<Schema>();
+const client = generateClient<Schema>()
 
 const tapLog = <T,>(data: T): T => {
-  console.log(JSON.stringify(data, null, 2));
-  return data;
+  // eslint-disable-next-line no-console
+  console.log(JSON.stringify(data, null, 2))
+  return data
 }
 
 function App() {
-  const { signOut } = useAuthenticator();
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-  const [attr, setAttrResult] = useState<FetchUserAttributesOutput>();
+  const { signOut } = useAuthenticator()
+  const [todos, setTodos] = useState<Array<Schema['Todo']['type']>>([])
+  const [attr, setAttrResult] = useState<FetchUserAttributesOutput>()
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
       next: (data) => setTodos([...data.items]),
-    });
-    fetchUserAttributes().then(tapLog).then(setAttrResult);
-  }, []);
+    })
+    fetchUserAttributes().then(tapLog).then(setAttrResult)
+  }, [])
 
   function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
+    client.models.Todo.create({ content: window.prompt('Todo content') })
   }
   function deleteTodo(id: string) {
     client.models.Todo.delete({ id })
@@ -51,7 +52,7 @@ function App() {
       </div>
       <button onClick={signOut}>Sign out</button>
     </main>
-  );
+  )
 }
 
-export default App;
+export default App
