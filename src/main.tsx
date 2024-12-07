@@ -17,6 +17,7 @@ const dict = {
     'Preferred Username': 'ユーザー名',
     'Enter your Preferred Username': 'ユーザー名を入力',
     'Your passwords must match': 'パスワードが一致しません',
+    'Enter your email': 'メールアドレス',
   },
 };
 

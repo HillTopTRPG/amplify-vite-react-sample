@@ -32,7 +32,7 @@ function App() {
 
   return (
     <main>
-      <h1>{attr?.preferred_username}'s todos</h1>
+      <h1>{attr?.preferred_username}&apos;s todos</h1>
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
