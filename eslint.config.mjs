@@ -14,72 +14,100 @@ const __dirname = path.dirname(__filename)
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
+  allConfig: js.configs.all,
 })
 
-export default [{
-  ignores: ['**/dist', '**/.amplify'],
-}, ...fixupConfigRules(compat.extends(
-  'eslint:recommended',
-  'plugin:@typescript-eslint/recommended',
-  'plugin:react-hooks/recommended',
-)), {
-  plugins: {
-    'react-refresh': reactRefresh,
-    'import': importPlugin,
-    'react': reactPlugin,
+export default [
+  {
+    ignores: ['**/dist', '**/.amplify'],
   },
-
-  languageOptions: {
-    globals: {
-      ...globals.browser,
+  ...fixupConfigRules(
+    compat.extends(
+      'eslint:recommended',
+      'plugin:@typescript-eslint/recommended',
+      'plugin:react-hooks/recommended',
+    ),
+  ),
+  {
+    plugins: {
+      'react-refresh': reactRefresh,
+      import: importPlugin,
+      react: reactPlugin,
     },
 
-    parser: tsParser,
-  },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
 
-  rules: {
-    'semi': [2, 'never'],
-    'no-unexpected-multiline': 'error',
-    'indent': ['error', 2],
-    'linebreak-style': ['error', 'unix'],
-    'no-console': ['warn', {
-      'allow': ['warn', 'error']
-    }],
-    quotes: ['error', 'single'],
-    'no-implicit-coercion': 'error',
-    'prefer-template': 'error',
-    'react/jsx-no-leaked-render': ['error', {
-      'validStrategies': ['ternary']
-    }],
-    'no-fallthrough': ['error', { 'commentPattern': 'fallthrough' }],
-    'react-refresh/only-export-components': ['warn', {
-      allowConstantExport: true,
-    }],
-    'import/order': ['error', {
-      groups: ['builtin', 'external', 'parent', 'sibling', 'index', 'internal'],
-      pathGroups: [
+      parser: tsParser,
+    },
+
+    rules: {
+      semi: [2, 'never'],
+      'no-unexpected-multiline': 'error',
+      indent: ['error', 2],
+      'linebreak-style': ['error', 'unix'],
+      'no-console': [
+        'warn',
         {
-          pattern: '{react,react-dom/**,react-router-dom}',
-          group: 'builtin',
-          position: 'before',
-        },
-        {
-          pattern: '@/**',
-          group: 'internal',
-          position: 'after',
+          allow: ['warn', 'error'],
         },
       ],
-      pathGroupsExcludedImportTypes: ['builtin'],
-      alphabetize: {
-        order: 'asc',
-      },
-      'newlines-between': 'never',
-    }],
-    '@typescript-eslint/consistent-type-imports': ['error', {
-      'prefer': 'type-imports',
-      'fixStyle': 'inline-type-imports',
-      'disallowTypeAnnotations': true
-    }],
+      quotes: ['error', 'single'],
+      'no-implicit-coercion': 'error',
+      'prefer-template': 'error',
+      'react/jsx-no-leaked-render': [
+        'error',
+        {
+          validStrategies: ['ternary'],
+        },
+      ],
+      'no-fallthrough': ['error', { commentPattern: 'fallthrough' }],
+      'react-refresh/only-export-components': [
+        'warn',
+        {
+          allowConstantExport: true,
+        },
+      ],
+      'import/order': [
+        'error',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'parent',
+            'sibling',
+            'index',
+            'internal',
+          ],
+          pathGroups: [
+            {
+              pattern: '{react,react-dom/**,react-router-dom}',
+              group: 'builtin',
+              position: 'before',
+            },
+            {
+              pattern: '@/**',
+              group: 'internal',
+              position: 'after',
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['builtin'],
+          alphabetize: {
+            order: 'asc',
+          },
+          'newlines-between': 'never',
+        },
+      ],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          prefer: 'type-imports',
+          fixStyle: 'inline-type-imports',
+          disallowTypeAnnotations: true,
+        },
+      ],
+    },
   },
-}]
+]

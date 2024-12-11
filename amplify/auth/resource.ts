@@ -8,18 +8,20 @@ export const auth = defineAuth({
   loginWith: {
     email: {
       verificationEmailStyle: 'CODE',
-      verificationEmailSubject: 'amplify-vite-react-sampleにようこそ! メルアドを認証しましょう!',
+      verificationEmailSubject:
+        'amplify-vite-react-sampleにようこそ! メルアドを認証しましょう!',
       verificationEmailBody: (code) => `認証コードは ${code()} です。`,
       userInvitation: {
         emailSubject: 'amplify-vite-react-sampleにようこそ!',
-        emailBody: (user, code) => `あなたのユーザー名は ${user()} で、\n仮パスワードは ${code()} です。`,
-      }
+        emailBody: (user, code) =>
+          `あなたのユーザー名は ${user()} で、\n仮パスワードは ${code()} です。`,
+      },
     },
   },
   userAttributes: {
     preferredUsername: {
       mutable: true,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 })

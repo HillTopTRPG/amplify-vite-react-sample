@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  display: flex;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  overscroll-behavior: none auto;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
