@@ -20,6 +20,7 @@ jobs:
           echo "count=$(gh pr list -S '本番反映'in:title | wc -l)" >> "$GITHUB_OUTPUT"
 
       - name: Create Release Pull Request
+        continue-on-error: true
         if: ${{ steps.check_pr.outputs.count == 0 }}
         run: |
           gh pr create \
