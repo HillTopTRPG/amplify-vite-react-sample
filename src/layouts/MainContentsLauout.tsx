@@ -25,6 +25,7 @@ export type Screens = Readonly<
 >
 
 type ScreenProviderProps = GetProps<typeof ScreenProvider>
+
 export default function MainContentsLayout(props: ScreenProviderProps) {
   const { algorithm } = useThemeContext()
 

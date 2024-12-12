@@ -13,7 +13,9 @@ const useScreen = ({
   screen: keyof Screens
 }) => {
   const navigate = useNavigate()
+
   const [open, setOpenStatus] = useState(false)
+
   const screenIcon = screens[screen].icon
   const screenLabel = screens[screen].label
   const screenContents = screens[screen].contents
@@ -24,7 +26,13 @@ const useScreen = ({
     navigate(`/${service}${suffix}`)
   }
 
+  const setService = (service: string) => {
+    navigate(`/${service}`)
+  }
+
   return {
+    service,
+    setService,
     screens,
     screen,
     setScreen,
