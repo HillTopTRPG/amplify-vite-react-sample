@@ -4,15 +4,13 @@ import {
   type Statistic,
   type GetProps,
   Typography,
-  Row,
   Space,
   Button,
 } from 'antd'
+import { useNechronicaContext } from '../../Nechronica/context'
 import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
-import TodoContainer from '@/components/todo/TodoContainer.tsx'
-import { useNechronicaContext } from '@/context/nechronica.ts'
 import { useScreenContext } from '@/context/screen.ts'
 import type { Screens } from '@/layouts/MainContentsLauout.tsx'
 import screens from '@/service/Nechronica/screens.ts'
@@ -22,16 +20,8 @@ const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const {
-    todos,
-    createTodo,
-    deleteTodo,
-    dolls,
-    savants,
-    horrors,
-    legions,
-    addLegion,
-  } = useNechronicaContext()
+  const { dolls, savants, horrors, legions, createLegion } =
+    useNechronicaContext()
   const { setScreen } = useScreenContext()
 
   const statistics: [keyof Screens, number, string][] = [
@@ -68,57 +58,9 @@ function contents() {
           <StyledPie data={dashboardData} height={150} />
         </Col>
         <Col span={24}>
-          <Button onClick={() => addLegion({})} icon={<PlusOutlined />} />
+          <Button onClick={() => createLegion({})} icon={<PlusOutlined />} />
         </Col>
       </StatisticCardLayout>
-      <Typography.Title level={5}>TODO</Typography.Title>
-      <Row gutter={4}>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={createTodo}
-            deleteTodo={deleteTodo}
-          />
-        </Col>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={createTodo}
-            deleteTodo={deleteTodo}
-          />
-        </Col>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={createTodo}
-            deleteTodo={deleteTodo}
-          />
-        </Col>
-      </Row>
-      <Typography.Title level={5}>TODO</Typography.Title>
-      <Row gutter={4}>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={createTodo}
-            deleteTodo={deleteTodo}
-          />
-        </Col>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={createTodo}
-            deleteTodo={deleteTodo}
-          />
-        </Col>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={createTodo}
-            deleteTodo={deleteTodo}
-          />
-        </Col>
-      </Row>
     </ScreenContainer>
   )
 }

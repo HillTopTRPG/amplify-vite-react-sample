@@ -21,7 +21,7 @@ export default function ScreenSelectMenu({
       theme={theme}
       mode="inline"
       onSelect={({ key }) => onSelectHandler(key)}
-      defaultSelectedKeys={[screen]}
+      selectedKeys={[screen]}
       style={{
         background: 'transparent',
         border: 'none',

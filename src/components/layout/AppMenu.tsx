@@ -19,6 +19,7 @@ import {
   Dropdown,
   type MenuProps,
   Space,
+  Spin,
 } from 'antd'
 import {
   fetchUserAttributes,
@@ -29,17 +30,15 @@ import { MEDIA_QUERY } from '@/const/style.ts'
 import { useScreenContext } from '@/context/screen.ts'
 import { useThemeContext } from '@/context/theme.ts'
 import { type Screens } from '@/layouts/MainContentsLauout.tsx'
-import { getKeys } from '@/utils/types.ts'
-
-const tapLog = <T,>(data: T): T => {
-  // eslint-disable-next-line no-console
-  console.log(JSON.stringify(data, null, 2))
-  return data
-}
+import services from '@/service'
+import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const { screenIcon, screenLabel, toggleOpenStatus } = useScreenContext()
   const [attr, setAttrResult] = useState<FetchUserAttributesOutput>()
+  const [loading, setLoading] = useState<boolean>(true)
+
+  const { service, setService, screenIcon, screenLabel, toggleOpenStatus } =
+    useScreenContext()
   const { token } = theme.useToken()
   const { signOut } = useAuthenticator()
   const { isDarkMode, toggleTheme } = useThemeContext()
@@ -47,8 +46,14 @@ export default function AppMenu() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    fetchUserAttributes().then(tapLog).then(setAttrResult)
-  }, [setAttrResult])
+    fetchUserAttributes()
+      .then(setAttrResult)
+      .then(() => setLoading(false))
+  }, [])
+
+  const serviceName = isProperty(service, services)
+    ? services[service].serviceName
+    : 'unknown'
 
   const isFullView = useMediaQuery(MEDIA_QUERY.FULL_VIEW)
 
@@ -105,14 +110,26 @@ export default function AppMenu() {
             {isFullView ? 'Amplify-Vite-React-Sample' : null}
           </Button>
           <Typography.Text>/</Typography.Text>
-          <Button
-            type="text"
-            icon={<BookOutlined />}
-            onClick={() => navigate('/nechronica')}
-            style={{ padding: '0 5px' }}
+          <Dropdown
+            menu={{
+              items: getKeys(services).map((key) => ({
+                key,
+                label: services[key].serviceName,
+                icon: <BookOutlined />,
+              })),
+              onClick: ({ key }) => setService(key),
+            }}
+            placement="bottomLeft"
           >
-            {'ネクロニカ'}
-          </Button>
+            <Button
+              type="text"
+              icon={<BookOutlined />}
+              onClick={() => setService(service)}
+              style={{ padding: '0 5px' }}
+            >
+              {serviceName}
+            </Button>
+          </Dropdown>
           <MediaQuery {...MEDIA_QUERY.PC}>
             <Typography.Text>/</Typography.Text>
             <Dropdown
@@ -133,10 +150,18 @@ export default function AppMenu() {
             </Dropdown>
           </MediaQuery>
         </Flex>
-        <Dropdown menu={dropdownProps} placement="bottom">
+        <Dropdown menu={dropdownProps} placement="bottom" forceRender>
           <Button type="text" style={{ padding: 5 }}>
-            <UserOutlined />
-            <Typography.Text>{attr?.preferred_username || '-'}</Typography.Text>
+            {loading ? (
+              <Spin />
+            ) : (
+              <>
+                <UserOutlined />
+                <Typography.Text>
+                  {attr?.preferred_username || '-'}
+                </Typography.Text>
+              </>
+            )}
           </Button>
         </Dropdown>
         <Button

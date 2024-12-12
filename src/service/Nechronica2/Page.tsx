@@ -1,6 +1,6 @@
+import { NechronicaProvider } from '../Nechronica/context'
 import service from './index.ts'
 import type screens from './screens'
-import { NechronicaProvider } from '@/context/nechronica'
 import { TestProvider } from '@/context/test'
 import MainContentsLayout from '@/layouts/MainContentsLauout.tsx'
 

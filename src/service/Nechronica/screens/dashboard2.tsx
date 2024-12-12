@@ -9,11 +9,11 @@ import {
   Button,
   Space,
 } from 'antd'
+import { useNechronicaContext, useTodoCrud } from '../context'
 import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
-import TodoContainer from '@/components/todo/TodoContainer.tsx'
-import { useNechronicaContext } from '@/context/nechronica.ts'
+import Todos from '@/components/todo/Todos.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import { useTestContext } from '@/context/test'
 import type { Screens } from '@/layouts/MainContentsLauout.tsx'
@@ -24,8 +24,8 @@ const authorize = true
 const icon = VideoCameraOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { todos, createTodo, deleteTodo, dolls, savants, horrors, legions } =
-    useNechronicaContext()
+  const { dolls, savants, horrors, legions, loading } = useNechronicaContext()
+  const todoCrud = useTodoCrud()
   const { test1, test2Obj, test3, incrementTest1, incrementTest2, outputText } =
     useTestContext()
   const { setScreen } = useScreenContext()
@@ -81,30 +81,7 @@ function contents() {
           <StyledPie data={dashboardData} height={150} />
         </Col>
       </StatisticCardLayout>
-      <Typography.Title level={5}>TODO</Typography.Title>
-      <Row gutter={4}>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={createTodo}
-            deleteTodo={deleteTodo}
-          />
-        </Col>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={createTodo}
-            deleteTodo={deleteTodo}
-          />
-        </Col>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={createTodo}
-            deleteTodo={deleteTodo}
-          />
-        </Col>
-      </Row>
+      <Todos {...todoCrud} loading={loading} />
     </ScreenContainer>
   )
 }
