@@ -10,6 +10,8 @@ export default function Sider() {
   return (
     <Layout.Sider
       breakpoint="xl"
+      collapsedWidth={50}
+      width={200}
       theme={theme}
       collapsed={!open}
       onCollapse={(value) => setOpenStatus(!value)}

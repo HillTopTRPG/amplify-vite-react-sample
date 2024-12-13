@@ -124,7 +124,6 @@ export default function AppMenu() {
             <Button
               type="text"
               icon={<BookOutlined />}
-              onClick={() => setService(service)}
               style={{ padding: '0 5px' }}
             >
               {serviceName}
