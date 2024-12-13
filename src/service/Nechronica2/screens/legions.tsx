@@ -1,13 +1,5 @@
-import { DashboardOutlined, PlusOutlined } from '@ant-design/icons'
-import {
-  Col,
-  type Statistic,
-  type GetProps,
-  Typography,
-  Space,
-  Button,
-} from 'antd'
-import { useNechronicaContext } from '../../Nechronica/context'
+import { DashboardOutlined } from '@ant-design/icons'
+import { Col, type Statistic, type GetProps, Typography, Space } from 'antd'
 import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
@@ -20,15 +12,13 @@ const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { dolls, savants, horrors, legions, createLegion } =
-    useNechronicaContext()
   const { setScreen } = useScreenContext()
 
   const statistics: [keyof Screens, number, string][] = [
-    ['dolls', dolls.length, '体'],
-    ['savants', savants.length, '体'],
-    ['horrors', horrors.length, '体'],
-    ['legions', legions.length, '種類'],
+    ['dolls', 3, '体'],
+    ['savants', 4, '体'],
+    ['horrors', 5, '体'],
+    ['legions', 6, '種類'],
   ]
   const dashboardData: GetProps<typeof Statistic>[] = statistics.map(
     ([screen, value, suffix]) => ({
@@ -56,9 +46,6 @@ function contents() {
         </Col>
         <Col span={12}>
           <StyledPie data={dashboardData} height={150} />
-        </Col>
-        <Col span={24}>
-          <Button onClick={() => createLegion({})} icon={<PlusOutlined />} />
         </Col>
       </StatisticCardLayout>
     </ScreenContainer>

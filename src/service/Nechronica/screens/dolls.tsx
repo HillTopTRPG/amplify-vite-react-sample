@@ -30,9 +30,12 @@ const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { createDoll } = useNechronicaContext()
+  const { dolls, createCharacter } = useNechronicaContext()
   const chartBoxSize = 400
   const chartSize = chartBoxSize - 48
+
+  console.log('###############')
+  console.log(JSON.stringify(dolls))
 
   const [loadSheets, setLoadSheets] = useState<Nechronica[]>([])
 
@@ -41,7 +44,8 @@ function contents() {
   }
 
   const onSaveTempSheet = (sheet: Nechronica) => {
-    createDoll(sheet)
+    createCharacter(sheet.sheetId, 'doll', sheet as never)
+    console.log(JSON.stringify(sheet))
     onDeleteTempSheet(sheet)
   }
 
@@ -77,7 +81,7 @@ function contents() {
   const onChangeSheetId = async (id: string) => {
     const url = `https://charasheet.vampire-blood.net/${id}`
     if (loadSheets.some((s) => s.url === url)) return
-    const helper = new NechronicaDataHelper(url, (s) => s)
+    const helper = new NechronicaDataHelper(id, url, (s) => s)
     if (!helper.isThis()) return
     const data = (await helper.getData())?.data
     if (!data) return
@@ -86,7 +90,7 @@ function contents() {
   }
 
   type CharacterChartData = {
-    key: number
+    key: string
     item: string
     type: string
     score: number
@@ -94,20 +98,16 @@ function contents() {
 
   const [currentItem, setCurrentItem] = useState('攻撃')
 
-  const radarCharacterTypeData: CharacterChartData[] = [
-    { key: 1, item: '攻撃', type: 'しかばねソロリティ', score: 4 },
-    { key: 2, item: '攻撃', type: 'アンジェリカ', score: 3 },
-    { key: 3, item: '防御', type: 'しかばねソロリティ', score: 1 },
-    { key: 4, item: '防御', type: 'アンジェリカ', score: 2 },
-    { key: 5, item: '支援', type: 'しかばねソロリティ', score: 1 },
-    { key: 6, item: '支援', type: 'アンジェリカ', score: 6 },
-    { key: 7, item: '妨害', type: 'しかばねソロリティ', score: 1 },
-    { key: 8, item: '妨害', type: 'アンジェリカ', score: 2 },
-    { key: 9, item: '移動', type: 'しかばねソロリティ', score: 1 },
-    { key: 10, item: '移動', type: 'アンジェリカ', score: 2 },
-    { key: 11, item: 'その他', type: 'しかばねソロリティ', score: 2 },
-    { key: 12, item: 'その他', type: 'アンジェリカ', score: 1 },
-  ]
+  const radarCharacterTypeData: CharacterChartData[] = dolls
+    .map((d) =>
+      ['攻撃', '防御', '支援', '妨害', '移動', 'その他'].map((item) => ({
+        key: d.id,
+        item,
+        type: (d.data as Nechronica).basic.characterName,
+        score: Math.floor(Math.random() * 8),
+      })),
+    )
+    .flat()
 
   const columns: TableColumnsType<CharacterChartData> = [
     {

@@ -12,6 +12,14 @@ const schema = a.schema({
       content: a.string(),
     })
     .authorization((allow) => [allow.owner()]),
+  NechronicaCharacter: a
+    .model({
+      name: a.string().required(),
+      type: a.enum(['doll', 'savant', 'horror', 'legion']),
+      sheetId: a.string().required(),
+      data: a.json().required(),
+    })
+    .authorization((allow) => [allow.owner()]),
 })
 
 export type Schema = ClientSchema<typeof schema>

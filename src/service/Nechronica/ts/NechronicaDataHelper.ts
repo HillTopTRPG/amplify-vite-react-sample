@@ -50,6 +50,7 @@ export type NechronicaType = 'doll' | 'legion' | 'horror' | 'savant'
 
 export type Nechronica = {
   url: string
+  sheetId: string
   basic: {
     characterName: string
     position: number
@@ -129,12 +130,14 @@ export function getActionValueNum(text: string): number {
 
 export class NechronicaDataHelper {
   protected readonly url: string
+  protected readonly sheetId: string
   protected readonly urlRegExp: RegExp
   protected readonly jsonpUrlFormat: string
   protected readonly t: (r: string) => string
 
-  public constructor(url: string, t: (r: string) => string) {
+  public constructor(sheetId: string, url: string, t: (r: string) => string) {
     this.url = url
+    this.sheetId = sheetId
     // https://charasheet.vampire-blood.net/1713315
     this.urlRegExp = /https?:\/\/charasheet\.vampire-blood\.net\/([^&]+)/
     this.jsonpUrlFormat =
@@ -272,6 +275,7 @@ export class NechronicaDataHelper {
       .filter((r) => Boolean(r.name))
     return {
       url: this.url,
+      sheetId: this.sheetId,
       basic: {
         characterName: digText(json, 'pc_name') || digText(json, 'data_title'),
         position: digNum(json, 'position'),

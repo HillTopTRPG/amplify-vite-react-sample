@@ -3,23 +3,32 @@ import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
 import { omit } from 'lodash-es'
 import type { Schema } from '../../../amplify/data/resource.ts'
-import { makeTypeSetFunc } from '@/utils/types.ts'
+import { type Nechronica } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const client = generateClient<Schema>()
 
-type CharacterType = 'doll' | 'savant' | 'horror' | 'legion'
-
-type Character = { type: CharacterType }
-
 const useNechronica = () => {
   const [loading, setLoading] = useState<boolean>(true)
-  const [characters, setCharacter] = useState<Character[]>([])
+  const [characters, setCharacter] = useState<
+    Schema['NechronicaCharacter']['type'][]
+  >([])
 
   const [todos, setTodos] = useState<Schema['Todo']['type'][]>([])
   useEffect(() => {
     const sub = client.models.Todo.observeQuery().subscribe({
       next: ({ items }) => {
         setTodos([...items])
+        setLoading(false)
+      },
+    })
+
+    return () => sub.unsubscribe()
+  }, [])
+  useEffect(() => {
+    const sub = client.models.NechronicaCharacter.observeQuery().subscribe({
+      next: ({ items }) => {
+        console.log('$$$$$$$$$')
+        setCharacter([...items])
         setLoading(false)
       },
     })
@@ -35,14 +44,6 @@ const useNechronica = () => {
     client.models.Todo.delete({ id })
   }
 
-  type RawCharacter = Omit<Character, 'type'>
-
-  const makeTypeSet = makeTypeSetFunc<CharacterType, Character>(
-    (type) => characters.filter((c) => c.type === type),
-    (type) => (data: RawCharacter) =>
-      setCharacter((o) => [...o, { ...data, type }]),
-  )
-
   return {
     loading,
     todoCrud: {
@@ -51,10 +52,23 @@ const useNechronica = () => {
       updateTodo,
       deleteTodo,
     },
-    ...makeTypeSet('doll'),
-    ...makeTypeSet('savant'),
-    ...makeTypeSet('horror'),
-    ...makeTypeSet('legion'),
+    dolls: characters.filter((c) => c.type === 'doll'),
+    savansts: characters.filter((c) => c.type === 'savant'),
+    horrors: characters.filter((c) => c.type === 'horror'),
+    legions: characters.filter((c) => c.type === 'legion'),
+    createCharacter: (
+      sheetId: string,
+      type: 'doll' | 'savant' | 'horror' | 'legion',
+      data: Nechronica,
+    ) => {
+      console.log('regist!!!')
+      client.models.NechronicaCharacter.create({
+        name: data.basic.characterName,
+        type,
+        sheetId,
+        data,
+      })
+    },
   }
 }
 

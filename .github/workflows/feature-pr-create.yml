@@ -1,6 +1,6 @@
 on:
   push:
-    branches: ['feature/**']
+    branches: ['feature/**', '!feature/**-test']
 
 jobs:
   create-release-pr:
