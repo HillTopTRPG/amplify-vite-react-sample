@@ -103,7 +103,7 @@ function contents() {
       ['攻撃', '防御', '支援', '妨害', '移動', 'その他'].map((item) => ({
         key: d.id,
         item,
-        type: (d.data as Nechronica).basic.characterName,
+        type: (JSON.parse(d.sheetData) as Nechronica).basic.characterName,
         score: Math.floor(Math.random() * 8),
       })),
     )
