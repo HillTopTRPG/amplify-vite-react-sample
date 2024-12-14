@@ -1,25 +1,27 @@
 import { Col, Typography, Row } from 'antd'
 import { type Schema } from '../../../amplify/data/resource.ts'
-import TodoContainer from '@/components/todo/TodoContainer.tsx'
+import TodoContainer from '@/components/todo2/TodoContainer.tsx'
 
 type TodosProp = {
-  todos: Schema['Todo']['type'][]
-  createTodo: (data: Schema['Todo']['createType']) => void
-  deleteTodo: (id: string) => void
+  todo2s: Schema['Todo2']['type'][]
+  createTodo2: (data: Schema['Todo2']['createType']) => void
+  deleteTodo2: (id: string) => void
   loading: boolean
 }
 export default function Todos({
-  todos,
-  createTodo,
-  deleteTodo,
+  todo2s,
+  createTodo2,
+  deleteTodo2,
   loading,
 }: TodosProp) {
   const addTodo = () => {
     const content = window.prompt('todo content.') || '-'
-    const todo: Schema['Todo']['createType'] = {
+    const todo: Schema['Todo2']['createType'] = {
       content,
+      type: 'system',
+      next: JSON.stringify({ content }),
     }
-    createTodo(todo)
+    createTodo2(todo)
   }
   return (
     <>
@@ -27,25 +29,25 @@ export default function Todos({
       <Row gutter={4}>
         <Col span={8}>
           <TodoContainer
-            todos={todos}
+            todos={todo2s}
             createTodo={addTodo}
-            deleteTodo={deleteTodo}
+            deleteTodo={deleteTodo2}
             loading={loading}
           />
         </Col>
         <Col span={8}>
           <TodoContainer
-            todos={todos}
+            todos={todo2s}
             createTodo={addTodo}
-            deleteTodo={deleteTodo}
+            deleteTodo={deleteTodo2}
             loading={loading}
           />
         </Col>
         <Col span={8}>
           <TodoContainer
-            todos={todos}
+            todos={todo2s}
             createTodo={addTodo}
-            deleteTodo={deleteTodo}
+            deleteTodo={deleteTodo2}
             loading={loading}
           />
         </Col>
