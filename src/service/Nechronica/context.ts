@@ -3,7 +3,10 @@ import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
 import { omit } from 'lodash-es'
 import type { Schema } from '../../../amplify/data/resource.ts'
-import { type Nechronica } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import {
+  type Nechronica,
+  type NechronicaType,
+} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const client = generateClient<Schema>()
 
@@ -52,28 +55,37 @@ const useNechronica = () => {
     client.models.Todo2.delete({ id })
   }
 
-  type NechronicaCharacter = Schema['NechronicaCharacter']['type']
-  const [characters, setCharacter] = useState<NechronicaCharacter[]>([])
+  const [characters, setCharacter] = useState<
+    { id: string; type: NechronicaType; sheetId: string; data: Nechronica }[]
+  >([])
   useEffect(() => {
     const sub = client.models.NechronicaCharacter.observeQuery().subscribe({
       next: ({ items }) => {
         console.log('$$$$$$$$$')
-        setCharacter([...items])
+        setCharacter([
+          ...items.map((item) => ({
+            id: item.id,
+            type: item.type || 'doll',
+            sheetId: item.sheetId,
+            data: JSON.parse(item.sheetData) as Nechronica,
+          })),
+        ])
         setLoading(false)
       },
     })
     return () => sub.unsubscribe()
   }, [])
   const createCharacter = (
-    sheetId: string,
     type: 'doll' | 'savant' | 'horror' | 'legion',
     data: Nechronica,
   ) => {
-    console.log('regist!!!')
+    // 重複を防ぐ
+    if (characters.some((d) => d.type === type && d.sheetId === data.sheetId))
+      return
     client.models.NechronicaCharacter.create({
       name: data.basic.characterName,
       type,
-      sheetId,
+      sheetId: data.sheetId,
       sheetData: JSON.stringify(data),
     })
   }

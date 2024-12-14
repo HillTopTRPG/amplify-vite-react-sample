@@ -129,3 +129,14 @@ export function getFileName(url: string): string {
 export function hoseiStr(n: number): string {
   return n > 0 ? `+${n}` : n.toString(10)
 }
+
+export function parseIntOrNull(str: string | null | undefined): number | null {
+  if (str === null || str === undefined) return null
+  const num = Number(
+    str.replace(/[０-９]/g, (s) =>
+      String.fromCharCode(s.charCodeAt(0) - 0xfee0),
+    ),
+  )
+  if (isNaN(num)) return null
+  return num
+}

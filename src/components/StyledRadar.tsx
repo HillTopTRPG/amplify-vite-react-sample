@@ -3,17 +3,18 @@ import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
 import { useThemeContext } from '@/context/theme.ts'
 
+type StyledRadarProps = {
+  data: Datum
+  width: number
+  height: number
+  onChangeItem: (type: 'pointerup' | 'pointermove', item: string) => void
+}
 export default function StyledRadar({
   data,
   width,
   height,
   onChangeItem,
-}: {
-  data: Datum
-  width: number
-  height: number
-  onChangeItem: (type: 'pointerup' | 'pointermove', item: string) => void
-}) {
+}: StyledRadarProps) {
   const { theme } = useThemeContext()
 
   let lastItem = ''
@@ -33,8 +34,8 @@ export default function StyledRadar({
   const config: GetProps<typeof Radar> = {
     theme,
     data,
-    height,
     width,
+    height,
     autoFit: true,
     xField: 'item',
     yField: 'score',
@@ -64,6 +65,7 @@ export default function StyledRadar({
         grid: true,
       },
     },
+    legend: false,
     style: {
       lineWidth: 0,
       opacity: 0,

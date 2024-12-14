@@ -1,5 +1,12 @@
 import { DashboardOutlined } from '@ant-design/icons'
-import { Col, type Statistic, type GetProps, Typography, Space } from 'antd'
+import {
+  Col,
+  type Statistic,
+  type GetProps,
+  Typography,
+  Space,
+  Spin,
+} from 'antd'
 import { useNechronicaContext, useTodo2Crud, useTodoCrud } from '../context'
 import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
@@ -15,13 +22,13 @@ const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { loading } = useNechronicaContext()
+  const { loading, dolls } = useNechronicaContext()
   const todoCrud = useTodoCrud()
   const todo2Crud = useTodo2Crud()
   const { setScreen } = useScreenContext()
 
   const statistics: [keyof Screens, number, string][] = [
-    ['dolls', 3, '体'],
+    ['dolls', dolls.length, '体'],
     ['savants', 4, '体'],
     ['horrors', 5, '体'],
     ['legions', 6, '種類'],
@@ -30,17 +37,20 @@ function contents() {
     ([screen, value, suffix]) => ({
       title: screens[screen].label,
       value,
-      valueRender: () => (
-        <Typography.Link
-          style={{ fontSize: '1em' }}
-          onClick={() => setScreen(screen)}
-        >
-          <Space size={5}>
-            <span>{value}</span>
-            <span>{suffix}</span>
-          </Space>
-        </Typography.Link>
-      ),
+      valueRender: () =>
+        loading ? (
+          <Spin size="large" />
+        ) : (
+          <Typography.Link
+            style={{ fontSize: '1em' }}
+            onClick={() => setScreen(screen)}
+          >
+            <Space size={5}>
+              <span>{value}</span>
+              <span>{suffix}</span>
+            </Space>
+          </Typography.Link>
+        ),
     }),
   )
 
