@@ -50,33 +50,6 @@ export default function Todos({
           />
         </Col>
       </Row>
-      <Typography.Title level={5}>TODO</Typography.Title>
-      <Row gutter={4}>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={addTodo}
-            deleteTodo={deleteTodo}
-            loading={loading}
-          />
-        </Col>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={addTodo}
-            deleteTodo={deleteTodo}
-            loading={loading}
-          />
-        </Col>
-        <Col span={8}>
-          <TodoContainer
-            todos={todos}
-            createTodo={addTodo}
-            deleteTodo={deleteTodo}
-            loading={loading}
-          />
-        </Col>
-      </Row>
     </>
   )
 }

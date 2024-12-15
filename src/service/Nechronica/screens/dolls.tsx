@@ -1,101 +1,66 @@
-import { useState } from 'react'
-import { DashboardOutlined, PlusOutlined } from '@ant-design/icons'
-import {
-  Col,
-  type Statistic,
-  type GetProps,
-  Typography,
-  Space,
-  Button,
-  Input,
-  Flex,
-  Card,
-} from 'antd'
+import React, { useRef } from 'react'
+import { DashboardOutlined } from '@ant-design/icons'
+import { Divider, Flex, Input, type InputRef } from 'antd'
+import type { OTPRef } from 'antd/es/input/OTP'
 import { useNechronicaContext } from '../context'
-import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
-import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
-import { useScreenContext } from '@/context/screen.ts'
-import { type Screens } from '@/layouts/MainContentsLauout.tsx'
-import screens from '@/service/Nechronica/screens.ts'
-import {
-  type Nechronica,
-  NechronicaDataHelper,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import useKeyBind from '@/hooks/useKeyBind.ts'
+import AffixCard from '@/service/Nechronica/components/AffixCard.tsx'
+import CategorizedCharacterChartCol from '@/service/Nechronica/components/CategorizedCharacterChartCol.tsx'
+import CharacterCard from '@/service/Nechronica/components/CharacterCard.tsx'
+import InputSheetId from '@/service/Nechronica/components/InputSheetId.tsx'
+import ScreenSubTitle from '@/service/Nechronica/components/ScreenSubTitle.tsx'
+import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 
 const label = 'ドール'
 const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { dolls, savants, horrors, legions, createDoll } =
-    useNechronicaContext()
-  const { setScreen } = useScreenContext()
+  const { dolls, createDoll } = useNechronicaContext()
 
-  const statistics: [keyof Screens, number, string][] = [
-    ['dolls', dolls.length, '体'],
-    ['savants', savants.length, '体'],
-    ['horrors', horrors.length, '体'],
-    ['legions', legions.length, '種類'],
-  ]
-  const dashboardData: GetProps<typeof Statistic>[] = statistics.map(
-    ([screen, value, suffix]) => ({
-      title: screens[screen].label,
-      value,
-      valueRender: () => (
-        <Typography.Link
-          style={{ fontSize: '1em' }}
-          onClick={() => setScreen(screen)}
-        >
-          <Space size={5}>
-            <span>{value}</span>
-            <span>{suffix}</span>
-          </Space>
-        </Typography.Link>
-      ),
-    }),
-  )
+  const sheetIdInputRef = useRef<OTPRef>(null)
+  const searchInputRef = useRef<InputRef>(null)
+  const { setSearch, searchedCharacters } = useSearchCharacter(dolls)
 
-  const [loadSheets, setLoadSheets] = useState<Nechronica[]>([])
+  const affixContainer = React.useRef<HTMLDivElement>(null)
 
-  const loadSheetsElm = loadSheets.map((sheet) => {
-    return (
-      <Card key={sheet.url} title={sheet.basic.characterName}>
-        <Card.Grid>aaaa</Card.Grid>
-        <Card.Grid>bbbb</Card.Grid>
-        <Card.Grid>cccc</Card.Grid>
-      </Card>
-    )
+  useKeyBind({
+    key: 'k',
+    metaKey: true,
+    onKeyDown: () => {
+      searchInputRef.current?.focus()
+    },
   })
 
-  const onChangeSheetUrl = async (id: string) => {
-    const url = `https://charasheet.vampire-blood.net/${id}`
-    if (loadSheets.some((s) => s.url === url)) return
-    const helper = new NechronicaDataHelper(url, (s) => s)
-    if (!helper.isThis()) return
-    const data = (await helper.getData())?.data
-    if (!data) return
-    setLoadSheets((o) => [...o, data])
-  }
+  useKeyBind({
+    key: 'a',
+    metaKey: true,
+    onKeyDown: () => {
+      sheetIdInputRef.current?.focus()
+    },
+  })
 
   return (
-    <ScreenContainer title={label} icon={icon}>
-      <StatisticCardLayout title="キャラクターデータ" data={dashboardData}>
-        <Col span={12}>
-          <StyledPie data={dashboardData} height={150} />
-        </Col>
-        <Col span={12}>
-          <StyledPie data={dashboardData} height={150} />
-        </Col>
-        <Col span={24}>
-          <Button onClick={() => createDoll({})} icon={<PlusOutlined />} />
-        </Col>
-      </StatisticCardLayout>
-      <Flex vertical align="flex-start">
-        <Typography.Text>キャラクター保管所のシートID</Typography.Text>
-        <Input.OTP length={7} onChange={onChangeSheetUrl} />
+    <ScreenContainer title={label} icon={icon} ref={affixContainer}>
+      <ScreenSubTitle title="概要" />
+      <CategorizedCharacterChartCol characters={dolls} />
+      <Divider />
+      <Flex vertical style={{ marginBottom: 10 }}>
+        <ScreenSubTitle title={`${label}追加`} memo="Ctrl + a or ⌘ + a" />
+        <InputSheetId onFetchData={createDoll} inputRef={sheetIdInputRef} />
       </Flex>
-      <Flex>{loadSheetsElm}</Flex>
+      <AffixCard affixContainer={affixContainer}>
+        <Flex vertical style={{ width: 213 }}>
+          <ScreenSubTitle title="名前検索" memo="Ctrl + k or ⌘ + k" />
+          <Input.Search onSearch={setSearch} ref={searchInputRef} />
+        </Flex>
+      </AffixCard>
+      <Flex align="flex-start" justify="start" wrap gap={6}>
+        {searchedCharacters.map((character) => (
+          <CharacterCard key={character.id} character={character} />
+        ))}
+      </Flex>
     </ScreenContainer>
   )
 }

@@ -1,4 +1,4 @@
-import { camelCase, capitalize } from 'lodash-es'
+import { capitalize } from 'lodash-es'
 
 export function getKeys<T extends Record<string | number | symbol, unknown>>(
   obj: T,
@@ -17,12 +17,12 @@ type AddFunctionObj<T extends string, U> = {
 type Result<T extends string, U> = CharacterListObj<T, U> & AddFunctionObj<T, U>
 export const makeTypeSetFunc = <T extends string, U>(
   makeList: (type: T) => U[],
-  makeAddFunc: (type: T) => (data: T) => void,
+  makeCreateFunc: (type: T) => (data: T) => void,
 ) => {
   return (type: T): Result<T, U> => {
     return {
       [`${type}s`]: makeList(type),
-      [camelCase(`create_${type}`)]: makeAddFunc(type),
+      [`create${capitalize(type)}`]: makeCreateFunc(type),
     } as Result<T, U>
   }
 }

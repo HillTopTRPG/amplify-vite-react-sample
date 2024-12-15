@@ -1,10 +1,18 @@
 import { DashboardOutlined } from '@ant-design/icons'
-import { Col, type Statistic, type GetProps, Typography, Space } from 'antd'
-import { useNechronicaContext, useTodoCrud } from '../context'
+import {
+  Col,
+  type Statistic,
+  type GetProps,
+  Typography,
+  Space,
+  Spin,
+} from 'antd'
+import { useNechronicaContext, useTodo2Crud, useTodoCrud } from '../context'
 import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import Todos from '@/components/todo/Todos.tsx'
+import Todo2s from '@/components/todo2/Todos.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import type { Screens } from '@/layouts/MainContentsLauout.tsx'
 import screens from '@/service/Nechronica/screens.ts'
@@ -14,31 +22,35 @@ const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { dolls, savants, horrors, legions, loading } = useNechronicaContext()
+  const { loading, dolls } = useNechronicaContext()
   const todoCrud = useTodoCrud()
+  const todo2Crud = useTodo2Crud()
   const { setScreen } = useScreenContext()
 
   const statistics: [keyof Screens, number, string][] = [
     ['dolls', dolls.length, '体'],
-    ['savants', savants.length, '体'],
-    ['horrors', horrors.length, '体'],
-    ['legions', legions.length, '種類'],
+    ['savants', 4, '体'],
+    ['horrors', 5, '体'],
+    ['legions', 6, '種類'],
   ]
   const dashboardData: GetProps<typeof Statistic>[] = statistics.map(
     ([screen, value, suffix]) => ({
       title: screens[screen].label,
       value,
-      valueRender: () => (
-        <Typography.Link
-          style={{ fontSize: '1em' }}
-          onClick={() => setScreen(screen)}
-        >
-          <Space size={5}>
-            <span>{value}</span>
-            <span>{suffix}</span>
-          </Space>
-        </Typography.Link>
-      ),
+      valueRender: () =>
+        loading ? (
+          <Spin size="large" />
+        ) : (
+          <Typography.Link
+            style={{ fontSize: '1em' }}
+            onClick={() => setScreen(screen)}
+          >
+            <Space size={5}>
+              <span>{value}</span>
+              <span>{suffix}</span>
+            </Space>
+          </Typography.Link>
+        ),
     }),
   )
 
@@ -53,6 +65,7 @@ function contents() {
         </Col>
       </StatisticCardLayout>
       <Todos {...todoCrud} loading={loading} />
+      <Todo2s {...todo2Crud} loading={loading} />
     </ScreenContainer>
   )
 }

@@ -30,7 +30,10 @@ export default function MainContentsLayout(props: ScreenProviderProps) {
   const { algorithm } = useThemeContext()
 
   return (
-    <ConfigProvider theme={{ algorithm }}>
+    <ConfigProvider
+      theme={{ algorithm }}
+      divider={{ style: { margin: '5px 0' } }}
+    >
       <Layout style={{ height: '100vh' }}>
         <ScreenProvider {...props}>
           <AppMenu />
@@ -38,6 +41,7 @@ export default function MainContentsLayout(props: ScreenProviderProps) {
             style={{
               backgroundColor: 'transparent',
               overflow: 'hidden scroll',
+              zIndex: 0,
             }}
           >
             <MediaQuery {...MEDIA_QUERY.PC}>
@@ -52,15 +56,7 @@ export default function MainContentsLayout(props: ScreenProviderProps) {
               <MediaQuery {...MEDIA_QUERY.MOBILE}>
                 <Drawer />
               </MediaQuery>
-              <Layout.Content
-                style={{
-                  backgroundColor: 'transparent',
-                  overflow: 'hidden scroll',
-                  padding: '24px 16px 24px 16px',
-                }}
-              >
-                <DynamicScreen />
-              </Layout.Content>
+              <DynamicScreen />
             </Layout>
           </Layout>
         </ScreenProvider>

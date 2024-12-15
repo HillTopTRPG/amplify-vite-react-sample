@@ -5,14 +5,15 @@ import { useThemeContext } from '@/context/theme.ts'
 
 export default function Sider() {
   const { theme, isDarkMode } = useThemeContext()
-  const { open, setOpenStatus } = useScreenContext()
+  const { open } = useScreenContext()
   const onSelect = () => {}
   return (
     <Layout.Sider
       breakpoint="xl"
+      collapsedWidth={50}
+      width={200}
       theme={theme}
       collapsed={!open}
-      onCollapse={(value) => setOpenStatus(!value)}
       style={{
         background: 'transparent',
         borderRight: `solid 1px ${isDarkMode ? '#222' : '#e7e7e7'}`,

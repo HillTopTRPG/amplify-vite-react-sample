@@ -21,7 +21,7 @@ export function average(list: number[]): number | null {
  * クローンを生成する
  * @param obj
  */
-export function clone<T>(obj: T | null): T | null {
+export function clone<T>(obj: T): T {
   if (!obj) return obj
   return JSON.parse(JSON.stringify(obj)) as T
 }
@@ -128,4 +128,15 @@ export function getFileName(url: string): string {
 
 export function hoseiStr(n: number): string {
   return n > 0 ? `+${n}` : n.toString(10)
+}
+
+export function parseIntOrNull(str: string | null | undefined): number | null {
+  if (str === null || str === undefined) return null
+  const num = Number(
+    str.replace(/[０-９]/g, (s) =>
+      String.fromCharCode(s.charCodeAt(0) - 0xfee0),
+    ),
+  )
+  if (isNaN(num)) return null
+  return num
 }

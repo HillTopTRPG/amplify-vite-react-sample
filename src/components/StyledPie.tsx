@@ -20,9 +20,6 @@ export default function StyledPie({
     label: {
       text: 'value',
     },
-    style: {
-      color: 'red',
-    },
   }
   return <Pie {...config} />
 }

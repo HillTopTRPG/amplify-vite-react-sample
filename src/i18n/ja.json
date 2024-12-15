@@ -1,0 +1,374 @@
+{
+  "pane": {
+    "シノビガミ": {
+      "group": "シノビガミ",
+      "特技比較": "特技比較",
+      "キャラクターシート管理": "キャラクターシート管理",
+      "シナリオデータ管理": "シナリオデータ管理",
+      "データ閲覧": "データ閲覧"
+    },
+    "ネクロニカ": {
+      "group": "ネクロニカ",
+      "キャラクター管理": "キャラクター管理",
+      "キャラクター閲覧": "キャラクター閲覧",
+      "ネクロニカ専用機能のTips": "ネクロニカ専用機能のTips"
+    }
+  },
+  "label": {
+    "all": "全て",
+    "none": "なし",
+    "decision": "決定",
+    "cancel": "キャンセル",
+    "perspective": "視点",
+    "display-control": "表示制御",
+    "add": "追加",
+    "required": "必須",
+    "setting": "設定",
+    "execute": "実行",
+    "loading": "読込",
+    "empty": "空",
+    "save": "保存",
+    "name-of": "$$の名前",
+    "delete-completely": "完全に削除",
+    "delete-for-message": "削除するにはこの$$の名前を入力してください",
+    "delete-this": "この$$を削除"
+  },
+  "Nechronica": {
+    "label": {
+      "action-value": "行動値",
+      "max-action-value": "最大行動値",
+      "action-value-base-value": "基礎値",
+      "action-value-start-value": "基本値",
+      "personal-roice": "本人の未練",
+      "of-roice": "$$の未練",
+      "category": "カテゴリ",
+      "view-category": "表示カテゴリ",
+      "view-timing": "表示タイミング",
+      "cost": "コスト",
+      "cost-collection-value": "コスト補正値",
+      "parts-position": "部位",
+      "range": "射程",
+      "effect": "効果",
+      "timing": "タイミング",
+      "source": "取得元",
+      "roice": "未練",
+      "under-label": "下部ラベル",
+      "status": "状態",
+      "maneuver": "マニューバ",
+      "start-battle": "戦闘開始",
+      "down-count": "カウント減少",
+      "next-turn": "次ターン開始",
+      "count": "カウント",
+      "legion-health": "数",
+      "lost": "損傷",
+      "use": "使用",
+      "used": "使用済",
+      "only-added": "手動追加のみ",
+      "only-is-bravado": "平気扱いのみ",
+      "only-bravado-target": "平気対象のみ",
+      "only-ignore-bravado": "平気対象外のみ",
+      "unknown": "隠匿状態",
+      "to-lost": "損傷する",
+      "to-lost-confirm-message": "マニューバを損傷します",
+      "recover-lost": "損傷から回復",
+      "recover-lost-confirm-message": "マニューバを損傷から回復します",
+      "add-unknown-maneuver": "隠匿マニューバの追加",
+      "add-unknown-maneuver-message": "隠匿マニューバを追加します",
+      "to-use": "使用する",
+      "to-unused": "未使用にする",
+      "to-unused-confirm-message": "マニューバを未使用状態にします",
+      "to-unknown": "隠匿状態へ",
+      "to-un-unknown": "隠匿状態解除",
+      "to-unknown-confirm-message": "マニューバを非公開にします",
+      "to-un-unknown-confirm-message": "マニューバを公開します",
+      "processed": "処理済み",
+      "placement": "配置",
+      "spine": "せぼね",
+      "init-placement": "初期配置",
+      "view-to-player": "参加者に見せる",
+      "duplicate": "複製する",
+      "reload-character-sheet": "キャラクターシートから再読込",
+      "loading-of": "$$登録",
+      "character-vault-url": "キャラクター保管所のURL",
+      "loading-target": "読込対象",
+      "personal-data": "パーソナルデータ",
+      "character-manage-tool-pane-title": "キャラクター管理ツール",
+      "tips-pane-title": "ネクロニカ専用機能のTips",
+      "character-view-pane-title": "キャラクター閲覧ツール",
+      "character-view": "キャラクター閲覧",
+      "target": "対象",
+      "roice-damage": "狂気度",
+      "failed-loading-character-sheet": "キャラクターシートの読込に失敗しました",
+      "updating-data": "データ更新中",
+      "organizer": "主催者",
+      "player": "参加者",
+      "edit-maneuver": "マニューバ編集",
+      "remarks": "備考など",
+      "roice-break-effect": "発狂効果",
+      "treat-as-bravado": "【平気】として扱う",
+      "row-max-maneuver-num": "１行の最大マニューバ数",
+      "revoke": "取り消す",
+      "open-underling": "$$体の手駒を公開する",
+      "exempt-damaged-maneuvers-from-the-bravado": "$$体の損傷済マニューバを【平気】の対象外化にする",
+      "init-everybody-action-value": "全員の行動値の初期化",
+      "move-everybody-init-location": "全員を初期配置に移動",
+      "init-battle-count": "カウントの初期化",
+      "all-maneuver-to-unused": "$$体のマニューバの未使用化",
+      "delete-character-history": "キャラ操作履歴の削除",
+      "delete-character-history-confirm-message": "このキャラ操作履歴を取り消します",
+      "down-count-of": "カウントを$$減少",
+      "all-action-maneuver-to-unused": "$$体のアクションマニューバの未使用化",
+      "down-un-action-character-action-value": "$$体の未行動者の行動値を減らす",
+      "reset-battle-count": "カウントの再設定",
+      "recover-action-value-by-max-action-value": "全員の行動値を最大値分回復する",
+      "all-action-values-above-0-to-0": "0を超える行動値を全て0にする",
+      "battle-end": "戦闘終了",
+      "multi-process-description": "上から順番にチェックが入っている処理を行います",
+      "to-resolve": "処理済みにする",
+      "to-resolve-confirm-message": "このキャラ操作履歴を処理済みにします",
+      "age": "享年",
+      "hair-color": "髪の色",
+      "eye-color": "瞳の色",
+      "skin-color": "肌の色",
+      "height": "身長",
+      "weight": "体重",
+      "shuzoku": "種族",
+      "carma": "暗示",
+      "move": "移動",
+      "place-now": "配置(現在)　",
+      "place-at-the-time": "配置(宣言時)"
+    },
+    "CHARACTER_TYPE": {
+      "none": "",
+      "doll": "ドール",
+      "legion": "レギオン",
+      "horror": "ホラー",
+      "savant": "サヴァント"
+    },
+    "CHARACTER_LOCATION": {
+      "none": "",
+      "abyss": "奈落",
+      "hell": "地獄",
+      "purgatory": "煉獄",
+      "garden": "花園",
+      "paradise": "楽園"
+    },
+    "BATTLE_TIMING": {
+      "none": "無指定",
+      "action": "アクション",
+      "rapid": "ラピッド",
+      "judge": "ジャッジ",
+      "damage": "ダメージ"
+    },
+    "ROICE_VIEW_POSITION": {
+      "before": "マニューバの上",
+      "after": "マニューバの下",
+      "none": "表示しない"
+    },
+    "MANEUVER_TIMING": {
+      "auto": "オート",
+      "action": "アクション",
+      "judge": "ジャッジ",
+      "damage": "ダメージ",
+      "rapid": "ラピッド"
+    },
+    "MANEUVER_TYPE": {
+      "none": "カテゴリなし",
+      "normal": "通常技",
+      "special": "必殺技",
+      "stamina": "行動値増加",
+      "support": "補助",
+      "sabotage": "妨害",
+      "defence_victim": "防御/生贄",
+      "movement": "移動"
+    },
+    "ROICE": {
+      "0": {
+        "pos": "",
+        "target": "",
+        "neg": "",
+        "breakEffect": ""
+      },
+      "1": {
+        "pos": "嫌悪",
+        "target": "姉妹01",
+        "neg": "敵対認識",
+        "breakEffect": "敵に当たらない攻撃の全てが、射程内なら嫌悪の対象に命中する(部位は受ける方が任意に決める)"
+      },
+      "2": {
+        "pos": "独占",
+        "target": "姉妹02",
+        "neg": "独占衝動",
+        "breakEffect": "戦闘開始時と終了時に１つずつ、対象はパーツを選んで損傷しなければならない"
+      },
+      "3": {
+        "pos": "依存",
+        "target": "姉妹03",
+        "neg": "幼児退行",
+        "breakEffect": "最大行動値減少(-2)"
+      },
+      "4": {
+        "pos": "執着",
+        "target": "姉妹04",
+        "neg": "追尾監視",
+        "breakEffect": "戦闘開始時と終了時に１つずつ、対象はあなたへの未練に狂気点を得る"
+      },
+      "5": {
+        "pos": "恋心",
+        "target": "姉妹05",
+        "neg": "自傷行動",
+        "breakEffect": "戦闘開始時と終了時に１つずつ、あなたはパーツを選んで損傷する"
+      },
+      "6": {
+        "pos": "対抗",
+        "target": "姉妹06",
+        "neg": "過剰競争",
+        "breakEffect": "戦闘開始時と終了時に１つずつ、あなたは狂気点を追加で得る"
+      },
+      "7": {
+        "pos": "友情",
+        "target": "姉妹07",
+        "neg": "共鳴依存",
+        "breakEffect": "セッション終了時、対象の方が損傷しているパーツの数が多い場合、対象の損傷数と同じになるようパーツを選び損傷させなければならない"
+      },
+      "8": {
+        "pos": "保護",
+        "target": "姉妹08",
+        "neg": "常時密着",
+        "breakEffect": "自身か対象以外は移動マニューバの対象にできない。また、対象が違うエリアにいるなら移動以外の効果持ちのマニューバは宣言できない"
+      },
+      "9": {
+        "pos": "憧憬",
+        "target": "姉妹09",
+        "neg": "贋作妄想",
+        "breakEffect": "自身か対象以外は移動マニューバの対象にできない。また、対象が同じエリアにいるなら移動以外の効果持ちのマニューバは宣言できない"
+      },
+      "10": {
+        "pos": "信頼",
+        "target": "姉妹10",
+        "neg": "疑心暗鬼",
+        "breakEffect": "あなた以外の全ての姉妹の最大行動値に-1"
+      },
+      "11": {
+        "pos": "恐怖",
+        "target": "敵01",
+        "neg": "認識拒否",
+        "breakEffect": "あらゆる行動並びに狂気判定に-1"
+      },
+      "12": {
+        "pos": "隷属",
+        "target": "敵02",
+        "neg": "造反有理",
+        "breakEffect": "失敗した攻撃判定を全て大失敗にする"
+      },
+      "13": {
+        "pos": "不安",
+        "target": "敵03",
+        "neg": "挙動不審",
+        "breakEffect": "最大行動値減少(-2)"
+      },
+      "14": {
+        "pos": "憐憫",
+        "target": "敵04",
+        "neg": "過剰移入",
+        "breakEffect": "サヴァントに攻撃する時、出目に-1"
+      },
+      "15": {
+        "pos": "愛憎",
+        "target": "敵05",
+        "neg": "凶愛心中",
+        "breakEffect": "狂気および攻撃判定に大成功した時、(結果-10)個のパーツを損傷"
+      },
+      "16": {
+        "pos": "悔恨",
+        "target": "敵06",
+        "neg": "自業自棄",
+        "breakEffect": "失敗した攻撃判定は自身の任意の部位に命中する。"
+      },
+      "17": {
+        "pos": "軽蔑",
+        "target": "敵07",
+        "neg": "眼中不在",
+        "breakEffect": "同一エリアにいる敵があなたに行う攻撃判定に+1"
+      },
+      "18": {
+        "pos": "憤怒",
+        "target": "敵08",
+        "neg": "激情暴走",
+        "breakEffect": "あらゆる行動並びに狂気判定に-1"
+      },
+      "19": {
+        "pos": "怨念",
+        "target": "敵09",
+        "neg": "不倶戴天",
+        "breakEffect": "逃走不能になり、この未練の対象か自身以外にマニューバを使用時、追加コスト「行動値1」が必要になる"
+      },
+      "20": {
+        "pos": "憎悪",
+        "target": "敵10",
+        "neg": "痕跡破壊",
+        "breakEffect": "発狂時のみ適用。自身を除く姉妹の誰か一人を選択。対象はパーツを任意で2つ損傷させる"
+      },
+      "21": {
+        "pos": "忌避",
+        "target": "中立者01",
+        "neg": "隔絶意識",
+        "breakEffect": "自身の未練の対象とサヴァントが自分と同エリアにいる時、移動以外のマニューバを使えない。また、自身か先述条件の対象以外を移動マニューバの対象にできない"
+      },
+      "22": {
+        "pos": "嫉妬",
+        "target": "中立者02",
+        "neg": "不協和音",
+        "breakEffect": "全ての姉妹の行動判定に-1"
+      },
+      "23": {
+        "pos": "依存",
+        "target": "中立者03",
+        "neg": "幼児退行",
+        "breakEffect": "最大行動値減少(-2)"
+      },
+      "24": {
+        "pos": "憐憫",
+        "target": "中立者04",
+        "neg": "過剰移入",
+        "breakEffect": "サヴァントに攻撃する時、出目に-1"
+      },
+      "25": {
+        "pos": "感謝",
+        "target": "中立者05",
+        "neg": "病的返礼",
+        "breakEffect": "発狂時に起動。任意の基本パーツ２つを損傷。なければレベルの最も低いパーツ1つを損傷"
+      },
+      "26": {
+        "pos": "悔恨",
+        "target": "中立者06",
+        "neg": "自業自棄",
+        "breakEffect": "失敗した攻撃判定は自身の任意の部位に命中する。"
+      },
+      "27": {
+        "pos": "期待",
+        "target": "中立者07",
+        "neg": "希望転結",
+        "breakEffect": "狂気点を追加して振り直すごとに出目に-1の修正。これは累積する"
+      },
+      "28": {
+        "pos": "保護",
+        "target": "中立者08",
+        "neg": "生前回帰",
+        "breakEffect": "「レギオン」をマニューバの対象にできなくなる"
+      },
+      "29": {
+        "pos": "尊敬",
+        "target": "中立者09",
+        "neg": "神化崇拝",
+        "breakEffect": "他の姉妹をマニューバの対象に選べなくなる"
+      },
+      "30": {
+        "pos": "信頼",
+        "target": "中立者10",
+        "neg": "疑心暗鬼",
+        "breakEffect": "あなた以外の全ての姉妹の最大行動値に-1"
+      }
+    }
+  }
+}
