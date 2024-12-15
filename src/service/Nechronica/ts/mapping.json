@@ -7,11 +7,41 @@
     { "value": "damage", "text": "Nechronica.BATTLE_TIMING.damage" }
   ],
   "ROICE_DAMAGE": [
-    { "value": 0, "label": "０", "text": "０", "subTitle": "", "color": "success" },
-    { "value": 1, "label": "１", "text": "１", "subTitle": "", "color": "success" },
-    { "value": 2, "label": "２", "text": "２", "subTitle": "", "color": "success" },
-    { "value": 3, "label": "３", "text": "３", "subTitle": "", "color": "warning" },
-    { "value": 4, "label": "狂", "text": "発狂", "subTitle": "", "color": "error" }
+    {
+      "value": 0,
+      "label": "０",
+      "text": "０",
+      "subTitle": "",
+      "color": "success"
+    },
+    {
+      "value": 1,
+      "label": "１",
+      "text": "１",
+      "subTitle": "",
+      "color": "success"
+    },
+    {
+      "value": 2,
+      "label": "２",
+      "text": "２",
+      "subTitle": "",
+      "color": "success"
+    },
+    {
+      "value": 3,
+      "label": "３",
+      "text": "３",
+      "subTitle": "",
+      "color": "warning"
+    },
+    {
+      "value": 4,
+      "label": "狂",
+      "text": "発狂",
+      "subTitle": "",
+      "color": "error"
+    }
   ],
   "CHARACTER_TYPE": [
     {
@@ -48,12 +78,42 @@
     }
   ],
   "CHARACTER_LOCATION": [
-    { "key": "none", "text": "Nechronica.CHARACTER_LOCATION.none", "init-pos-value": -3, "pos-value": 0 },
-    { "key": "abyss", "text": "Nechronica.CHARACTER_LOCATION.abyss", "init-pos-value": -2, "pos-value": 1 },
-    { "key": "hell", "text": "Nechronica.CHARACTER_LOCATION.hell", "init-pos-value": -1, "pos-value": 2 },
-    { "key": "purgatory", "text": "Nechronica.CHARACTER_LOCATION.purgatory", "init-pos-value": 0, "pos-value": 3 },
-    { "key": "garden", "text": "Nechronica.CHARACTER_LOCATION.garden", "init-pos-value": 1, "pos-value": 4 },
-    { "key": "paradise", "text": "Nechronica.CHARACTER_LOCATION.paradise", "init-pos-value": 2, "pos-value": 5 }
+    {
+      "key": "none",
+      "text": "Nechronica.CHARACTER_LOCATION.none",
+      "init-pos-value": -3,
+      "pos-value": 0
+    },
+    {
+      "key": "abyss",
+      "text": "Nechronica.CHARACTER_LOCATION.abyss",
+      "init-pos-value": -2,
+      "pos-value": 1
+    },
+    {
+      "key": "hell",
+      "text": "Nechronica.CHARACTER_LOCATION.hell",
+      "init-pos-value": -1,
+      "pos-value": 2
+    },
+    {
+      "key": "purgatory",
+      "text": "Nechronica.CHARACTER_LOCATION.purgatory",
+      "init-pos-value": 0,
+      "pos-value": 3
+    },
+    {
+      "key": "garden",
+      "text": "Nechronica.CHARACTER_LOCATION.garden",
+      "init-pos-value": 1,
+      "pos-value": 4
+    },
+    {
+      "key": "paradise",
+      "text": "Nechronica.CHARACTER_LOCATION.paradise",
+      "init-pos-value": 2,
+      "pos-value": 5
+    }
   ],
   "CHARACTER_POSITION": [
     { "val": "", "text": "" },
