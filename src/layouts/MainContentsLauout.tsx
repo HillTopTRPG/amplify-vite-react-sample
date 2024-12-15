@@ -30,7 +30,10 @@ export default function MainContentsLayout(props: ScreenProviderProps) {
   const { algorithm } = useThemeContext()
 
   return (
-    <ConfigProvider theme={{ algorithm }}>
+    <ConfigProvider
+      theme={{ algorithm }}
+      divider={{ style: { margin: '5px 0' } }}
+    >
       <Layout style={{ height: '100vh' }}>
         <ScreenProvider {...props}>
           <AppMenu />

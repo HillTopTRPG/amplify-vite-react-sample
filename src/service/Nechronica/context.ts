@@ -63,9 +63,10 @@ const useNechronica = () => {
         setCharacter([
           ...items.map((item) => ({
             id: item.id,
+            name: item.name,
             type: item.type || 'doll',
             sheetId: item.sheetId,
-            data: JSON.parse(item.sheetData) as Nechronica,
+            sheetData: JSON.parse(item.sheetData) as Nechronica,
           })),
         ])
         setLoading(false)
@@ -119,10 +120,13 @@ const useNechronica = () => {
       deleteTodo2,
     },
     dolls: characters.filter((c) => c.type === 'doll'),
+    createDoll: (data: Nechronica) => createCharacter('doll', data),
     savansts: characters.filter((c) => c.type === 'savant'),
+    createSavant: (data: Nechronica) => createCharacter('savant', data),
     horrors: characters.filter((c) => c.type === 'horror'),
+    createHorror: (data: Nechronica) => createCharacter('horror', data),
     legions: characters.filter((c) => c.type === 'legion'),
-    createCharacter,
+    createLegion: (data: Nechronica) => createCharacter('legion', data),
     updateCharacter,
     deleteCharacter,
   }

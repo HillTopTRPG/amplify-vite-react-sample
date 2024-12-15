@@ -3,7 +3,6 @@ import { Typography, Empty, Table, type TableColumnsType, Flex } from 'antd'
 import StyledRadar from '@/components/StyledRadar.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica'
-import { type Nechronica } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { emptiableFormat } from '@/utils/format.ts'
 
 export default function CategorizedCharacterChartCol({
@@ -25,11 +24,11 @@ export default function CategorizedCharacterChartCol({
 
   const makeChartItemBase = (
     item: string,
-    { id, data }: { id: string; data: Nechronica },
+    { id, sheetData }: NechronicaCharacter,
   ): CharacterChartData => ({
     key: `${id}-${item}`,
     item,
-    type: data.basic.characterName,
+    type: sheetData.basic.characterName,
     score: 0,
   })
 
@@ -54,9 +53,8 @@ export default function CategorizedCharacterChartCol({
         makeChartItemBase('妨害', d),
         makeChartItemBase('防御/生贄', d),
         makeChartItemBase('移動', d),
-        makeChartItemBase('その他', d),
       ]
-      d.data.maneuverList.forEach((maneuver) => {
+      d.sheetData.maneuverList.forEach((maneuver) => {
         NECHRONICA_MANEUVER_TYPES.filter(
           (_, index) => index === maneuver.type,
         ).forEach((type) => {
@@ -105,13 +103,7 @@ export default function CategorizedCharacterChartCol({
 
   return (
     <Flex wrap>
-      <Flex
-        vertical
-        style={{
-          width: chartSize,
-          paddingBottom: 0,
-        }}
-      >
+      <Flex vertical style={{ width: chartSize, paddingBottom: 0 }}>
         <Typography.Text type="secondary">チャート</Typography.Text>
         {emptiableFormat(radarCharacterTypeData, (v) => (
           <StyledRadar
@@ -122,13 +114,7 @@ export default function CategorizedCharacterChartCol({
           />
         )) ?? <Empty />}
       </Flex>
-      <Flex
-        vertical
-        style={{
-          flexGrow: 1,
-          minWidth: 300,
-        }}
-      >
+      <Flex vertical style={{ flexGrow: 1, minWidth: 300 }}>
         <Typography.Text type="secondary">テーブル</Typography.Text>
         {emptiableFormat(radarCharacterTypeData, (v) => (
           <Table<CharacterChartData>

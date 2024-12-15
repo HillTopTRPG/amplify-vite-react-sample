@@ -7,7 +7,7 @@ export const useWindowSize = (): number[] => {
       setSize([window.innerWidth, window.innerHeight])
     }
 
-    window.addEventListener('resize', updateSize)
+    window.addEventListener('resize', updateSize, { passive: true })
     updateSize()
 
     return () => window.removeEventListener('resize', updateSize)

@@ -41,11 +41,10 @@ export default function useKeyBind({
 
     if (targetRef?.current) {
       const target = targetRef.current
-      target.addEventListener('keydown', eventListener)
+      target.addEventListener('keydown', eventListener, { passive: true })
       return () => target.removeEventListener('keydown', eventListener)
     } else {
-      console.log('resist')
-      window.addEventListener('keydown', eventListener)
+      window.addEventListener('keydown', eventListener, { passive: true })
       return () => window.removeEventListener('keydown', eventListener)
     }
   }, [altKey, ctrlKey, key, metaKey, onKeyDownLatest, shiftKey, targetRef])
