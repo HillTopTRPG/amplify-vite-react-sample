@@ -26,6 +26,6 @@ jobs:
         if: ${{ steps.cache_cdk_dependency_id.outputs.cache-hit != 'true' }}
         run: npm ci --no-audit --progress=false --silent
 
-      - name: Lint & Format
+      - name: ESLint & Prettier
         run: |
           npm run lint
