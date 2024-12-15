@@ -3,6 +3,7 @@ import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
 import { omit } from 'lodash-es'
 import type { Schema } from '../../../amplify/data/resource.ts'
+import { type NechronicaCharacter } from '@/service/Nechronica/index.ts'
 import {
   type Nechronica,
   type NechronicaType,
@@ -55,13 +56,10 @@ const useNechronica = () => {
     client.models.Todo2.delete({ id })
   }
 
-  const [characters, setCharacter] = useState<
-    { id: string; type: NechronicaType; sheetId: string; data: Nechronica }[]
-  >([])
+  const [characters, setCharacter] = useState<NechronicaCharacter[]>([])
   useEffect(() => {
     const sub = client.models.NechronicaCharacter.observeQuery().subscribe({
       next: ({ items }) => {
-        console.log('$$$$$$$$$')
         setCharacter([
           ...items.map((item) => ({
             id: item.id,
@@ -89,6 +87,22 @@ const useNechronica = () => {
       sheetData: JSON.stringify(data),
     })
   }
+  const updateCharacter = (
+    id: string,
+    type: NechronicaType,
+    data: Nechronica,
+  ) => {
+    client.models.NechronicaCharacter.update({
+      id,
+      name: data.basic.characterName,
+      type,
+      sheetId: data.sheetId,
+      sheetData: JSON.stringify(data),
+    })
+  }
+  const deleteCharacter = (id: string) => {
+    client.models.NechronicaCharacter.delete({ id })
+  }
 
   return {
     loading,
@@ -109,6 +123,8 @@ const useNechronica = () => {
     horrors: characters.filter((c) => c.type === 'horror'),
     legions: characters.filter((c) => c.type === 'legion'),
     createCharacter,
+    updateCharacter,
+    deleteCharacter,
   }
 }
 

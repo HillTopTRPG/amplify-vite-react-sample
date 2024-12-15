@@ -9,6 +9,7 @@ import App from '@/App.tsx'
 import '@aws-amplify/ui-react/styles.css'
 import '@/main.css'
 import { ThemeProvider } from '@/context/theme.ts'
+import './i18n/configs'
 
 Amplify.configure(outputs)
 

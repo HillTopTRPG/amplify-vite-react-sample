@@ -1,26 +1,18 @@
 import { useMemo, useState } from 'react'
-import {
-  Col,
-  Typography,
-  Card,
-  Empty,
-  Table,
-  type TableColumnsType,
-} from 'antd'
+import { Typography, Empty, Table, type TableColumnsType, Flex } from 'antd'
 import StyledRadar from '@/components/StyledRadar.tsx'
-import {
-  type Nechronica,
-  type NechronicaType,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import { useScreenContext } from '@/context/screen.ts'
+import { type NechronicaCharacter } from '@/service/Nechronica'
+import { type Nechronica } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { emptiableFormat } from '@/utils/format.ts'
 
 export default function CategorizedCharacterChartCol({
   characters,
 }: {
-  characters: { id: string; type: NechronicaType; data: Nechronica }[]
+  characters: NechronicaCharacter[]
 }) {
-  const chartBoxSize = 400
-  const chartSize = chartBoxSize - 48
+  const { screenSize } = useScreenContext()
+  const chartSize = Math.min(screenSize.viewPortWidth, 400)
 
   type CharacterChartData = {
     key: string
@@ -105,52 +97,49 @@ export default function CategorizedCharacterChartCol({
   ]
 
   const onChangeRadar = useMemo(
-    () => (type: 'pointerup' | 'pointermove', item: string) => {
-      console.log(type, item)
+    () => (_: 'pointerup' | 'pointermove', item: string) => {
       setCurrentItem(item)
     },
     [],
   )
 
   return (
-    <Col span={24}>
-      <Card bordered={false}>
-        <Card.Grid
-          style={{
-            width: chartBoxSize,
-            paddingBottom: 0,
-          }}
-          hoverable={false}
-        >
-          <Typography.Text type="secondary">チャート</Typography.Text>
-          {emptiableFormat(radarCharacterTypeData, (v) => (
-            <StyledRadar
-              data={v}
-              onChangeItem={onChangeRadar}
-              width={chartSize}
-              height={chartSize}
-            />
-          )) ?? <Empty />}
-        </Card.Grid>
-        <Card.Grid
-          style={{
-            paddingBottom: 0,
-            flexGrow: 1,
-            minWidth: 300,
-          }}
-          hoverable={false}
-        >
-          {emptiableFormat(radarCharacterTypeData, (v) => (
-            <Table<CharacterChartData>
-              rowKey="key"
-              dataSource={v
-                .filter((d) => d.item === currentItem)
-                .sort((d1, d2) => d2.score - d1.score)}
-              columns={columns}
-            />
-          )) ?? <Empty />}
-        </Card.Grid>
-      </Card>
-    </Col>
+    <Flex wrap>
+      <Flex
+        vertical
+        style={{
+          width: chartSize,
+          paddingBottom: 0,
+        }}
+      >
+        <Typography.Text type="secondary">チャート</Typography.Text>
+        {emptiableFormat(radarCharacterTypeData, (v) => (
+          <StyledRadar
+            data={v}
+            onChangeItem={onChangeRadar}
+            width={chartSize}
+            height={chartSize}
+          />
+        )) ?? <Empty />}
+      </Flex>
+      <Flex
+        vertical
+        style={{
+          flexGrow: 1,
+          minWidth: 300,
+        }}
+      >
+        <Typography.Text type="secondary">テーブル</Typography.Text>
+        {emptiableFormat(radarCharacterTypeData, (v) => (
+          <Table<CharacterChartData>
+            rowKey="key"
+            dataSource={v
+              .filter((d) => d.item === currentItem)
+              .sort((d1, d2) => d2.score - d1.score)}
+            columns={columns}
+          />
+        )) ?? <Empty />}
+      </Flex>
+    </Flex>
   )
 }

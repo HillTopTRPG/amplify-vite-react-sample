@@ -21,7 +21,7 @@ export function average(list: number[]): number | null {
  * クローンを生成する
  * @param obj
  */
-export function clone<T>(obj: T | null): T | null {
+export function clone<T>(obj: T): T {
   if (!obj) return obj
   return JSON.parse(JSON.stringify(obj)) as T
 }

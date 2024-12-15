@@ -48,24 +48,26 @@ export const posSelections = new Array(31).fill(null).map((_, idx) => ({
 
 export type NechronicaType = 'doll' | 'legion' | 'horror' | 'savant'
 
+export type NechronicaBasic = {
+  characterName: string
+  position: number
+  mainClass: number // MCLS
+  subClass: number // SCLS
+  basePosition: number // 0: 煉獄, 1: 花園, 2: 楽園
+  hairColor: string
+  eyeColor: string
+  skinColor: string
+  height: string
+  weight: string
+  age: string
+  shuzoku: string
+  carma: string
+}
+
 export type Nechronica = {
   url: string
   sheetId: string
-  basic: {
-    characterName: string
-    position: number
-    mainClass: number // MCLS
-    subClass: number // SCLS
-    basePosition: number // 0: 煉獄, 1: 花園, 2: 楽園
-    hairColor: string
-    eyeColor: string
-    skinColor: string
-    height: string
-    weight: string
-    age: string
-    shuzoku: string
-    carma: string
-  }
+  basic: NechronicaBasic
   maneuverList: NechronicaManeuver[]
   roiceList: NechronicaRoice[]
 }
@@ -135,6 +137,15 @@ export class NechronicaDataHelper {
   protected readonly jsonpUrlFormat: string
   protected readonly t: (r: string) => string
 
+  static async fetch(sheetId: string, t: (r: string) => string = (r) => r) {
+    const url = `https://charasheet.vampire-blood.net/${sheetId}`
+    const helper = new NechronicaDataHelper(sheetId, url, t)
+    if (!helper.isThis()) return null
+    const data = (await helper.getData())?.data
+    if (!data) return null
+    return data
+  }
+
   public constructor(sheetId: string, url: string, t: (r: string) => string) {
     this.url = url
     this.sheetId = sheetId
@@ -201,6 +212,7 @@ export class NechronicaDataHelper {
   private createData(jsons: never[] | null): Nechronica | null {
     if (!jsons || !jsons.length) return null
     const json = jsons[0]
+    if (!json['Power_Lost'] || !json['roice_name']) return null
     const digNum = (obj: never, prop: string) => {
       const value = obj[prop] as string | undefined
       return convertNumberZero(value)
@@ -213,8 +225,9 @@ export class NechronicaDataHelper {
       if (!text) return ''
       return text.trim().replace(/\r?\n/g, '\n')
     }
-    const transpose = (a: never[][]): never[][] =>
-      a[0].map((_: never, c: number) => a.map((r) => r[c]))
+    const transpose = (a: never[][]): never[][] => {
+      return a[0].map((_, c) => a.map((r) => r[c]))
+    }
 
     const maneuvers = [
       json['Power_Lost'],

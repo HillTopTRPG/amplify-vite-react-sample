@@ -85,6 +85,7 @@ export default function AppMenu() {
         background: 'transparent',
         color: isDarkMode ? token.colorBgContainer : token.colorBgBlur,
         borderBottom: `solid 1px ${isDarkMode ? '#222' : '#e7e7e7'}`,
+        zIndex: 1,
       }}
     >
       <Flex

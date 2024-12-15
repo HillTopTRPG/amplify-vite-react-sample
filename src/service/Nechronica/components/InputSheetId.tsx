@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { type RefObject, useState } from 'react'
 import { Flex, Input, Typography } from 'antd'
+import { type OTPRef } from 'antd/es/input/OTP'
 import {
   type Nechronica,
   NechronicaDataHelper,
@@ -8,8 +9,10 @@ import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
 
 export default function InputSheetId({
   onFetchData,
+  inputRef,
 }: {
   onFetchData: (value: Nechronica) => void
+  inputRef: RefObject<OTPRef>
 }) {
   const [otpValue, setOtpValue] = useState('')
   const onInputSheetId = (id: string[]) => {
@@ -17,12 +20,11 @@ export default function InputSheetId({
   }
 
   const onChange = async (sheetId: string) => {
-    const url = `https://charasheet.vampire-blood.net/${sheetId}`
-    const helper = new NechronicaDataHelper(sheetId, url, (s) => s)
-    if (!helper.isThis()) return
-    const data = (await helper.getData())?.data
+    const data = await NechronicaDataHelper.fetch(sheetId)
     if (!data) return
     setOtpValue('')
+    inputRef.current?.blur()
+    inputRef.current?.focus()
     onFetchData(data)
   }
 
@@ -34,6 +36,7 @@ export default function InputSheetId({
         length={7}
         onInput={onInputSheetId}
         onChange={onChange}
+        ref={inputRef}
       />
     </Flex>
   )
