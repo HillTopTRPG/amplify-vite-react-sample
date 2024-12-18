@@ -47,7 +47,6 @@ import sororityImg from '@/service/Nechronica/images/position/sorority.png'
 import unknownImg from '@/service/Nechronica/images/unknown.png'
 import {
   type Nechronica,
-  type NechronicaBasic,
   type NechronicaManeuver,
   type NechronicaType,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -69,11 +68,15 @@ export const PARTS_TUPLE: [string, number[]][] = [
   [partsLegImg, [7]],
 ] as const
 
-export const getPositionClassName = (basic: NechronicaBasic) => {
+export const getPositionClassName = (
+  position: number,
+  mainClass: number,
+  subClass: number,
+) => {
   return [
-    mapping.CHARACTER_POSITION[basic.position].val,
-    mapping.CHARACTER_CLASS[basic.mainClass].val,
-    mapping.CHARACTER_CLASS[basic.subClass].val,
+    mapping.CHARACTER_POSITION[position].val,
+    mapping.CHARACTER_CLASS[mainClass].val,
+    mapping.CHARACTER_CLASS[subClass].val,
   ]
 }
 
@@ -100,7 +103,9 @@ export const getClassSrc = (value: number) => {
 
 export const getManeuverSrc = (
   maneuver: NechronicaManeuver,
-  basic: NechronicaBasic,
+  position: number,
+  mainClass: number,
+  subClass: number,
 ) => {
   const iconClass =
     mapping.BASIC_PARTS_ICON_CLASS_MAP.find(({ name }) => {
@@ -114,7 +119,7 @@ export const getManeuverSrc = (
     })?.class ??
     [
       '',
-      ...getPositionClassName(basic),
+      ...getPositionClassName(position, mainClass, subClass),
       'parts-head',
       'parts-arm',
       'parts-body',

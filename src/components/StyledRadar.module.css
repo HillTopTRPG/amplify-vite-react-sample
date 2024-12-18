@@ -1,0 +1,7 @@
+.radar-container {
+  cursor: pointer !important;
+
+  canvas {
+    cursor: pointer;
+  }
+}

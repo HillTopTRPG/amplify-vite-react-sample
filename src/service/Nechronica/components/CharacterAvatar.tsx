@@ -1,4 +1,5 @@
 import { Flex, Typography } from 'antd'
+import { useThemeContext } from '@/context/theme.ts'
 import { getPositionSrc } from '@/service/Nechronica'
 import AvatarNoBorder from '@/service/Nechronica/components/AvatarNoBorder.tsx'
 import horrorImg from '@/service/Nechronica/images/type/horror.png'
@@ -7,33 +8,40 @@ import savantImg from '@/service/Nechronica/images/type/savant.png'
 import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
+const AVATAR_SIZE = 40
+
+const MAP = {
+  savant: { src: () => savantImg, color: ['#815250', '#FFAB91'] },
+  horror: { src: () => horrorImg, color: ['#51546f', '#C5CAE9'] },
+  legion: { src: () => legionImg, color: ['#4c7975', '#80CBC4'] },
+  doll: {
+    src: (position: number) => getPositionSrc(position),
+    color: ['#606812', '#DCE775'],
+  },
+} as const
+
 type CharacterAvatarProps = {
   type: NechronicaType
   position: number
+  color?: boolean
 }
 export default function CharacterAvatar({
   type,
   position,
+  color,
 }: CharacterAvatarProps) {
-  const avatarBgColor = 'rgba(255, 255, 0, 0.8)'
+  const { isDarkMode } = useThemeContext()
+  const avatarBgColor = MAP[type].color[isDarkMode ? 0 : 1]
   const characterAvatarGradient = `radial-gradient(${avatarBgColor},${avatarBgColor} 60%,transparent 75%)`
-  const getSrc = () => {
-    if (type === 'savant') return savantImg
-    if (type === 'horror') return horrorImg
-    if (type === 'legion') return legionImg
-    return getPositionSrc(position)
-  }
+
   return (
-    <Flex vertical>
+    <Flex vertical align="center" justify="center">
       <AvatarNoBorder
-        src={getSrc()}
-        size={96}
-        style={{ background: characterAvatarGradient }}
+        src={MAP[type].src(position)}
+        size={AVATAR_SIZE}
+        style={{ background: color ? characterAvatarGradient : undefined }}
       />
-      <Typography.Text
-        ellipsis
-        style={{ fontSize: 10, width: 96, textAlign: 'right' }}
-      >
+      <Typography.Text style={{ fontSize: 10 }}>
         {mapping['CHARACTER_POSITION'][position].text}
       </Typography.Text>
     </Flex>

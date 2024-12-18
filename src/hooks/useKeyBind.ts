@@ -35,7 +35,6 @@ export default function useKeyBind({
       if (shiftKey && !event.shiftKey) return
       if (event.key !== key) return
 
-      event.preventDefault()
       onKeyDownLatest.current?.(event)
     }
 

@@ -10,7 +10,10 @@ export default function ClassAvatar({ value }: ClassAvatarProps) {
   return (
     <Flex vertical align="center">
       <AvatarNoBorder src={getClassSrc(value)} size={40} />
-      <Typography.Text style={{ fontSize: 10 }}>
+      <Typography.Text
+        style={{ fontSize: 10 }}
+        onClick={(e) => e.stopPropagation()}
+      >
         {mapping['CHARACTER_CLASS'][value].text}
       </Typography.Text>
     </Flex>
