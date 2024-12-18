@@ -1,33 +1,36 @@
-import React, { useMemo, useReducer, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import {
   DashboardOutlined,
-  EyeInvisibleOutlined,
-  EyeOutlined,
+  DeleteOutlined,
+  FolderOpenOutlined,
+  ReloadOutlined,
+  SearchOutlined,
 } from '@ant-design/icons'
 import {
   Button,
-  Collapse,
-  Dropdown,
+  Divider,
   Flex,
-  Input,
   type InputRef,
-  type MenuProps,
-  Switch,
+  Layout,
+  Popover,
+  Skeleton,
+  theme,
   Typography,
 } from 'antd'
-import type { OTPRef } from 'antd/es/input/OTP'
 import { useNechronicaContext } from '../context'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
 import AffixCard from '@/service/Nechronica/components/AffixCard.tsx'
-import CategorizedCharacterChartCol from '@/service/Nechronica/components/CategorizedCharacterChartCol.tsx'
+import BorderlessInput from '@/service/Nechronica/components/BorderlessInput.tsx'
 import CharacterCard from '@/service/Nechronica/components/CharacterCard.tsx'
-import InputSheetId from '@/service/Nechronica/components/InputSheetId.tsx'
+import CharacterSmallCard from '@/service/Nechronica/components/CharacterSmallCard.tsx'
 import ScreenSubTitle from '@/service/Nechronica/components/ScreenSubTitle.tsx'
 import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 import { NechronicaDataHelper } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { sequentialPromiseReduce } from '@/utils/process.ts'
+
+const SEARCH_INPUT_WIDTH = 370
 
 const label = 'ドール'
 const authorize = true
@@ -37,11 +40,22 @@ function contents() {
   const { dolls, createDoll, updateCharacter, deleteCharacter } =
     useNechronicaContext()
   const { screenSize } = useScreenContext()
+  const { token } = theme.useToken()
 
-  const sheetIdInputRef = useRef<OTPRef>(null)
+  const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
-  const { setSearch, searchedCharacters } = useSearchCharacter(dolls)
-  const [detailView, toggleDetailView] = useReducer((v) => !v, true)
+  const { search, setSearch, searchedCharacters } = useSearchCharacter(dolls)
+
+  const [sheetId, setSheetId] = useState('')
+  const onCreateCharacter = async (sheetId: string) => {
+    setSheetId(sheetId)
+    const data = await NechronicaDataHelper.fetch(sheetId)
+    if (!data) return
+
+    sheetIdInputRef?.current?.blur()
+    sheetIdInputRef?.current?.focus()
+    createDoll(data)
+  }
 
   const affixContainer = React.useRef<HTMLDivElement>(null)
 
@@ -63,27 +77,64 @@ function contents() {
 
   const [selectedCharacters, setSelectedCharacters] = useState<string[]>([])
 
+  const searchDivider = useMemo(
+    () => (
+      <Divider
+        style={{
+          marginLeft: 11,
+          marginRight: 11,
+          width: SEARCH_INPUT_WIDTH - 11 * 2,
+          minWidth: 'auto',
+        }}
+      />
+    ),
+    [],
+  )
+
   const characterCards = useMemo(() => {
     const onSelectCharacter = (id: string, isSelect: boolean) => {
       if (isSelect) {
-        setSelectedCharacters([...selectedCharacters, id])
+        setSelectedCharacters([id, ...selectedCharacters])
       } else {
         setSelectedCharacters(selectedCharacters.filter((c) => c !== id))
       }
     }
-    return searchedCharacters.map((character) => (
-      <CharacterCard
+    const resultList = searchedCharacters.map((character) => (
+      <CharacterSmallCard
         key={character.id}
         character={character}
-        detailView={detailView}
         selected={selectedCharacters.includes(character.id)}
         onSelect={onSelectCharacter}
       />
     ))
-  }, [detailView, searchedCharacters, selectedCharacters])
+    return resultList.length ? (
+      resultList
+    ) : (
+      <Flex vertical align="center" style={{ width: SEARCH_INPUT_WIDTH }}>
+        {dolls.length && !searchedCharacters.length ? (
+          <Typography.Text
+            style={{
+              marginTop: 5,
+              marginBottom: 15,
+              color: token.colorTextDescription,
+            }}
+          >
+            Not Found
+          </Typography.Text>
+        ) : null}
+        {searchDivider}
+      </Flex>
+    )
+  }, [
+    dolls.length,
+    searchDivider,
+    searchedCharacters,
+    selectedCharacters,
+    token.colorTextDescription,
+  ])
 
-  const items: MenuProps['items'] = useMemo(() => {
-    const onReloadSelectedCharacter = async () => {
+  const onReloadSelectedCharacter = useMemo(
+    () => async () => {
       await sequentialPromiseReduce(selectedCharacters, async (id) => {
         const character = dolls.find((d) => d.id === id)
         if (!character) return
@@ -92,95 +143,180 @@ function contents() {
         updateCharacter(id, 'doll', fetchData)
       })
       setSelectedCharacters([])
-    }
+    },
+    [dolls, selectedCharacters, updateCharacter],
+  )
 
-    const onDeleteSelectedCharacter = () => {
+  const onDeleteSelectedCharacter = useMemo(
+    () => () => {
       selectedCharacters.map((id) => {
         const character = dolls.find((d) => d.id === id)
         if (!character) return
         deleteCharacter(id)
       })
       setSelectedCharacters([])
-    }
+    },
+    [deleteCharacter, dolls, selectedCharacters],
+  )
 
-    const itemInfo = [
-      ['キャラクター保管所から再読み込み', onReloadSelectedCharacter],
-      ['キャラクター削除', onDeleteSelectedCharacter],
-    ] as const
-    return itemInfo.map(([label, onClick], index) => ({
-      key: index.toString(),
-      label: <span onClick={onClick}>{label}</span>,
-    }))
-  }, [deleteCharacter, dolls, selectedCharacters, updateCharacter])
-
-  const selectedCharacterNum = selectedCharacters.length
-
+  const [isAffixed, setIsAffixed] = useState(false)
+  const setIsAffixedWrap = (v: boolean) => {
+    setIsAffixed(v)
+  }
   const affixContents = useMemo(() => {
     return (
       <Flex align="flex-end" gap={10}>
-        <Flex vertical style={{ width: 213 }}>
-          <ScreenSubTitle title="名前検索" memo="Ctrl + k or ⌘ + k" />
-          <Input.Search onSearch={setSearch} allowClear ref={searchInputRef} />
-        </Flex>
-        <Flex vertical align="flex-start" gap={3}>
-          <Flex>
-            <label style={{ cursor: 'pointer' }}>
-              <Typography.Text style={{ marginRight: 2 }}>
-                詳細:
-              </Typography.Text>
-              <Switch
-                checked={detailView}
-                checkedChildren={<EyeOutlined />}
-                unCheckedChildren={<EyeInvisibleOutlined />}
-                onChange={toggleDetailView}
-              />
-            </label>
-          </Flex>
-          <Dropdown
-            menu={{ items }}
-            placement="bottomLeft"
-            forceRender
-            disabled={selectedCharacterNum === 0}
+        <BorderlessInput
+          value={search}
+          isAffixed={isAffixed}
+          width={SEARCH_INPUT_WIDTH}
+          icon={<SearchOutlined />}
+          placeholder="キャラクターを検索"
+          shortcutKey="k"
+          onChange={setSearch}
+          inputRef={searchInputRef}
+        />
+        <Flex
+          vertical
+          style={{
+            backgroundColor: 'transparent',
+          }}
+        >
+          <Typography.Text
+            style={{
+              color: token.colorTextPlaceholder,
+              fontSize: 10,
+            }}
           >
-            <Button disabled={selectedCharacterNum === 0}>
-              アクション{selectedCharacterNum}
-            </Button>
-          </Dropdown>
+            まとめて操作
+          </Typography.Text>
+          <Flex gap={8} style={{ pointerEvents: 'all' }}>
+            <Popover content="選択キャラクターをグループに追加">
+              <Button
+                icon={<FolderOpenOutlined />}
+                type="primary"
+                shape="circle"
+              />
+            </Popover>
+            <Popover content="選択キャラクターをキャラクター保管所からリロード">
+              <Button
+                icon={<ReloadOutlined />}
+                type="primary"
+                shape="circle"
+                onClick={onReloadSelectedCharacter}
+              />
+            </Popover>
+            <Popover content="選択キャラクターを削除">
+              <Button
+                icon={<DeleteOutlined />}
+                type="primary"
+                shape="circle"
+                danger
+                onClick={onDeleteSelectedCharacter}
+              />
+            </Popover>
+          </Flex>
         </Flex>
       </Flex>
     )
-  }, [detailView, items, selectedCharacterNum, setSearch, toggleDetailView])
+  }, [
+    isAffixed,
+    onDeleteSelectedCharacter,
+    onReloadSelectedCharacter,
+    search,
+    setSearch,
+    token.colorTextPlaceholder,
+  ])
+
+  const selectedCharacterElms = useMemo(() => {
+    if (!selectedCharacters.length)
+      return (
+        <Flex vertical style={{ padding: '0 10px' }}>
+          <Skeleton title paragraph={{ rows: 0 }} />
+          <Skeleton.Image />
+          <Skeleton round />
+        </Flex>
+      )
+    return selectedCharacters.map((selectId) => {
+      const character = dolls.find(({ id }) => id === selectId)
+      if (!character) return null
+      return <CharacterCard key={character.id} character={character} />
+    })
+  }, [dolls, selectedCharacters])
+
+  const detailSider = useMemo(
+    () => (
+      <Layout.Sider
+        breakpoint="md"
+        reverseArrow
+        width={420}
+        style={{
+          backgroundColor: token.colorBgElevated,
+          overflow: 'hidden scroll',
+          position: 'relative',
+        }}
+      >
+        <Flex vertical align="stretch" gap={8}>
+          {selectedCharacterElms}
+        </Flex>
+      </Layout.Sider>
+    ),
+    [selectedCharacterElms, token.colorBgElevated],
+  )
 
   return (
-    <ScreenContainer title={label} icon={icon} ref={affixContainer}>
-      <Collapse
-        defaultActiveKey={['1']}
-        items={[
-          {
-            key: '1',
-            label: '概要',
-            children: <CategorizedCharacterChartCol characters={dolls} />,
-          },
-        ]}
-      />
-      <Flex
-        vertical
-        align="flex-start"
-        style={{ marginTop: 10, marginBottom: 10 }}
-      >
-        <ScreenSubTitle title={`${label}追加`} memo="Ctrl + a or ⌘ + a" />
-        <InputSheetId onFetchData={createDoll} inputRef={sheetIdInputRef} />
-      </Flex>
-      <AffixCard affixContainer={affixContainer}>{affixContents}</AffixCard>
-      <Flex
-        align="flex-start"
-        justify={screenSize.isMobile ? 'space-evenly' : 'flex-start'}
-        wrap
-        gap={6}
-      >
-        {characterCards}
-      </Flex>
-    </ScreenContainer>
+    <Layout style={{ backgroundColor: 'transparent', height: '100%' }}>
+      <Layout>
+        <Layout.Content
+          ref={affixContainer}
+          style={{
+            overflow: 'hidden scroll',
+            position: 'relative',
+          }}
+        >
+          <ScreenContainer title={label} icon={icon}>
+            <Flex
+              vertical
+              align="flex-start"
+              style={{ marginTop: 10, marginBottom: 10 }}
+            >
+              <ScreenSubTitle title={`${label}追加`} />
+              <BorderlessInput
+                value={sheetId}
+                isAffixed={false}
+                width={SEARCH_INPUT_WIDTH}
+                icon={<SearchOutlined />}
+                placeholder="キャラクター保管所のキャラクターのIDを入力"
+                onChange={onCreateCharacter}
+                inputRef={sheetIdInputRef}
+              />
+            </Flex>
+            {searchDivider}
+            <AffixCard
+              affixContainer={affixContainer}
+              onChangeAffix={setIsAffixedWrap}
+            >
+              {affixContents}
+            </AffixCard>
+            {searchDivider}
+            <Flex
+              align="flex-start"
+              style={{ marginTop: 10, height: 'calc(100vh - 122px)' }}
+            >
+              <Flex
+                align="flex-start"
+                justify={screenSize.isMobile ? 'space-evenly' : 'flex-start'}
+                wrap
+                gap="6px 6px"
+              >
+                {characterCards}
+              </Flex>
+            </Flex>
+          </ScreenContainer>
+        </Layout.Content>
+      </Layout>
+      {screenSize.isMobile ? null : detailSider}
+    </Layout>
   )
 }
 /* eslint-enable react-hooks/rules-of-hooks */

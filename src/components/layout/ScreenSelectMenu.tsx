@@ -1,7 +1,7 @@
 import React from 'react'
 import { Menu } from 'antd'
 import { useScreenContext } from '@/context/screen.ts'
-import { useThemeContext } from '@/context/theme.ts'
+import { useUserAttributes } from '@/context/userAttributes.ts'
 import { getKeys, isIncludes } from '@/utils/types.ts'
 
 export default function ScreenSelectMenu({
@@ -9,7 +9,7 @@ export default function ScreenSelectMenu({
 }: {
   onSelect: (key: string) => void
 }) {
-  const { theme } = useThemeContext()
+  const { theme } = useUserAttributes()
   const { screens, screen, setScreen } = useScreenContext()
   const onSelectHandler = (key: string) => {
     if (!isIncludes(getKeys(screens), key)) return

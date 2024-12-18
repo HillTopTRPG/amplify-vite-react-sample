@@ -35,40 +35,19 @@ const useNechronica = () => {
     client.models.Todo.delete({ id })
   }
 
-  type Todo2 = Schema['Todo2']['type']
-  const [todo2s, setTodos2] = useState<Todo2[]>([])
-  useEffect(() => {
-    const sub = client.models.Todo2.observeQuery().subscribe({
-      next: ({ items }) => {
-        setTodos2([...items])
-        setLoading(false)
-      },
-    })
-    return () => sub.unsubscribe()
-  }, [])
-  const createTodo2 = (todo: Schema['Todo2']['createType']) => {
-    client.models.Todo2.create(todo)
-  }
-  const updateTodo2 = (todo: Schema['Todo2']['updateType']) => {
-    client.models.Todo2.update(todo)
-  }
-  const deleteTodo2 = (id: string) => {
-    client.models.Todo2.delete({ id })
-  }
-
   const [characters, setCharacter] = useState<NechronicaCharacter[]>([])
   useEffect(() => {
     const sub = client.models.NechronicaCharacter.observeQuery().subscribe({
       next: ({ items }) => {
-        setCharacter([
-          ...items.map((item) => ({
+        setCharacter(
+          items.map((item) => ({
             id: item.id,
             name: item.name,
             type: item.type || 'doll',
             sheetId: item.sheetId,
             sheetData: JSON.parse(item.sheetData) as Nechronica,
           })),
-        ])
+        )
         setLoading(false)
       },
     })
@@ -113,12 +92,6 @@ const useNechronica = () => {
       updateTodo,
       deleteTodo,
     },
-    todo2Crud: {
-      todo2s,
-      createTodo2,
-      updateTodo2,
-      deleteTodo2,
-    },
     dolls: characters.filter((c) => c.type === 'doll'),
     createDoll: (data: Nechronica) => createCharacter('doll', data),
     savansts: characters.filter((c) => c.type === 'savant'),
@@ -132,14 +105,8 @@ const useNechronica = () => {
   }
 }
 
-export const [
-  NechronicaProvider,
-  useNechronicaContext,
-  useTodoCrud,
-  useTodo2Crud,
-] = constate(
+export const [NechronicaProvider, useNechronicaContext, useTodoCrud] = constate(
   useNechronica,
-  (v) => omit(v, 'todoCrud', 'todo2Crud'),
+  (v) => omit(v, 'todoCrud'),
   (v) => v.todoCrud,
-  (v) => v.todo2Crud,
 )

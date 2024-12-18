@@ -141,7 +141,8 @@ export class NechronicaDataHelper {
     const url = `https://charasheet.vampire-blood.net/${sheetId}`
     const helper = new NechronicaDataHelper(sheetId, url, t)
     if (!helper.isThis()) return null
-    const data = (await helper.getData())?.data
+    const raw = await helper.getData()
+    const data = raw?.data
     if (!data) return null
     return data
   }
@@ -288,7 +289,7 @@ export class NechronicaDataHelper {
       .filter((r) => Boolean(r.name))
     return {
       url: this.url,
-      sheetId: this.sheetId,
+      sheetId: json['data_id'],
       basic: {
         characterName: digText(json, 'pc_name') || digText(json, 'data_title'),
         position: digNum(json, 'position'),

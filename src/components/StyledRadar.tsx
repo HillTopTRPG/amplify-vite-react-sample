@@ -2,7 +2,7 @@ import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
 import style from './StyledRadar.module.css'
-import { useThemeContext } from '@/context/theme.ts'
+import { useUserAttributes } from '@/context/userAttributes.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica'
 
 const NECHRONICA_MANEUVER_TYPES = [
@@ -60,6 +60,7 @@ type StyledRadarProps = {
   data: Datum
   type: 'large' | 'small'
   size: number
+  cursor?: 'default' | 'pointer'
   onChangeItem?: (type: 'pointerup' | 'pointermove', item: string) => void
 }
 export default function StyledRadar({
@@ -67,8 +68,9 @@ export default function StyledRadar({
   type,
   size,
   onChangeItem,
+  cursor = 'default',
 }: StyledRadarProps) {
-  const { theme } = useThemeContext()
+  const { theme } = useUserAttributes()
 
   let lastItem = ''
 
@@ -121,12 +123,15 @@ export default function StyledRadar({
     legend: false,
     style: {
       lineWidth: type === 'small' ? 2 : 4,
-      cursor: 'pointer',
     },
     radiusAxis: false,
     tooltip: type === 'small' ? false : undefined,
   }
   return (
-    <Radar {...config} className={style['radar-container']} onEvent={onEvent} />
+    <Radar
+      {...config}
+      className={style[`radar-container-${cursor}`]}
+      onEvent={onEvent}
+    />
   )
 }

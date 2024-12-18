@@ -1,8 +1,16 @@
 import { useMemo } from 'react'
-import { Card, type CardProps, Checkbox, Flex, theme, Typography } from 'antd'
+import { Flex, List, Typography, Image } from 'antd'
+import style from './CharacterCard.module.css'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
-import { type NechronicaCharacter } from '@/service/Nechronica'
-import mapping from '@/service/Nechronica/ts/mapping.json'
+import {
+  getPositionSrc,
+  type NechronicaCharacter,
+  PARTS_TUPLE,
+} from '@/service/Nechronica'
+import CharacterAvatar from '@/service/Nechronica/components/CharacterAvatar.tsx'
+import ClassAvatar from '@/service/Nechronica/components/ClassAvatar.tsx'
+import PartsListItem from '@/service/Nechronica/components/PartsListItem.tsx'
+import RoiceButton from '@/service/Nechronica/components/RoiceButton.tsx'
 
 // const MANEUVER_LINE_RANGE = [3, 8] as const
 //
@@ -18,68 +26,21 @@ import mapping from '@/service/Nechronica/ts/mapping.json'
 // }
 
 type CharacterCardProps = {
-  selected: boolean
   character: NechronicaCharacter
-  onSelect: (id: string, isSelect: boolean) => void
-  detailView: boolean
 }
-export default function CharacterCard({
-  selected,
-  character,
-  onSelect,
-}: CharacterCardProps) {
-  const { token } = theme.useToken()
-
-  const onClickContainer = useMemo(
-    () => () => {
-      const after = !selected
-      onSelect(character.id, after)
-    },
-    [character.id, onSelect, selected],
-  )
-
-  const cardProps: CardProps = useMemo(
-    () => ({
-      onClick: onClickContainer,
-      hoverable: true,
-      styles: {
-        body: {
-          padding: '8px 3px',
-          width: 180,
-        },
-      },
-      style: {
-        cursor: 'pointer',
-        backgroundColor: selected
-          ? token.colorPrimaryBg
-          : token.colorBgElevated,
-      },
-    }),
-    [onClickContainer, selected, token.colorBgElevated, token.colorPrimaryBg],
-  )
-
+export default function CharacterCard({ character }: CharacterCardProps) {
   const basic = character.sheetData.basic
 
   const constBlocks = useMemo(() => {
     return (
-      <Flex vertical align="flex-start" style={{ flexGrow: 1 }}>
-        <Checkbox checked={selected} style={{ alignSelf: 'center' }} />
+      <Flex vertical align="flex-start" style={{ flexGrow: 1 }} gap={5}>
         <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
           {basic.characterName}
         </Typography.Text>
-        <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
-          <Typography.Text style={{ fontSize: 11 }}>
-            {mapping.CHARACTER_POSITION[basic.position].text}
-          </Typography.Text>
-        </Flex>
-        <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
-          <Typography.Text style={{ fontSize: 11 }}>
-            {mapping.CHARACTER_CLASS[basic.mainClass].text}
-          </Typography.Text>
-          <Typography.Text style={{ fontSize: 11 }}>/</Typography.Text>
-          <Typography.Text style={{ fontSize: 11 }}>
-            {mapping.CHARACTER_CLASS[basic.subClass].text}
-          </Typography.Text>
+        <Flex align="flex-start" style={{ padding: '0 4px' }} gap={5}>
+          <CharacterAvatar type={character.type} position={basic.position} />
+          <ClassAvatar value={basic.mainClass} />
+          <ClassAvatar value={basic.subClass} />
         </Flex>
       </Flex>
     )
@@ -88,7 +49,7 @@ export default function CharacterCard({
     basic.mainClass,
     basic.position,
     basic.subClass,
-    selected,
+    character.type,
   ])
 
   // const onChangeBasePosition = useMemo(
@@ -129,33 +90,58 @@ export default function CharacterCard({
   //   [basic.basePosition, i18nT, onChangeBasePosition],
   // )
 
-  // const roiceButtons = useMemo(() => {
-  //   return character.sheetData.roiceList.map((roice, index) => (
-  //     <RoiceButton key={index} roice={roice} />
-  //   ))
-  // }, [character.sheetData.roiceList])
-  //
-  // const partsLineItems = useMemo(() => {
-  //   return PARTS_TUPLE.map(([src, parts], index) => (
-  //     <PartsListItem
-  //       key={index}
-  //       maneuverList={character.sheetData.maneuverList}
-  //       src={src}
-  //       parts={parts}
-  //       basic={character.sheetData.basic}
-  //     />
-  //   ))
-  // }, [character.sheetData.basic, character.sheetData.maneuverList])
+  const roiceButtons = useMemo(() => {
+    return character.sheetData.roiceList.map((roice, index) => (
+      <RoiceButton key={index} roice={roice} />
+    ))
+  }, [character.sheetData.roiceList])
+
+  const partsLineItems = useMemo(() => {
+    return PARTS_TUPLE.map(([src, parts], index) => (
+      <PartsListItem
+        key={index}
+        maneuverList={character.sheetData.maneuverList}
+        src={src}
+        parts={parts}
+        basic={character.sheetData.basic}
+      />
+    ))
+  }, [character.sheetData.basic, character.sheetData.maneuverList])
 
   const radarData = makeChartData(character)
 
   return (
-    <Card {...cardProps}>
-      <Flex vertical gap={3}>
+    <Flex
+      vertical
+      gap={3}
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ position: 'absolute', top: 50, left: 0, right: 0 }}>
+        <div className={style.sunrays}>
+          <div className={style.light}></div>
+          <div className={style.light}></div>
+          <div className={style.light}></div>
+          <div className={style.light}></div>
+          <div className={style.light}></div>
+          <div className={style.light}></div>
+        </div>
+        <Image
+          src={getPositionSrc(basic.position)}
+          preview={false}
+          style={{
+            opacity: 0.1,
+            width: '100%',
+            height: '100%',
+          }}
+        />
+      </div>
+      <Flex align="flex-end">
         {constBlocks}
         <div
           style={{
-            cursor: 'pointer',
             width: 180,
             height: 160,
             marginTop: -10,
@@ -164,6 +150,10 @@ export default function CharacterCard({
           <StyledRadar data={radarData} type="small" size={180} />
         </div>
       </Flex>
-    </Card>
+      <Flex gap={3} wrap>
+        {roiceButtons}
+      </Flex>
+      <List>{partsLineItems}</List>
+    </Flex>
   )
 }

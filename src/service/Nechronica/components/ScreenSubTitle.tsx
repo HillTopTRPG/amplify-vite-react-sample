@@ -11,9 +11,7 @@ export default function ScreenSubTitle({ title, memo }: ScreenSubTitleProps) {
       <Typography.Title level={5} style={{ marginTop: 0 }}>
         {title}
       </Typography.Title>
-      {memo ? (
-        <Typography.Text style={{ fontSize: 12 }}>({memo})</Typography.Text>
-      ) : null}
+      {memo}
     </Flex>
   )
 }

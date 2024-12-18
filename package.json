@@ -16,6 +16,7 @@
     "@aws-amplify/ui-react": "^6.7.1",
     "antd": "^5.22.3",
     "aws-amplify": "^6.10.2",
+    "classnames": "^2.5.1",
     "constate": "^3.3.2",
     "i18next": "^24.1.0",
     "jsonp": "^0.2.1",

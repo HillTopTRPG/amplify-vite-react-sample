@@ -6,10 +6,12 @@ import mapping from '@/service/Nechronica/ts/mapping.json'
 
 type ManeuverPopoverProps = {
   maneuver: NechronicaManeuver
+  onChangeOpen: (open: boolean) => void
   children: React.ReactNode
 }
 export default function ManeuverPopover({
   maneuver,
+  onChangeOpen,
   children,
 }: ManeuverPopoverProps) {
   const { t: i18nT } = useTranslation()
@@ -92,6 +94,7 @@ export default function ManeuverPopover({
       content={popoverContent}
       trigger={['click', 'contextMenu']}
       overlayInnerStyle={{ padding: 0 }}
+      onOpenChange={onChangeOpen}
     >
       {children}
     </Popover>

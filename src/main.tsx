@@ -8,17 +8,16 @@ import outputs from '../amplify_outputs.json'
 import App from '@/App.tsx'
 import '@aws-amplify/ui-react/styles.css'
 import '@/main.css'
-import { ThemeProvider } from '@/context/theme.ts'
 import './i18n/configs'
 
 Amplify.configure(outputs)
 
 const dict = {
   ja: {
-    'Preferred Username': 'ユーザー名',
-    'Enter your Preferred Username': 'ユーザー名を入力',
     'Your passwords must match': 'パスワードが一致しません',
     'Enter your email': 'メールアドレス',
+    Nickname: '表示ユーザー名',
+    'Enter your Nickname': '表示ユーザー名を入力',
   },
 }
 
@@ -28,10 +27,8 @@ I18n.setLanguage('ja')
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <Authenticator.Provider>
-        <App />
-      </Authenticator.Provider>
-    </ThemeProvider>
+    <Authenticator.Provider>
+      <App />
+    </Authenticator.Provider>
   </React.StrictMode>,
 )

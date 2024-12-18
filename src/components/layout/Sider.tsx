@@ -1,10 +1,10 @@
 import { Layout } from 'antd'
 import ScreenSelectMenu from '@/components/layout/ScreenSelectMenu.tsx'
 import { useScreenContext } from '@/context/screen.ts'
-import { useThemeContext } from '@/context/theme.ts'
+import { useUserAttributes } from '@/context/userAttributes.ts'
 
 export default function Sider() {
-  const { theme, isDarkMode } = useThemeContext()
+  const { theme, isDarkMode } = useUserAttributes()
   const { open } = useScreenContext()
   const onSelect = () => {}
   return (

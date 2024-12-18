@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   BookOutlined,
@@ -21,35 +21,30 @@ import {
   Space,
   Spin,
 } from 'antd'
-import {
-  fetchUserAttributes,
-  type FetchUserAttributesOutput,
-} from 'aws-amplify/auth'
 import MediaQuery, { useMediaQuery } from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useScreenContext } from '@/context/screen.ts'
-import { useThemeContext } from '@/context/theme.ts'
+import { useUserAttributes } from '@/context/userAttributes.ts'
 import { type Screens } from '@/layouts/MainContentsLauout.tsx'
 import services from '@/service'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const [attr, setAttrResult] = useState<FetchUserAttributesOutput>()
-  const [loading, setLoading] = useState<boolean>(true)
+  const { attr, loading, isDarkMode, toggleDarkMode } = useUserAttributes()
 
-  const { service, setService, screenIcon, screenLabel, toggleOpenStatus } =
-    useScreenContext()
+  const {
+    service,
+    setService,
+    screenIcon,
+    screenLabel,
+    toggleOpenStatus,
+    screens,
+    setScreen,
+  } = useScreenContext()
+
   const { token } = theme.useToken()
   const { signOut } = useAuthenticator()
-  const { isDarkMode, toggleTheme } = useThemeContext()
-  const { screens, setScreen } = useScreenContext()
   const navigate = useNavigate()
-
-  useEffect(() => {
-    fetchUserAttributes()
-      .then(setAttrResult)
-      .then(() => setLoading(false))
-  }, [])
 
   const serviceName = isProperty(service, services)
     ? services[service].serviceName
@@ -155,19 +150,17 @@ export default function AppMenu() {
             {loading ? (
               <Spin />
             ) : (
-              <>
+              <Flex gap={7}>
                 <UserOutlined />
-                <Typography.Text>
-                  {attr?.preferred_username || '-'}
-                </Typography.Text>
-              </>
+                <Typography.Text>{attr?.nickname || '-'}</Typography.Text>
+              </Flex>
             )}
           </Button>
         </Dropdown>
         <Button
           type="text"
           icon={isDarkMode ? <MoonFilled /> : <SunFilled />}
-          onClick={toggleTheme}
+          onClick={toggleDarkMode}
           size="middle"
         />
       </Flex>

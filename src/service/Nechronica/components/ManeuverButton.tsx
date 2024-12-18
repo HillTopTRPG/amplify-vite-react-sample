@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Flex, Typography } from 'antd'
 import { type TextProps } from 'antd/es/typography/Text'
+import classNames from 'classnames'
+import style from './ManeuverButton.module.css'
 import { getBackImg, getManeuverSrc } from '@/service/Nechronica'
 import AvatarNoBorder from '@/service/Nechronica/components/AvatarNoBorder.tsx'
 import ManeuverPopover from '@/service/Nechronica/components/ManeuverPopover.tsx'
@@ -40,22 +42,34 @@ export default function ManeuverButton({
     },
   }
 
-  const ManeuverAvatar = ({ src }: { src: string }) => {
+  const ManeuverAvatar = ({
+    src,
+    className,
+  }: {
+    src: string
+    className?: string
+  }) => {
     return (
       <AvatarNoBorder
         src={src}
         size={BUTTON_SIZE}
+        className={className}
         style={{ position: 'absolute' }}
       />
     )
   }
 
+  const [popoverOpen, setPopoverOpen] = useState(false)
+
   return (
     <Flex vertical onClick={(e) => e.stopPropagation()}>
       <Typography.Text {...textProps}>{maneuver.name}</Typography.Text>
-      <ManeuverPopover maneuver={maneuver}>
+      <ManeuverPopover maneuver={maneuver} onChangeOpen={setPopoverOpen}>
         {/* stacked avatar */}
-        <div {...avatarStackDivProps}>
+        <div
+          {...avatarStackDivProps}
+          className={classNames(style.hoverable, popoverOpen && style.active)}
+        >
           <ManeuverAvatar src={getBackImg(maneuver.type)} />
           <ManeuverAvatar
             src={getManeuverSrc(maneuver, position, mainClass, subClass)}

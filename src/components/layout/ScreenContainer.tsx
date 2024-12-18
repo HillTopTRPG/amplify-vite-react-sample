@@ -22,6 +22,7 @@ function component(
       style={{
         overflowY: 'auto',
         padding: '24px 16px',
+        boxSizing: 'border-box',
         backgroundColor: token.colorBgContainer,
       }}
       ref={ref}
