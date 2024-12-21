@@ -37,7 +37,7 @@ const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { dolls, createDoll, updateCharacter, deleteCharacter } =
+  const { dolls, createCharacter, updateCharacter, deleteCharacter } =
     useNechronicaContext()
   const { screenSize } = useScreenContext()
   const { token } = theme.useToken()
@@ -49,12 +49,15 @@ function contents() {
   const [sheetId, setSheetId] = useState('')
   const onCreateCharacter = async (sheetId: string) => {
     setSheetId(sheetId)
-    const data = await NechronicaDataHelper.fetch(sheetId)
-    if (!data) return
+    const sheetData = await NechronicaDataHelper.fetch({
+      type: 'doll',
+      sheetId,
+    })
+    if (!sheetData) return
 
     sheetIdInputRef?.current?.blur()
     sheetIdInputRef?.current?.focus()
-    createDoll(data)
+    createCharacter(sheetData)
   }
 
   const affixContainer = React.useRef<HTMLDivElement>(null)
@@ -138,9 +141,11 @@ function contents() {
       await sequentialPromiseReduce(selectedCharacters, async (id) => {
         const character = dolls.find((d) => d.id === id)
         if (!character) return
-        const fetchData = await NechronicaDataHelper.fetch(character.sheetId)
+        const fetchData = await NechronicaDataHelper.fetch(
+          character.additionalData,
+        )
         if (!fetchData) return
-        updateCharacter(id, 'doll', fetchData)
+        updateCharacter({ id, ...fetchData })
       })
       setSelectedCharacters([])
     },

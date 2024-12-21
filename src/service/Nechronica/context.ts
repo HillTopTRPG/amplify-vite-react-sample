@@ -3,10 +3,10 @@ import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
 import { omit } from 'lodash-es'
 import type { Schema } from '../../../amplify/data/resource.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/index.ts'
 import {
   type Nechronica,
-  type NechronicaType,
+  type NechronicaAdditionalData,
+  type NechronicaCharacter,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const client = generateClient<Schema>()
@@ -43,8 +43,9 @@ const useNechronica = () => {
           items.map((item) => ({
             id: item.id,
             name: item.name,
-            type: item.type || 'doll',
-            sheetId: item.sheetId,
+            additionalData: JSON.parse(
+              item.additionalData,
+            ) as NechronicaAdditionalData,
             sheetData: JSON.parse(item.sheetData) as Nechronica,
           })),
         )
@@ -53,31 +54,28 @@ const useNechronica = () => {
     })
     return () => sub.unsubscribe()
   }, [])
-  const createCharacter = (
-    type: 'doll' | 'savant' | 'horror' | 'legion',
-    data: Nechronica,
-  ) => {
+  const createCharacter = (character: Omit<NechronicaCharacter, 'id'>) => {
     // 重複を防ぐ
-    if (characters.some((d) => d.type === type && d.sheetId === data.sheetId))
+    if (
+      characters.some(
+        (c) =>
+          c.additionalData.type === character.additionalData.type &&
+          c.additionalData.sheetId === character.additionalData.sheetId,
+      )
+    )
       return
     client.models.NechronicaCharacter.create({
-      name: data.basic.characterName,
-      type,
-      sheetId: data.sheetId,
-      sheetData: JSON.stringify(data),
+      name: character.sheetData.basic.characterName,
+      additionalData: JSON.stringify(character.additionalData),
+      sheetData: JSON.stringify(character.sheetData),
     })
   }
-  const updateCharacter = (
-    id: string,
-    type: NechronicaType,
-    data: Nechronica,
-  ) => {
+  const updateCharacter = (character: NechronicaCharacter) => {
     client.models.NechronicaCharacter.update({
-      id,
-      name: data.basic.characterName,
-      type,
-      sheetId: data.sheetId,
-      sheetData: JSON.stringify(data),
+      id: character.id,
+      name: character.sheetData.basic.characterName,
+      additionalData: JSON.stringify(character.additionalData),
+      sheetData: JSON.stringify(character.sheetData),
     })
   }
   const deleteCharacter = (id: string) => {
@@ -92,14 +90,11 @@ const useNechronica = () => {
       updateTodo,
       deleteTodo,
     },
-    dolls: characters.filter((c) => c.type === 'doll'),
-    createDoll: (data: Nechronica) => createCharacter('doll', data),
-    savansts: characters.filter((c) => c.type === 'savant'),
-    createSavant: (data: Nechronica) => createCharacter('savant', data),
-    horrors: characters.filter((c) => c.type === 'horror'),
-    createHorror: (data: Nechronica) => createCharacter('horror', data),
-    legions: characters.filter((c) => c.type === 'legion'),
-    createLegion: (data: Nechronica) => createCharacter('legion', data),
+    dolls: characters.filter((c) => c.additionalData.type === 'doll'),
+    savansts: characters.filter((c) => c.additionalData.type === 'savant'),
+    horrors: characters.filter((c) => c.additionalData.type === 'horror'),
+    legions: characters.filter((c) => c.additionalData.type === 'legion'),
+    createCharacter,
     updateCharacter,
     deleteCharacter,
   }

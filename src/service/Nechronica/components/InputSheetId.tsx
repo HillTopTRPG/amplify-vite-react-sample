@@ -1,21 +1,27 @@
 import { type RefObject, useState } from 'react'
 import { Flex, Input, type InputRef, Typography } from 'antd'
 import {
-  type Nechronica,
+  type NechronicaAdditionalData,
+  type NechronicaCharacter,
   NechronicaDataHelper,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 export default function InputSheetId({
+  additionalData,
   onFetchData,
   inputRef,
 }: {
-  onFetchData: (value: Nechronica) => void
+  additionalData: Omit<NechronicaAdditionalData, 'sheetId'>
+  onFetchData: (value: Omit<NechronicaCharacter, 'id'>) => void
   inputRef: RefObject<InputRef>
 }) {
   const [otpValue, setOtpValue] = useState('')
 
   const onChange = async (sheetId: string) => {
-    const data = await NechronicaDataHelper.fetch(sheetId)
+    const data = await NechronicaDataHelper.fetch({
+      ...additionalData,
+      sheetId,
+    })
     if (!data) return
     setOtpValue('')
     inputRef?.current?.blur()

@@ -66,10 +66,21 @@ export type NechronicaBasic = {
 
 export type Nechronica = {
   url: string
-  sheetId: string
   basic: NechronicaBasic
   maneuverList: NechronicaManeuver[]
   roiceList: NechronicaRoice[]
+}
+
+export type NechronicaAdditionalData = {
+  type: NechronicaType
+  sheetId: string
+}
+
+export type NechronicaCharacter = {
+  id: string
+  name: string
+  additionalData: NechronicaAdditionalData
+  sheetData: Nechronica
 }
 
 export type NechronicaManeuverStackType = 'use' | 'lost' | 'move'
@@ -132,24 +143,22 @@ export function getActionValueNum(text: string): number {
 
 export class NechronicaDataHelper {
   protected readonly url: string
-  protected readonly sheetId: string
   protected readonly urlRegExp: RegExp
   protected readonly jsonpUrlFormat: string
   protected readonly t: (r: string) => string
 
-  static async fetch(sheetId: string, t: (r: string) => string = (r) => r) {
-    const url = `https://charasheet.vampire-blood.net/${sheetId}`
-    const helper = new NechronicaDataHelper(sheetId, url, t)
+  static async fetch(
+    additionalData: NechronicaAdditionalData,
+    t: (r: string) => string = (r) => r,
+  ) {
+    const url = `https://charasheet.vampire-blood.net/${additionalData.sheetId}`
+    const helper = new NechronicaDataHelper(url, t)
     if (!helper.isThis()) return null
-    const raw = await helper.getData()
-    const data = raw?.data
-    if (!data) return null
-    return data
+    return (await helper.getData(additionalData))?.character ?? null
   }
 
-  public constructor(sheetId: string, url: string, t: (r: string) => string) {
+  public constructor(url: string, t: (r: string) => string) {
     this.url = url
-    this.sheetId = sheetId
     // https://charasheet.vampire-blood.net/1713315
     this.urlRegExp = /https?:\/\/charasheet\.vampire-blood\.net\/([^&]+)/
     this.jsonpUrlFormat =
@@ -165,15 +174,17 @@ export class NechronicaDataHelper {
     return this.urlRegExp.test(this.url)
   }
 
-  public async getData(): Promise<{
+  public async getData(
+    additionalData: Omit<NechronicaAdditionalData, 'sheetId'>,
+  ): Promise<{
     jsons: never[] | null
-    data: Nechronica | null
+    character: Omit<NechronicaCharacter, 'id'> | null
   }> {
     const jsons = await this.getJsonData()
-    const data = this.createData(jsons)
+    const character = this.createData(additionalData, jsons)
     return {
       jsons,
-      data,
+      character,
     }
   }
 
@@ -207,10 +218,14 @@ export class NechronicaDataHelper {
 
   /**
    * JSONPから取得した生データから処理用のデータを生成する
+   * @param additionalData
    * @param jsons JSONPから取得した生データ
    * @protected
    */
-  private createData(jsons: never[] | null): Nechronica | null {
+  private createData(
+    additionalData: Omit<NechronicaAdditionalData, 'sheetId'>,
+    jsons: never[] | null,
+  ): Omit<NechronicaCharacter, 'id'> | null {
     if (!jsons || !jsons.length) return null
     const json = jsons[0]
     if (!json['Power_Lost'] || !json['roice_name']) return null
@@ -287,26 +302,36 @@ export class NechronicaDataHelper {
         return data
       })
       .filter((r) => Boolean(r.name))
+
+    const characterName =
+      digText(json, 'pc_name') || digText(json, 'data_title')
+
     return {
-      url: this.url,
-      sheetId: json['data_id'],
-      basic: {
-        characterName: digText(json, 'pc_name') || digText(json, 'data_title'),
-        position: digNum(json, 'position'),
-        mainClass: convertNumberZero(json['MCLS']),
-        subClass: convertNumberZero(json['SCLS']),
-        basePosition: parseInt(json['SL_sex'], 10),
-        hairColor: digText(json, 'color_hair'),
-        eyeColor: digText(json, 'color_eye'),
-        skinColor: digText(json, 'color_skin'),
-        height: digText(json, 'pc_height'),
-        weight: digText(json, 'pc_weight'),
-        age: digText(json, 'age'),
-        shuzoku: digText(json, 'shuzoku'),
-        carma: digText(json, 'pc_carma'),
+      name: characterName,
+      additionalData: {
+        ...additionalData,
+        sheetId: json['data_id'],
       },
-      maneuverList,
-      roiceList,
+      sheetData: {
+        url: this.url,
+        basic: {
+          characterName,
+          position: digNum(json, 'position'),
+          mainClass: convertNumberZero(json['MCLS']),
+          subClass: convertNumberZero(json['SCLS']),
+          basePosition: parseInt(json['SL_sex'], 10),
+          hairColor: digText(json, 'color_hair'),
+          eyeColor: digText(json, 'color_eye'),
+          skinColor: digText(json, 'color_skin'),
+          height: digText(json, 'pc_height'),
+          weight: digText(json, 'pc_weight'),
+          age: digText(json, 'age'),
+          shuzoku: digText(json, 'shuzoku'),
+          carma: digText(json, 'pc_carma'),
+        },
+        maneuverList,
+        roiceList,
+      },
     }
   }
 }

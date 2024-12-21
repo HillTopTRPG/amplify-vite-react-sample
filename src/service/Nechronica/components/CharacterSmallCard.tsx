@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Card, type CardProps, Checkbox, Flex, theme, Typography } from 'antd'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
-import { type NechronicaCharacter } from '@/service/Nechronica'
+import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
 // const MANEUVER_LINE_RANGE = [3, 8] as const

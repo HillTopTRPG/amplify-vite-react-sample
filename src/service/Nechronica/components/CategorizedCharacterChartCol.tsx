@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Typography, Empty, Table, type TableColumnsType, Flex } from 'antd'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
 import { useScreenContext } from '@/context/screen.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica'
+import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { emptiableFormat } from '@/utils/format.ts'
 
 type CharacterChartData = {
