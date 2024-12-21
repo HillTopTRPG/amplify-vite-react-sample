@@ -52,6 +52,7 @@ function contents() {
     const sheetData = await NechronicaDataHelper.fetch({
       type: 'doll',
       sheetId,
+      stared: false,
     })
     if (!sheetData) return
 

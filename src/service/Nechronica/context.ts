@@ -7,6 +7,7 @@ import {
   type Nechronica,
   type NechronicaAdditionalData,
   type NechronicaCharacter,
+  type NechronicaType,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const client = generateClient<Schema>()
@@ -82,6 +83,15 @@ const useNechronica = () => {
     client.models.NechronicaCharacter.delete({ id })
   }
 
+  const makeTypedObj = (type: NechronicaType) => ({
+    [`${type}s`]: characters
+      .filter((c) => c.additionalData.type === type)
+      .slice()
+      .sort((a: NechronicaCharacter, b: NechronicaCharacter) =>
+        a.additionalData.stared && !b.additionalData.stared ? -1 : 1,
+      ),
+  })
+
   return {
     loading,
     todoCrud: {
@@ -90,10 +100,10 @@ const useNechronica = () => {
       updateTodo,
       deleteTodo,
     },
-    dolls: characters.filter((c) => c.additionalData.type === 'doll'),
-    savansts: characters.filter((c) => c.additionalData.type === 'savant'),
-    horrors: characters.filter((c) => c.additionalData.type === 'horror'),
-    legions: characters.filter((c) => c.additionalData.type === 'legion'),
+    ...makeTypedObj('doll'),
+    ...makeTypedObj('savant'),
+    ...makeTypedObj('horror'),
+    ...makeTypedObj('legion'),
     createCharacter,
     updateCharacter,
     deleteCharacter,

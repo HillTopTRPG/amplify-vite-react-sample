@@ -1,6 +1,17 @@
 import { useMemo } from 'react'
-import { Card, type CardProps, Checkbox, Flex, theme, Typography } from 'antd'
+import { StarFilled, StarOutlined } from '@ant-design/icons'
+import {
+  Button,
+  Card,
+  type CardProps,
+  Checkbox,
+  Flex,
+  theme,
+  Typography,
+} from 'antd'
+import { clone } from 'lodash-es'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
+import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
@@ -28,6 +39,7 @@ export default function CharacterSmallCard({
   onSelect,
 }: CharacterCardProps) {
   const { token } = theme.useToken()
+  const { updateCharacter } = useNechronicaContext()
 
   const onClickContainer = useMemo(
     () => () => {
@@ -57,6 +69,12 @@ export default function CharacterSmallCard({
     [onClickContainer, selected, token.colorBgElevated, token.colorPrimaryBg],
   )
 
+  const toggleStared = () => {
+    const newData = clone(character)
+    newData.additionalData.stared = !newData.additionalData.stared
+    updateCharacter(newData)
+  }
+
   const basic = character.sheetData.basic
 
   const constBlocks = useMemo(() => {
@@ -66,7 +84,25 @@ export default function CharacterSmallCard({
         align="flex-start"
         style={{ flexGrow: 1, padding: '0 3px' }}
       >
-        <Checkbox checked={selected} style={{ alignSelf: 'center' }} />
+        <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
+          <Checkbox checked={selected} style={{ alignSelf: 'center' }} />
+          <Button
+            size="small"
+            type="text"
+            shape="circle"
+            icon={
+              character.additionalData.stared ? (
+                <StarFilled />
+              ) : (
+                <StarOutlined />
+              )
+            }
+            onClick={(e) => {
+              toggleStared()
+              e.stopPropagation()
+            }}
+          />
+        </Flex>
         <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
           {basic.characterName}
         </Typography.Text>
@@ -91,7 +127,9 @@ export default function CharacterSmallCard({
     basic.mainClass,
     basic.position,
     basic.subClass,
+    character.additionalData.stared,
     selected,
+    toggleStared,
   ])
 
   // const onChangeBasePosition = useMemo(
