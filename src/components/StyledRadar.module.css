@@ -1,7 +1,3 @@
-.radar-container-pointer {
-  cursor: pointer !important;
-
-  canvas {
-    cursor: pointer;
-  }
+.radarContainer {
+  pointer-events: none;
 }

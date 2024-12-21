@@ -43,7 +43,7 @@ export default function CharacterSmallCard({
       hoverable: true,
       styles: {
         body: {
-          padding: '8px 3px',
+          padding: '8px 0',
           width: 180,
         },
       },
@@ -61,7 +61,11 @@ export default function CharacterSmallCard({
 
   const constBlocks = useMemo(() => {
     return (
-      <Flex vertical align="flex-start" style={{ flexGrow: 1 }}>
+      <Flex
+        vertical
+        align="flex-start"
+        style={{ flexGrow: 1, padding: '0 3px' }}
+      >
         <Checkbox checked={selected} style={{ alignSelf: 'center' }} />
         <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
           {basic.characterName}
@@ -154,18 +158,14 @@ export default function CharacterSmallCard({
         {constBlocks}
         <div
           style={{
-            cursor: 'pointer',
             width: 180,
             height: 160,
             marginTop: -10,
+            pointerEvents: 'none',
+            overflow: 'hidden',
           }}
         >
-          <StyledRadar
-            data={radarData}
-            type="small"
-            size={180}
-            cursor="pointer"
-          />
+          <StyledRadar data={radarData} type="small" size={180} />
         </div>
       </Flex>
     </Card>
