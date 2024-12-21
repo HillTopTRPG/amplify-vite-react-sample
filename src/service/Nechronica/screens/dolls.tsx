@@ -39,11 +39,17 @@ const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { dolls, createCharacter, updateCharacter, deleteCharacter } =
-    useNechronicaContext()
+  const {
+    dollsFilterByOwner,
+    createCharacter,
+    updateCharacter,
+    deleteCharacter,
+  } = useNechronicaContext()
   const { screenSize } = useScreenContext()
   const { token } = theme.useToken()
   const { me } = useUserAttributes()
+
+  const dolls = dollsFilterByOwner(me?.userName ?? '')
 
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
@@ -60,6 +66,7 @@ function contents() {
     })
     if (!sheetData) return
 
+    setSheetId('')
     sheetIdInputRef?.current?.blur()
     sheetIdInputRef?.current?.focus()
     createCharacter(sheetData)

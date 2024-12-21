@@ -92,18 +92,24 @@ const useNechronica = () => {
     client.models.NechronicaCharacter.delete({ id })
   }
 
-  const makeTypedObj = <Type extends NechronicaType>(
-    type: Type,
-  ): { [key in `${Type}s`]: NechronicaCharacter[] } => {
+  type TypedObj<Type extends NechronicaType> = {
+    [key in `${Type}s`]: NechronicaCharacter[]
+  } & {
+    [key in `${Type}sFilterByOwner`]: (owner: string) => NechronicaCharacter[]
+  }
+  const makeTypedObj = <Type extends NechronicaType>(type: Type) => {
+    const typedList = characters
+      .filter((c) => c.additionalData.type === type)
+      .slice()
+      .sort((a: NechronicaCharacter, b: NechronicaCharacter) => {
+        if (a.additionalData.stared && !b.additionalData.stared) return -1
+        return b.updatedAt.getTime() - a.updatedAt.getTime()
+      })
     return {
-      [`${type}s`]: characters
-        .filter((c) => c.additionalData.type === type)
-        .slice()
-        .sort((a: NechronicaCharacter, b: NechronicaCharacter) => {
-          if (a.additionalData.stared && !b.additionalData.stared) return -1
-          return b.updatedAt.getTime() - a.updatedAt.getTime()
-        }),
-    } as { [key in `${Type}s`]: NechronicaCharacter[] }
+      [`${type}s`]: typedList,
+      [`${type}sFilterByOwner`]: (owner: string) =>
+        typedList.filter((c) => c.additionalData.owner === owner),
+    } as TypedObj<Type>
   }
 
   return {
