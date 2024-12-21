@@ -65,7 +65,6 @@ export type NechronicaBasic = {
 }
 
 export type Nechronica = {
-  url: string
   basic: NechronicaBasic
   maneuverList: NechronicaManeuver[]
   roiceList: NechronicaRoice[]
@@ -75,6 +74,7 @@ export type NechronicaAdditionalData = {
   type: NechronicaType
   sheetId: string
   stared: boolean
+  owner: string
 }
 
 export type NechronicaCharacter = {
@@ -82,6 +82,8 @@ export type NechronicaCharacter = {
   name: string
   additionalData: NechronicaAdditionalData
   sheetData: Nechronica
+  createdAt: Date
+  updatedAt: Date
 }
 
 export type NechronicaManeuverStackType = 'use' | 'lost' | 'move'
@@ -149,7 +151,10 @@ export class NechronicaDataHelper {
   protected readonly t: (r: string) => string
 
   static async fetch(
-    additionalData: NechronicaAdditionalData,
+    additionalData: Pick<
+      NechronicaAdditionalData,
+      'sheetId' | 'type' | 'owner'
+    >,
     t: (r: string) => string = (r) => r,
   ) {
     const url = `https://charasheet.vampire-blood.net/${additionalData.sheetId}`
@@ -176,13 +181,13 @@ export class NechronicaDataHelper {
   }
 
   public async getData(
-    additionalData: Omit<NechronicaAdditionalData, 'sheetId'>,
+    additionalData: Pick<NechronicaAdditionalData, 'type' | 'owner'>,
   ): Promise<{
     jsons: never[] | null
-    character: Omit<NechronicaCharacter, 'id'> | null
+    character: ReturnType<typeof NechronicaDataHelper.createData>
   }> {
     const jsons = await this.getJsonData()
-    const character = this.createData(additionalData, jsons)
+    const character = NechronicaDataHelper.createData(additionalData, jsons)
     return {
       jsons,
       character,
@@ -223,10 +228,17 @@ export class NechronicaDataHelper {
    * @param jsons JSONPから取得した生データ
    * @protected
    */
-  private createData(
-    additionalData: Omit<NechronicaAdditionalData, 'sheetId'>,
+  private static createData(
+    additionalData: Pick<NechronicaAdditionalData, 'type' | 'owner'>,
     jsons: never[] | null,
-  ): Omit<NechronicaCharacter, 'id'> | null {
+  ):
+    | (Pick<NechronicaCharacter, 'name' | 'sheetData'> & {
+        additionalData: Pick<
+          NechronicaAdditionalData,
+          'type' | 'owner' | 'sheetId'
+        >
+      })
+    | null {
     if (!jsons || !jsons.length) return null
     const json = jsons[0]
     if (!json['Power_Lost'] || !json['roice_name']) return null
@@ -314,7 +326,6 @@ export class NechronicaDataHelper {
         sheetId: json['data_id'],
       },
       sheetData: {
-        url: this.url,
         basic: {
           characterName,
           position: digNum(json, 'position'),
@@ -347,7 +358,6 @@ export function mergeNechronica(
 ): Nechronica {
   const result: Nechronica = clone<Nechronica>(oldData)!
 
-  result.url = mergeData.url
   if (targets.includes('basic')) result.basic = clone(mergeData.basic)!
   if (targets.includes('roice')) result.roiceList = clone(mergeData.roiceList)!
   if (targets.includes('maneuver')) {

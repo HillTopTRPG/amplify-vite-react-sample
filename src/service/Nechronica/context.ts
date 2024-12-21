@@ -7,8 +7,10 @@ import {
   type Nechronica,
   type NechronicaAdditionalData,
   type NechronicaCharacter,
+  type NechronicaDataHelper,
   type NechronicaType,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import { type PromiseType } from '@/utils/types.ts'
 
 const client = generateClient<Schema>()
 
@@ -42,12 +44,13 @@ const useNechronica = () => {
       next: ({ items }) => {
         setCharacter(
           items.map((item) => ({
-            id: item.id,
-            name: item.name,
+            ...item,
             additionalData: JSON.parse(
               item.additionalData,
             ) as NechronicaAdditionalData,
             sheetData: JSON.parse(item.sheetData) as Nechronica,
+            createdAt: new Date(item.createdAt),
+            updatedAt: new Date(item.updatedAt),
           })),
         )
         setLoading(false)
@@ -55,23 +58,29 @@ const useNechronica = () => {
     })
     return () => sub.unsubscribe()
   }, [])
-  const createCharacter = (character: Omit<NechronicaCharacter, 'id'>) => {
-    // 重複を防ぐ
-    if (
-      characters.some(
-        (c) =>
-          c.additionalData.type === character.additionalData.type &&
-          c.additionalData.sheetId === character.additionalData.sheetId,
+  const createCharacter = (
+    character: NonNullable<
+      PromiseType<ReturnType<typeof NechronicaDataHelper.fetch>>
+    >,
+  ) => {
+    // 重複チェック
+    const compare = (c: NechronicaCharacter) =>
+      (['type', 'sheetId', 'owner'] as const).every(
+        (p) => c.additionalData[p] === character.additionalData[p],
       )
-    )
-      return
+    if (characters.some(compare)) return
+
     client.models.NechronicaCharacter.create({
       name: character.sheetData.basic.characterName,
-      additionalData: JSON.stringify(character.additionalData),
+      additionalData: JSON.stringify({
+        ...character.additionalData,
+        stared: false,
+      }),
       sheetData: JSON.stringify(character.sheetData),
     })
   }
   const updateCharacter = (character: NechronicaCharacter) => {
+    // createdAt, updatedAt は更新しない
     client.models.NechronicaCharacter.update({
       id: character.id,
       name: character.sheetData.basic.characterName,
@@ -83,14 +92,19 @@ const useNechronica = () => {
     client.models.NechronicaCharacter.delete({ id })
   }
 
-  const makeTypedObj = (type: NechronicaType) => ({
-    [`${type}s`]: characters
-      .filter((c) => c.additionalData.type === type)
-      .slice()
-      .sort((a: NechronicaCharacter, b: NechronicaCharacter) =>
-        a.additionalData.stared && !b.additionalData.stared ? -1 : 1,
-      ),
-  })
+  const makeTypedObj = <Type extends NechronicaType>(
+    type: Type,
+  ): { [key in `${Type}s`]: NechronicaCharacter[] } => {
+    return {
+      [`${type}s`]: characters
+        .filter((c) => c.additionalData.type === type)
+        .slice()
+        .sort((a: NechronicaCharacter, b: NechronicaCharacter) => {
+          if (a.additionalData.stared && !b.additionalData.stared) return -1
+          return b.updatedAt.getTime() - a.updatedAt.getTime()
+        }),
+    } as { [key in `${Type}s`]: NechronicaCharacter[] }
+  }
 
   return {
     loading,

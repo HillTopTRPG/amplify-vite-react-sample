@@ -20,6 +20,7 @@ import {
 import { useNechronicaContext } from '../context'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screen.ts'
+import { useUserAttributes } from '@/context/userAttributes.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
 import AffixCard from '@/service/Nechronica/components/AffixCard.tsx'
 import BorderlessInput from '@/service/Nechronica/components/BorderlessInput.tsx'
@@ -29,6 +30,7 @@ import ScreenSubTitle from '@/service/Nechronica/components/ScreenSubTitle.tsx'
 import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 import { NechronicaDataHelper } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { sequentialPromiseReduce } from '@/utils/process.ts'
+import { typedPick } from '@/utils/types.ts'
 
 const SEARCH_INPUT_WIDTH = 370
 
@@ -41,6 +43,7 @@ function contents() {
     useNechronicaContext()
   const { screenSize } = useScreenContext()
   const { token } = theme.useToken()
+  const { me } = useUserAttributes()
 
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
@@ -49,10 +52,11 @@ function contents() {
   const [sheetId, setSheetId] = useState('')
   const onCreateCharacter = async (sheetId: string) => {
     setSheetId(sheetId)
+    if (!me) return
     const sheetData = await NechronicaDataHelper.fetch({
       type: 'doll',
       sheetId,
-      stared: false,
+      owner: me.userName,
     })
     if (!sheetData) return
 
@@ -146,7 +150,10 @@ function contents() {
           character.additionalData,
         )
         if (!fetchData) return
-        updateCharacter({ id, ...fetchData })
+        updateCharacter({
+          ...character,
+          ...typedPick(fetchData, 'name', 'sheetData'),
+        })
       })
       setSelectedCharacters([])
     },
