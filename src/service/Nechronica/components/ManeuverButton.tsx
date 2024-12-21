@@ -1,24 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Flex, Typography } from 'antd'
 import { type TextProps } from 'antd/es/typography/Text'
+import classNames from 'classnames'
+import style from './ManeuverButton.module.css'
 import { getBackImg, getManeuverSrc } from '@/service/Nechronica'
 import AvatarNoBorder from '@/service/Nechronica/components/AvatarNoBorder.tsx'
 import ManeuverPopover from '@/service/Nechronica/components/ManeuverPopover.tsx'
-import {
-  type NechronicaBasic,
-  type NechronicaManeuver,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const FONT_SIZE = 11
 const BUTTON_SIZE = 53
 
 type ManeuverButtonProps = {
   maneuver: NechronicaManeuver
-  basic: NechronicaBasic
+  position: number
+  mainClass: number
+  subClass: number
 }
 export default function ManeuverButton({
   maneuver,
-  basic,
+  position,
+  mainClass,
+  subClass,
 }: ManeuverButtonProps) {
   const textProps: TextProps = {
     ellipsis: true,
@@ -39,24 +42,38 @@ export default function ManeuverButton({
     },
   }
 
-  const ManeuverAvatar = ({ src }: { src: string }) => {
+  const ManeuverAvatar = ({
+    src,
+    className,
+  }: {
+    src: string
+    className?: string
+  }) => {
     return (
       <AvatarNoBorder
         src={src}
         size={BUTTON_SIZE}
+        className={className}
         style={{ position: 'absolute' }}
       />
     )
   }
 
+  const [popoverOpen, setPopoverOpen] = useState(false)
+
   return (
-    <Flex vertical>
+    <Flex vertical onClick={(e) => e.stopPropagation()}>
       <Typography.Text {...textProps}>{maneuver.name}</Typography.Text>
-      <ManeuverPopover maneuver={maneuver}>
+      <ManeuverPopover maneuver={maneuver} onChangeOpen={setPopoverOpen}>
         {/* stacked avatar */}
-        <div {...avatarStackDivProps}>
+        <div
+          {...avatarStackDivProps}
+          className={classNames(style.hoverable, popoverOpen && style.active)}
+        >
           <ManeuverAvatar src={getBackImg(maneuver.type)} />
-          <ManeuverAvatar src={getManeuverSrc(maneuver, basic)} />
+          <ManeuverAvatar
+            src={getManeuverSrc(maneuver, position, mainClass, subClass)}
+          />
         </div>
       </ManeuverPopover>
     </Flex>

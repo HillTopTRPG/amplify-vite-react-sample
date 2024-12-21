@@ -8,7 +8,7 @@ import DynamicScreen from '@/components/layout/DynamicScreen.tsx'
 import Sider from '@/components/layout/Sider.tsx'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { ScreenProvider } from '@/context/screen.ts'
-import { useThemeContext } from '@/context/theme.ts'
+import { useUserAttributes } from '@/context/userAttributes.ts'
 import type services from '@/service'
 
 export type Screens = Readonly<
@@ -27,7 +27,7 @@ export type Screens = Readonly<
 type ScreenProviderProps = GetProps<typeof ScreenProvider>
 
 export default function MainContentsLayout(props: ScreenProviderProps) {
-  const { algorithm } = useThemeContext()
+  const { algorithm } = useUserAttributes()
 
   return (
     <ConfigProvider
@@ -47,7 +47,7 @@ export default function MainContentsLayout(props: ScreenProviderProps) {
             <MediaQuery {...MEDIA_QUERY.PC}>
               <Sider />
             </MediaQuery>
-            <Layout
+            <Layout.Content
               style={{
                 overflow: 'hidden scroll',
                 position: 'relative',
@@ -57,7 +57,7 @@ export default function MainContentsLayout(props: ScreenProviderProps) {
                 <Drawer />
               </MediaQuery>
               <DynamicScreen />
-            </Layout>
+            </Layout.Content>
           </Layout>
         </ScreenProvider>
       </Layout>

@@ -41,14 +41,13 @@ const components = {
   },
 } as const
 
-export default function Authenticator({
-  el,
-}: {
-  el: () => React.JSX.Element | React.JSX.Element[]
-}) {
+type AuthenticatorProps = {
+  children: React.ReactNode
+}
+export default function Authenticator({ children }: AuthenticatorProps) {
   return (
     <AwsAuthenticator variation="default" components={components}>
-      {React.createElement(el)}
+      {children}
     </AwsAuthenticator>
   )
 }

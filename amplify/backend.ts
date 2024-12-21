@@ -20,3 +20,6 @@ cfnUserPool.policies = {
     temporaryPasswordValidityDays: 3,
   },
 }
+
+// ユーザー名でログインするようにする
+cfnUserPool.usernameAttributes = []
