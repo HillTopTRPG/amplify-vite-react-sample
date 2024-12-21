@@ -165,7 +165,7 @@ function contents() {
   }
   const affixContents = useMemo(() => {
     return (
-      <Flex align="flex-end" gap={10}>
+      <Flex align="center" gap={10}>
         <BorderlessInput
           value={search}
           isAffixed={isAffixed}

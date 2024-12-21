@@ -68,7 +68,6 @@ export default function StyledRadar({
   type,
   size,
   onChangeItem,
-  cursor = 'default',
 }: StyledRadarProps) {
   const { theme } = useUserAttributes()
 
@@ -128,10 +127,6 @@ export default function StyledRadar({
     tooltip: type === 'small' ? false : undefined,
   }
   return (
-    <Radar
-      {...config}
-      className={style[`radar-container-${cursor}`]}
-      onEvent={onEvent}
-    />
+    <Radar {...config} className={style.radarContainer} onEvent={onEvent} />
   )
 }
