@@ -66,7 +66,7 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
         }),
       })
     }
-  }, [isLoadedUserAttribute, isLoadedUsers, user, users])
+  }, [isLoadedUserAttribute, isLoadedUsers, me, user, users])
 
   const { userName } = useParams<{ userName: string }>()
   const currentUser = userName ? users.find((u) => u.userName === userName) : me

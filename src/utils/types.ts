@@ -105,3 +105,5 @@ export const typedPick = <T extends Record<string, unknown>, U extends keyof T>(
 
 export type PromiseType<T extends Promise<unknown>> =
   T extends Promise<infer P> ? P : never
+
+export type ValueType<T> = T[keyof T]

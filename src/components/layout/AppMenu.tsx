@@ -25,7 +25,6 @@ import MediaQuery, { useMediaQuery } from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useScreenContext } from '@/context/screen.ts'
 import { useUserAttributes } from '@/context/userAttributes.ts'
-import { type Screens } from '@/layouts/MainContentsLauout.tsx'
 import services from '@/service'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
@@ -164,7 +163,7 @@ export default function AppMenu() {
                   label: screens[key].label,
                   icon: React.createElement(screens[key].icon),
                 })),
-                onClick: ({ key }) => setScreen(key as keyof Screens),
+                onClick: ({ key }) => setScreen(key as keyof typeof screens),
               }}
               placement="bottomLeft"
             >

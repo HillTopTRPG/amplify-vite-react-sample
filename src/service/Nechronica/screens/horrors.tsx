@@ -1,10 +1,11 @@
-import { DashboardOutlined } from '@ant-design/icons'
+import { RadarChartOutlined } from '@ant-design/icons'
+import type { Screen } from '@/service'
 import NechronicaCharacterScreenBase from '@/service/Nechronica/screens/NechronicaCharacterScreenBase.tsx'
 
 const type = 'horror'
 const label = 'ホラー'
 const authorize = true
-const icon = DashboardOutlined
+const icon = RadarChartOutlined
 const contents = () => (
   <NechronicaCharacterScreenBase
     characterType={type}
@@ -13,7 +14,7 @@ const contents = () => (
   />
 )
 
-const packed = {
+const packed: Screen = {
   label,
   authorize,
   icon,

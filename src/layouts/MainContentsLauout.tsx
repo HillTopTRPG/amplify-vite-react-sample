@@ -1,5 +1,3 @@
-import React from 'react'
-import type { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon'
 import { ConfigProvider, type GetProps, Layout } from 'antd'
 import MediaQuery from 'react-responsive'
 import AppMenu from '@/components/layout/AppMenu.tsx'
@@ -9,20 +7,6 @@ import Sider from '@/components/layout/Sider.tsx'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { ScreenProvider } from '@/context/screen.ts'
 import { useUserAttributes } from '@/context/userAttributes.ts'
-import type services from '@/service'
-
-export type Screens = Readonly<
-  Record<
-    keyof (typeof services)[keyof typeof services]['screens'],
-    {
-      icon: React.ForwardRefExoticComponent<
-        Omit<AntdIconProps, 'ref'> & React.RefAttributes<HTMLSpanElement>
-      >
-      label: string
-      contents: React.FC
-    }
-  >
->
 
 type ScreenProviderProps = GetProps<typeof ScreenProvider>
 

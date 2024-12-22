@@ -13,7 +13,7 @@ import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import { useUserAttributes } from '@/context/userAttributes.ts'
-import type { Screens } from '@/layouts/MainContentsLauout.tsx'
+import type { Screen } from '@/service'
 import screens from '@/service/Nechronica/screens.ts'
 import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
@@ -36,7 +36,7 @@ function contents() {
     }).length
   }
 
-  const statistics: [keyof Screens, number, string][] = [
+  const statistics: [keyof typeof screens, number, string][] = [
     ['dolls', getCharacterNum('doll'), '体'],
     ['savants', getCharacterNum('savant'), '体'],
     ['horrors', getCharacterNum('horror'), '体'],
@@ -78,7 +78,7 @@ function contents() {
 }
 /* eslint-enable react-hooks/rules-of-hooks */
 
-const packed = {
+const packed: Screen = {
   label,
   authorize,
   icon,

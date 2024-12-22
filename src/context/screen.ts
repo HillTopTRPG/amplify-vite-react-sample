@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import constate from 'constate'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useWindowSize } from '@/hooks/useWindowSize.ts'
-import { type Screens } from '@/layouts/MainContentsLauout.tsx'
+import { type Screen } from '@/service'
 
 const useScreen = ({
   service,
@@ -11,8 +11,8 @@ const useScreen = ({
   screen,
 }: {
   service: string
-  screens: Screens
-  screen: keyof Screens
+  screens: Record<string, Screen>
+  screen: keyof typeof screens
 }) => {
   const navigate = useNavigate()
   const { userName } = useParams()
@@ -24,7 +24,7 @@ const useScreen = ({
   const screenContents = screens[screen].contents
   const toggleOpenStatus = () => setOpenStatus((v) => !v)
 
-  const setScreen = (screen: keyof Screens) => {
+  const setScreen = (screen: keyof typeof screens) => {
     const userSection = userName ? `/${userName}` : ''
     const suffix = screen === 'index' ? '' : `/${screen}`
     navigate(`${userSection}/${service}${suffix}`)

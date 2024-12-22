@@ -1,4 +1,5 @@
 import screens from './screens'
+import { type Service } from '@/service'
 import baroqueImg from '@/service/Nechronica/images/class/baroque.png'
 import gothicImg from '@/service/Nechronica/images/class/gothic.png'
 import psychedelicImg from '@/service/Nechronica/images/class/psychedelic.png'
@@ -203,10 +204,10 @@ export const getBackImg = (maneuverType: number) => {
   return ''
 }
 
-const service = {
+const service: Service = {
   service: 'nechronica',
   serviceName: 'ネクロニカ',
   screens,
-} as const
+}
 
 export default service
