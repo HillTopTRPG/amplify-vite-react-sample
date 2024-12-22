@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { theme } from 'antd'
 import { generateClient } from 'aws-amplify/api'
 import {
@@ -65,7 +66,10 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
     }
   }, [isLoadedUserAttribute, isLoadedUsers, user, users])
 
+  const { userName } = useParams<{ userName: string }>()
   const me = users.find((u) => u.userName === user?.username)
+  const currentUser = userName ? users.find((u) => u.userName === userName) : me
+  const currentIsMe = me?.userName === currentUser?.userName
 
   const setDarkMode = (getNewValue: (darkMode: boolean) => boolean) => {
     const setting = clone(me?.setting)
@@ -91,7 +95,9 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
     loading,
     reloadUserAttributes,
     users,
-    me: users.find((u) => u.userName === user?.username),
+    me,
+    currentUser,
+    currentIsMe,
     toggleDarkMode,
     isDarkMode,
     theme,

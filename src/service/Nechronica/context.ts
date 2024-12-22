@@ -70,16 +70,23 @@ const useNechronica = () => {
       )
     if (characters.some(compare)) return
 
+    const additionalData: NechronicaAdditionalData = {
+      ...character.additionalData,
+      stared: false,
+    }
+
     client.models.NechronicaCharacter.create({
       name: character.sheetData.basic.characterName,
-      additionalData: JSON.stringify({
-        ...character.additionalData,
-        stared: false,
-      }),
+      additionalData: JSON.stringify(additionalData),
       sheetData: JSON.stringify(character.sheetData),
     })
   }
   const updateCharacter = (character: NechronicaCharacter) => {
+    const oldCharacter = characters.find((c) => c.id === character.id)
+    if (!oldCharacter) return
+    if (oldCharacter.additionalData.owner !== character.additionalData.owner)
+      return
+
     // createdAt, updatedAt は更新しない
     client.models.NechronicaCharacter.update({
       id: character.id,

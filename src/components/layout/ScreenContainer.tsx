@@ -6,7 +6,7 @@ import { MEDIA_QUERY } from '@/const/style.ts'
 type ComponentProps = {
   title: string
   icon: React.FC
-  children?: React.JSX.Element | React.JSX.Element[]
+  children?: React.ReactNode
 }
 function component(
   { title, icon, children }: ComponentProps,

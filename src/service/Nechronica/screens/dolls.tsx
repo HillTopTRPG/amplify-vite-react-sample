@@ -47,9 +47,9 @@ function contents() {
   } = useNechronicaContext()
   const { screenSize } = useScreenContext()
   const { token } = theme.useToken()
-  const { me } = useUserAttributes()
+  const { currentUser, me, currentIsMe } = useUserAttributes()
 
-  const dolls = dollsFilterByOwner(me?.userName ?? '')
+  const dolls = dollsFilterByOwner(currentUser?.userName ?? '')
 
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
@@ -58,7 +58,7 @@ function contents() {
   const [sheetId, setSheetId] = useState('')
   const onCreateCharacter = async (sheetId: string) => {
     setSheetId(sheetId)
-    if (!me) return
+    if (!currentIsMe || !me) return
     const sheetData = await NechronicaDataHelper.fetch({
       type: 'doll',
       sheetId,
@@ -126,17 +126,17 @@ function contents() {
       resultList
     ) : (
       <Flex vertical align="center" style={{ width: SEARCH_INPUT_WIDTH }}>
-        {dolls.length && !searchedCharacters.length ? (
-          <Typography.Text
-            style={{
-              marginTop: 5,
-              marginBottom: 15,
-              color: token.colorTextDescription,
-            }}
-          >
-            Not Found
-          </Typography.Text>
-        ) : null}
+        <Typography.Text
+          style={{
+            marginTop: 5,
+            marginBottom: 15,
+            color: token.colorTextDescription,
+          }}
+        >
+          {dolls.length && !searchedCharacters.length
+            ? 'Not Found'
+            : 'キャラクターがまだ登録されていません'}
+        </Typography.Text>
         {searchDivider}
       </Flex>
     )
@@ -295,23 +295,25 @@ function contents() {
           }}
         >
           <ScreenContainer title={label} icon={icon}>
-            <Flex
-              vertical
-              align="flex-start"
-              style={{ marginTop: 10, marginBottom: 10 }}
-            >
-              <ScreenSubTitle title={`${label}追加`} />
-              <BorderlessInput
-                value={sheetId}
-                isAffixed={false}
-                width={SEARCH_INPUT_WIDTH}
-                icon={<SearchOutlined />}
-                placeholder="キャラクター保管所のキャラクターのIDを入力"
-                onChange={onCreateCharacter}
-                inputRef={sheetIdInputRef}
-              />
-            </Flex>
-            {searchDivider}
+            {currentIsMe ? (
+              <Flex
+                vertical
+                align="flex-start"
+                style={{ marginTop: 10, gap: 10 }}
+              >
+                <ScreenSubTitle title={`${label}登録`} />
+                <BorderlessInput
+                  value={sheetId}
+                  isAffixed={false}
+                  width={SEARCH_INPUT_WIDTH}
+                  icon={<SearchOutlined />}
+                  placeholder="キャラクター保管所のキャラクターのIDを入力"
+                  onChange={onCreateCharacter}
+                  inputRef={sheetIdInputRef}
+                />
+                {searchDivider}
+              </Flex>
+            ) : null}
             <AffixCard
               affixContainer={affixContainer}
               onChangeAffix={setIsAffixedWrap}
