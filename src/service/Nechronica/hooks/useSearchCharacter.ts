@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { type NechronicaCharacter } from '@/service/Nechronica'
+import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
 export function useSearchCharacter(characters: NechronicaCharacter[]) {

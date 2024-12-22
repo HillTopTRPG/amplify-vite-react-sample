@@ -30,9 +30,11 @@ import services from '@/service'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const { attr, loading, isDarkMode, toggleDarkMode } = useUserAttributes()
+  const { users, me, loading, isDarkMode, toggleDarkMode } = useUserAttributes()
 
   const {
+    userName,
+    setUser,
     service,
     setService,
     screenIcon,
@@ -108,12 +110,32 @@ export default function AppMenu() {
           <Typography.Text>/</Typography.Text>
           <Dropdown
             menu={{
+              items: users.map((user) => ({
+                key: user.userName,
+                label: user.userName,
+                icon: <UserOutlined />,
+              })),
+              onClick: ({ key }) => setUser(key),
+            }}
+            placement="bottomLeft"
+          >
+            <Button
+              type="text"
+              icon={<UserOutlined />}
+              style={{ padding: '0 5px' }}
+            >
+              {userName ?? me?.userName ?? ''}
+            </Button>
+          </Dropdown>
+          <Typography.Text>/</Typography.Text>
+          <Dropdown
+            menu={{
               items: getKeys(services).map((key) => ({
                 key,
                 label: services[key].serviceName,
                 icon: <BookOutlined />,
               })),
-              onClick: ({ key }) => setService(key),
+              onClick: ({ key }) => setService(services, key),
             }}
             placement="bottomLeft"
           >
@@ -147,14 +169,7 @@ export default function AppMenu() {
         </Flex>
         <Dropdown menu={dropdownProps} placement="bottom" forceRender>
           <Button type="text" style={{ padding: 5 }}>
-            {loading ? (
-              <Spin />
-            ) : (
-              <Flex gap={7}>
-                <UserOutlined />
-                <Typography.Text>{attr?.nickname || '-'}</Typography.Text>
-              </Flex>
-            )}
+            {loading ? <Spin /> : <UserOutlined />}
           </Button>
         </Dropdown>
         <Button

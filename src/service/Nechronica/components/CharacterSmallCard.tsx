@@ -1,7 +1,24 @@
 import { useMemo } from 'react'
-import { Card, type CardProps, Checkbox, Flex, theme, Typography } from 'antd'
+import {
+  ShareAltOutlined,
+  StarFilled,
+  StarOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
+import {
+  Button,
+  Card,
+  type CardProps,
+  Checkbox,
+  Flex,
+  theme,
+  Typography,
+} from 'antd'
+import { clone } from 'lodash-es'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
-import { type NechronicaCharacter } from '@/service/Nechronica'
+import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useNechronicaContext } from '@/service/Nechronica/context.ts'
+import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
 // const MANEUVER_LINE_RANGE = [3, 8] as const
@@ -28,6 +45,8 @@ export default function CharacterSmallCard({
   onSelect,
 }: CharacterCardProps) {
   const { token } = theme.useToken()
+  const { updateCharacter } = useNechronicaContext()
+  const { currentIsMe } = useUserAttributes()
 
   const onClickContainer = useMemo(
     () => () => {
@@ -57,7 +76,65 @@ export default function CharacterSmallCard({
     [onClickContainer, selected, token.colorBgElevated, token.colorPrimaryBg],
   )
 
+  const toggleStared = useMemo(
+    () => () => {
+      const newData = clone(character)
+      newData.additionalData.stared = !newData.additionalData.stared
+      updateCharacter(newData)
+    },
+    [character, updateCharacter],
+  )
+
+  const togglePublic = useMemo(
+    () => () => {
+      const newData = clone(character)
+      newData.public = !newData.public
+      updateCharacter(newData)
+    },
+    [character, updateCharacter],
+  )
+
   const basic = character.sheetData.basic
+
+  const ownerOperations = useMemo(() => {
+    return (
+      <>
+        <Button
+          size="small"
+          type="text"
+          shape="circle"
+          icon={
+            character.additionalData.stared ? <StarFilled /> : <StarOutlined />
+          }
+          onClick={(e) => {
+            toggleStared()
+            e.stopPropagation()
+          }}
+        />
+        <Button
+          size="small"
+          type="text"
+          shape="circle"
+          icon={character.public ? <ShareAltOutlined /> : <UserOutlined />}
+          onClick={(e) => {
+            togglePublic()
+            e.stopPropagation()
+          }}
+        />
+      </>
+    )
+  }, [character.additionalData.stared, toggleStared])
+
+  const operationBlock = useMemo(
+    () => (
+      <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
+        <Checkbox checked={selected} style={{ alignSelf: 'center' }} />
+
+        {currentIsMe ? ownerOperations : null}
+      </Flex>
+    ),
+    [currentIsMe, ownerOperations, selected],
+  )
 
   const constBlocks = useMemo(() => {
     return (
@@ -66,7 +143,7 @@ export default function CharacterSmallCard({
         align="flex-start"
         style={{ flexGrow: 1, padding: '0 3px' }}
       >
-        <Checkbox checked={selected} style={{ alignSelf: 'center' }} />
+        {operationBlock}
         <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
           {basic.characterName}
         </Typography.Text>
@@ -91,7 +168,7 @@ export default function CharacterSmallCard({
     basic.mainClass,
     basic.position,
     basic.subClass,
-    selected,
+    operationBlock,
   ])
 
   // const onChangeBasePosition = useMemo(

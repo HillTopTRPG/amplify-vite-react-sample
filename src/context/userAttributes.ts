@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { theme } from 'antd'
 import { generateClient } from 'aws-amplify/api'
 import {
@@ -33,23 +34,25 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
     }
   }
   const [users, setUsers] = useState<User[]>([])
+  const [me, setMe] = useState<User | null>(null)
   useEffect(() => {
+    if (!user?.username) return () => {}
     const sub = client.models.User.observeQuery().subscribe({
       next: ({ items }) => {
-        setUsers(
-          items.map((item) => {
-            return { ...item, setting: JSON.parse(item.setting) } as User
-          }),
-        )
+        const newUsers = items.map((item) => {
+          return { ...item, setting: JSON.parse(item.setting) } as User
+        })
+        setUsers(newUsers)
+        setMe(newUsers.find((u) => u.userName === user?.username) ?? null)
         setIsLoadedUsers(true)
       },
     })
-    return () => sub.unsubscribe()
-  }, [])
+    return void sub.unsubscribe
+  }, [user?.username])
 
   const [loading, setLoading] = useState(true)
   useEffect(() => {
-    const nextValue = !isLoadedUserAttribute || !isLoadedUsers || !user
+    const nextValue = !isLoadedUserAttribute || !isLoadedUsers || !user || !me
     setLoading(nextValue)
     if (
       !nextValue &&
@@ -65,7 +68,9 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
     }
   }, [isLoadedUserAttribute, isLoadedUsers, user, users])
 
-  const me = users.find((u) => u.userName === user?.username)
+  const { userName } = useParams<{ userName: string }>()
+  const currentUser = userName ? users.find((u) => u.userName === userName) : me
+  const currentIsMe = me?.userName === currentUser?.userName
 
   const setDarkMode = (getNewValue: (darkMode: boolean) => boolean) => {
     const setting = clone(me?.setting)
@@ -91,7 +96,9 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
     loading,
     reloadUserAttributes,
     users,
-    me: users.find((u) => u.userName === user?.username),
+    me,
+    currentUser,
+    currentIsMe,
     toggleDarkMode,
     isDarkMode,
     theme,

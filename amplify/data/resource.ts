@@ -15,9 +15,10 @@ const schema = a.schema({
   NechronicaCharacter: a
     .model({
       name: a.string().required(),
-      type: a.enum(['doll', 'savant', 'horror', 'legion']),
-      sheetId: a.string().required(),
+      additionalData: a.string().required(),
       sheetData: a.string().required(),
+      owner: a.string().required(),
+      public: a.boolean().required(),
     })
     .authorization((allow) => [allow.authenticated()]),
 })

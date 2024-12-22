@@ -2,15 +2,12 @@ import { useMemo } from 'react'
 import { Flex, List, Typography, Image } from 'antd'
 import style from './CharacterCard.module.css'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
-import {
-  getPositionSrc,
-  type NechronicaCharacter,
-  PARTS_TUPLE,
-} from '@/service/Nechronica'
+import { getPositionSrc, PARTS_TUPLE } from '@/service/Nechronica'
 import CharacterAvatar from '@/service/Nechronica/components/CharacterAvatar.tsx'
 import ClassAvatar from '@/service/Nechronica/components/ClassAvatar.tsx'
 import PartsListItem from '@/service/Nechronica/components/PartsListItem.tsx'
 import RoiceButton from '@/service/Nechronica/components/RoiceButton.tsx'
+import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 // const MANEUVER_LINE_RANGE = [3, 8] as const
 //
@@ -38,7 +35,10 @@ export default function CharacterCard({ character }: CharacterCardProps) {
           {basic.characterName}
         </Typography.Text>
         <Flex align="flex-start" style={{ padding: '0 4px' }} gap={5}>
-          <CharacterAvatar type={character.type} position={basic.position} />
+          <CharacterAvatar
+            type={character.additionalData.type}
+            position={basic.position}
+          />
           <ClassAvatar value={basic.mainClass} />
           <ClassAvatar value={basic.subClass} />
         </Flex>
@@ -49,7 +49,7 @@ export default function CharacterCard({ character }: CharacterCardProps) {
     basic.mainClass,
     basic.position,
     basic.subClass,
-    character.type,
+    character.additionalData.type,
   ])
 
   // const onChangeBasePosition = useMemo(

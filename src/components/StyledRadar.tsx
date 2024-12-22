@@ -3,7 +3,7 @@ import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
 import style from './StyledRadar.module.css'
 import { useUserAttributes } from '@/context/userAttributes.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica'
+import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const NECHRONICA_MANEUVER_TYPES = [
   'その他',

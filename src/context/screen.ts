@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import constate from 'constate'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useWindowSize } from '@/hooks/useWindowSize.ts'
@@ -15,6 +15,7 @@ const useScreen = ({
   screen: keyof Screens
 }) => {
   const navigate = useNavigate()
+  const { userName } = useParams()
 
   const [open, setOpenStatus] = useState(false)
 
@@ -24,12 +25,26 @@ const useScreen = ({
   const toggleOpenStatus = () => setOpenStatus((v) => !v)
 
   const setScreen = (screen: keyof Screens) => {
+    const userSection = userName ? `/${userName}` : ''
     const suffix = screen === 'index' ? '' : `/${screen}`
-    navigate(`/${service}${suffix}`)
+    navigate(`${userSection}/${service}${suffix}`)
   }
 
-  const setService = (service: string) => {
-    navigate(`/${service}`)
+  const setService = (
+    services: Record<string, { screens: Record<string, unknown> }>,
+    service: keyof typeof services,
+  ) => {
+    const userSection = userName ? `/${userName}` : ''
+    const useScreen = screen in services[service].screens ? screen : 'index'
+    const suffix = useScreen === 'index' ? '' : `/${useScreen}`
+    if (screen in services[service]) return
+    // const suffix = screen === 'index' ? '' : `/${screen}`
+    navigate(`${userSection}/${service}${suffix}`)
+  }
+
+  const setUser = (user: string) => {
+    const suffix = screen === 'index' ? '' : `/${screen}`
+    navigate(`/${user}/${service}${suffix}`)
   }
 
   const [width] = useWindowSize()
@@ -40,6 +55,8 @@ const useScreen = ({
   const viewPortWidth = (isPC ? width - siderWidth : width) - 16 * 2
 
   return {
+    userName,
+    setUser,
     service,
     setService,
     screens,

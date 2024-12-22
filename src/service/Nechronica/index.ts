@@ -45,20 +45,8 @@ import holicImg from '@/service/Nechronica/images/position/holic.png'
 import junkImg from '@/service/Nechronica/images/position/junk.png'
 import sororityImg from '@/service/Nechronica/images/position/sorority.png'
 import unknownImg from '@/service/Nechronica/images/unknown.png'
-import {
-  type Nechronica,
-  type NechronicaManeuver,
-  type NechronicaType,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
-
-export type NechronicaCharacter = {
-  id: string
-  name: string
-  type: NechronicaType
-  sheetId: string
-  sheetData: Nechronica
-}
 
 export const PARTS_TUPLE: [string, number[]][] = [
   [partsSkillImg, [0, 1, 2, 3]],
