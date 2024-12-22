@@ -4,6 +4,7 @@ import mapping from '@/service/Nechronica/ts/mapping.json'
 
 export function useSearchCharacter(characters: NechronicaCharacter[]) {
   const [search, setSearch] = useState('')
+  const [selectedCharacters, setSelectedCharacters] = useState<string[]>([])
 
   const searchedCharacters = characters.filter((character) => {
     if (character.sheetData.basic.characterName.includes(search)) return true
@@ -27,5 +28,14 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
     return false
   })
 
-  return { search, searchedCharacters, setSearch }
+  return {
+    search,
+    searchedCharacters,
+    setSearch: (search: string) => {
+      setSearch(search)
+      setSelectedCharacters([])
+    },
+    selectedCharacters,
+    setSelectedCharacters,
+  }
 }

@@ -1,21 +1,27 @@
 import { Flex, Typography } from 'antd'
 import { useUserAttributes } from '@/context/userAttributes.ts'
-import { getPositionSrc } from '@/service/Nechronica'
+import { getCharacterTypeSrc } from '@/service/Nechronica'
 import AvatarNoBorder from '@/service/Nechronica/components/AvatarNoBorder.tsx'
-import horrorImg from '@/service/Nechronica/images/type/horror.png'
-import legionImg from '@/service/Nechronica/images/type/legion.png'
-import savantImg from '@/service/Nechronica/images/type/savant.png'
 import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const AVATAR_SIZE = 80
 
 const MAP = {
-  savant: { src: () => savantImg, color: ['#815250', '#FFAB91'] },
-  horror: { src: () => horrorImg, color: ['#51546f', '#C5CAE9'] },
-  legion: { src: () => legionImg, color: ['#4c7975', '#80CBC4'] },
+  savant: {
+    src: () => getCharacterTypeSrc('savant', 0),
+    color: ['#815250', '#FFAB91'],
+  },
+  horror: {
+    src: () => getCharacterTypeSrc('horror', 0),
+    color: ['#51546f', '#C5CAE9'],
+  },
+  legion: {
+    src: () => getCharacterTypeSrc('legion', 0),
+    color: ['#4c7975', '#80CBC4'],
+  },
   doll: {
-    src: (position: number) => getPositionSrc(position),
+    src: (position: number) => getCharacterTypeSrc('doll', position),
     color: ['#606812', '#DCE775'],
   },
 } as const

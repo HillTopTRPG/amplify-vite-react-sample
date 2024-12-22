@@ -123,7 +123,12 @@ export default function CharacterSmallCard({
         />
       </>
     )
-  }, [character.additionalData.stared, toggleStared])
+  }, [
+    character.additionalData.stared,
+    character.public,
+    togglePublic,
+    toggleStared,
+  ])
 
   const operationBlock = useMemo(
     () => (
@@ -136,17 +141,9 @@ export default function CharacterSmallCard({
     [currentIsMe, ownerOperations, selected],
   )
 
-  const constBlocks = useMemo(() => {
-    return (
-      <Flex
-        vertical
-        align="flex-start"
-        style={{ flexGrow: 1, padding: '0 3px' }}
-      >
-        {operationBlock}
-        <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
-          {basic.characterName}
-        </Typography.Text>
+  const constBlocks = useMemo(
+    () => (
+      <>
         <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
           <Typography.Text style={{ fontSize: 11 }}>
             {mapping.CHARACTER_POSITION[basic.position].text}
@@ -161,15 +158,10 @@ export default function CharacterSmallCard({
             {mapping.CHARACTER_CLASS[basic.subClass].text}
           </Typography.Text>
         </Flex>
-      </Flex>
-    )
-  }, [
-    basic.characterName,
-    basic.mainClass,
-    basic.position,
-    basic.subClass,
-    operationBlock,
-  ])
+      </>
+    ),
+    [basic.mainClass, basic.position, basic.subClass],
+  )
 
   // const onChangeBasePosition = useMemo(
   //   () => (newValue: number) => {
@@ -232,7 +224,17 @@ export default function CharacterSmallCard({
   return (
     <Card {...cardProps}>
       <Flex vertical gap={3}>
-        {constBlocks}
+        <Flex
+          vertical
+          align="flex-start"
+          style={{ flexGrow: 1, padding: '0 3px' }}
+        >
+          {operationBlock}
+          <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
+            {basic.characterName}
+          </Typography.Text>
+          {character.additionalData.type === 'doll' ? constBlocks : null}
+        </Flex>
         <div
           style={{
             width: 180,

@@ -131,7 +131,7 @@ const useNechronica = () => {
 
   return {
     loading,
-    ...makeTypedObj('doll'),
+    characters,
     ...makeTypedObj('savant'),
     ...makeTypedObj('horror'),
     ...makeTypedObj('legion'),
