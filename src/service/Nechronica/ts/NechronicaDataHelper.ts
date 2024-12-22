@@ -75,6 +75,7 @@ export type NechronicaAdditionalData = {
   sheetId: string
   stared: boolean
   owner: string
+  public: boolean
 }
 
 export type NechronicaCharacter = {

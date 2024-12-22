@@ -1,5 +1,10 @@
 import { useMemo } from 'react'
-import { StarFilled, StarOutlined } from '@ant-design/icons'
+import {
+  ShareAltOutlined,
+  StarFilled,
+  StarOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 import {
   Button,
   Card,
@@ -80,6 +85,15 @@ export default function CharacterSmallCard({
     [character, updateCharacter],
   )
 
+  const togglePublic = useMemo(
+    () => () => {
+      const newData = clone(character)
+      newData.additionalData.public = !newData.additionalData.public
+      updateCharacter(newData)
+    },
+    [character, updateCharacter],
+  )
+
   const basic = character.sheetData.basic
 
   const ownerOperations = useMemo(() => {
@@ -94,6 +108,22 @@ export default function CharacterSmallCard({
           }
           onClick={(e) => {
             toggleStared()
+            e.stopPropagation()
+          }}
+        />
+        <Button
+          size="small"
+          type="text"
+          shape="circle"
+          icon={
+            character.additionalData.public ? (
+              <ShareAltOutlined />
+            ) : (
+              <UserOutlined />
+            )
+          }
+          onClick={(e) => {
+            togglePublic()
             e.stopPropagation()
           }}
         />

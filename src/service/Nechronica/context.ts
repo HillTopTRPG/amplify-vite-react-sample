@@ -73,6 +73,7 @@ const useNechronica = () => {
     const additionalData: NechronicaAdditionalData = {
       ...character.additionalData,
       stared: false,
+      public: false,
     }
 
     client.models.NechronicaCharacter.create({
@@ -102,20 +103,33 @@ const useNechronica = () => {
   type TypedObj<Type extends NechronicaType> = {
     [key in `${Type}s`]: NechronicaCharacter[]
   } & {
-    [key in `${Type}sFilterByOwner`]: (owner: string) => NechronicaCharacter[]
+    [key in `${Type}sFilterByOwner`]: (
+      owner: string,
+      isMe: boolean,
+    ) => NechronicaCharacter[]
   }
   const makeTypedObj = <Type extends NechronicaType>(type: Type) => {
     const typedList = characters
-      .filter((c) => c.additionalData.type === type)
+      .filter((c) => {
+        if (c.additionalData.type !== type) return false
+        //
+        return true
+      })
       .slice()
       .sort((a: NechronicaCharacter, b: NechronicaCharacter) => {
         if (a.additionalData.stared && !b.additionalData.stared) return -1
+        if (b.additionalData.stared && !a.additionalData.stared) return 1
         return b.updatedAt.getTime() - a.updatedAt.getTime()
       })
     return {
       [`${type}s`]: typedList,
-      [`${type}sFilterByOwner`]: (owner: string) =>
-        typedList.filter((c) => c.additionalData.owner === owner),
+      [`${type}sFilterByOwner`]: (owner: string, isMe: boolean) =>
+        typedList.filter((c) => {
+          if (c.additionalData.owner !== owner) return false
+          if (!c.additionalData.public && !isMe) return false
+          //
+          return true
+        }),
     } as TypedObj<Type>
   }
 

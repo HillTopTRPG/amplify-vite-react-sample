@@ -49,7 +49,7 @@ function contents() {
   const { token } = theme.useToken()
   const { currentUser, me, currentIsMe } = useUserAttributes()
 
-  const dolls = dollsFilterByOwner(currentUser?.userName ?? '')
+  const dolls = dollsFilterByOwner(currentUser?.userName ?? '', currentIsMe)
 
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
