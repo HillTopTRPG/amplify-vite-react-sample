@@ -62,7 +62,6 @@ function contents() {
     const sheetData = await NechronicaDataHelper.fetch({
       type: 'doll',
       sheetId,
-      owner: me.userName,
     })
     if (!sheetData) return
 

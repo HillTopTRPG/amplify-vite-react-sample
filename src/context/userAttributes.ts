@@ -34,23 +34,25 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
     }
   }
   const [users, setUsers] = useState<User[]>([])
+  const [me, setMe] = useState<User | null>(null)
   useEffect(() => {
+    if (!user?.username) return () => {}
     const sub = client.models.User.observeQuery().subscribe({
       next: ({ items }) => {
-        setUsers(
-          items.map((item) => {
-            return { ...item, setting: JSON.parse(item.setting) } as User
-          }),
-        )
+        const newUsers = items.map((item) => {
+          return { ...item, setting: JSON.parse(item.setting) } as User
+        })
+        setUsers(newUsers)
+        setMe(newUsers.find((u) => u.userName === user?.username) ?? null)
         setIsLoadedUsers(true)
       },
     })
-    return () => sub.unsubscribe()
-  }, [])
+    return void sub.unsubscribe
+  }, [user?.username])
 
   const [loading, setLoading] = useState(true)
   useEffect(() => {
-    const nextValue = !isLoadedUserAttribute || !isLoadedUsers || !user
+    const nextValue = !isLoadedUserAttribute || !isLoadedUsers || !user || !me
     setLoading(nextValue)
     if (
       !nextValue &&
@@ -67,7 +69,6 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
   }, [isLoadedUserAttribute, isLoadedUsers, user, users])
 
   const { userName } = useParams<{ userName: string }>()
-  const me = users.find((u) => u.userName === user?.username)
   const currentUser = userName ? users.find((u) => u.userName === userName) : me
   const currentIsMe = me?.userName === currentUser?.userName
 

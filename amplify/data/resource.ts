@@ -17,6 +17,8 @@ const schema = a.schema({
       name: a.string().required(),
       additionalData: a.string().required(),
       sheetData: a.string().required(),
+      owner: a.string().required(),
+      public: a.boolean().required(),
     })
     .authorization((allow) => [allow.authenticated()]),
 })

@@ -74,8 +74,6 @@ export type NechronicaAdditionalData = {
   type: NechronicaType
   sheetId: string
   stared: boolean
-  owner: string
-  public: boolean
 }
 
 export type NechronicaCharacter = {
@@ -83,6 +81,8 @@ export type NechronicaCharacter = {
   name: string
   additionalData: NechronicaAdditionalData
   sheetData: Nechronica
+  owner: string
+  public: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -152,10 +152,7 @@ export class NechronicaDataHelper {
   protected readonly t: (r: string) => string
 
   static async fetch(
-    additionalData: Pick<
-      NechronicaAdditionalData,
-      'sheetId' | 'type' | 'owner'
-    >,
+    additionalData: Pick<NechronicaAdditionalData, 'sheetId' | 'type'>,
     t: (r: string) => string = (r) => r,
   ) {
     const url = `https://charasheet.vampire-blood.net/${additionalData.sheetId}`
@@ -182,7 +179,7 @@ export class NechronicaDataHelper {
   }
 
   public async getData(
-    additionalData: Pick<NechronicaAdditionalData, 'type' | 'owner'>,
+    additionalData: Pick<NechronicaAdditionalData, 'type'>,
   ): Promise<{
     jsons: never[] | null
     character: ReturnType<typeof NechronicaDataHelper.createData>
@@ -230,14 +227,11 @@ export class NechronicaDataHelper {
    * @protected
    */
   private static createData(
-    additionalData: Pick<NechronicaAdditionalData, 'type' | 'owner'>,
+    additionalData: Pick<NechronicaAdditionalData, 'type'>,
     jsons: never[] | null,
   ):
     | (Pick<NechronicaCharacter, 'name' | 'sheetData'> & {
-        additionalData: Pick<
-          NechronicaAdditionalData,
-          'type' | 'owner' | 'sheetId'
-        >
+        additionalData: Pick<NechronicaAdditionalData, 'type' | 'sheetId'>
       })
     | null {
     if (!jsons || !jsons.length) return null

@@ -7,11 +7,10 @@ import {
   Space,
   Spin,
 } from 'antd'
-import { useNechronicaContext, useTodoCrud } from '../context'
+import { useNechronicaContext } from '../context'
 import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
-import Todos from '@/components/todo/Todos.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import type { Screens } from '@/layouts/MainContentsLauout.tsx'
 import screens from '@/service/Nechronica/screens.ts'
@@ -22,7 +21,6 @@ const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
   const { loading, dolls } = useNechronicaContext()
-  const todoCrud = useTodoCrud()
   const { setScreen } = useScreenContext()
 
   const statistics: [keyof Screens, number, string][] = [
@@ -62,7 +60,6 @@ function contents() {
           <StyledPie data={dashboardData} height={150} />
         </Col>
       </StatisticCardLayout>
-      <Todos {...todoCrud} loading={loading} />
     </ScreenContainer>
   )
 }

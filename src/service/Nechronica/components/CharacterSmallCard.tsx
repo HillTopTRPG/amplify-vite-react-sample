@@ -88,7 +88,7 @@ export default function CharacterSmallCard({
   const togglePublic = useMemo(
     () => () => {
       const newData = clone(character)
-      newData.additionalData.public = !newData.additionalData.public
+      newData.public = !newData.public
       updateCharacter(newData)
     },
     [character, updateCharacter],
@@ -115,13 +115,7 @@ export default function CharacterSmallCard({
           size="small"
           type="text"
           shape="circle"
-          icon={
-            character.additionalData.public ? (
-              <ShareAltOutlined />
-            ) : (
-              <UserOutlined />
-            )
-          }
+          icon={character.public ? <ShareAltOutlined /> : <UserOutlined />}
           onClick={(e) => {
             togglePublic()
             e.stopPropagation()

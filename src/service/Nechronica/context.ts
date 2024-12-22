@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
-import { omit } from 'lodash-es'
 import type { Schema } from '../../../amplify/data/resource.ts'
+import { useUserAttributes } from '@/context/userAttributes.ts'
 import {
   type Nechronica,
   type NechronicaAdditionalData,
@@ -16,31 +16,27 @@ const client = generateClient<Schema>()
 
 const useNechronica = () => {
   const [loading, setLoading] = useState<boolean>(true)
-
-  type Todo = Schema['Todo']['type']
-  const [todos, setTodos] = useState<Todo[]>([])
-  useEffect(() => {
-    const sub = client.models.Todo.observeQuery().subscribe({
-      next: ({ items }) => {
-        setTodos([...items])
-        setLoading(false)
-      },
-    })
-    return () => sub.unsubscribe()
-  }, [])
-  const createTodo = (todo: Schema['Todo']['createType']) => {
-    client.models.Todo.create(todo)
-  }
-  const updateTodo = (todo: Schema['Todo']['updateType']) => {
-    client.models.Todo.update(todo)
-  }
-  const deleteTodo = (id: string) => {
-    client.models.Todo.delete({ id })
-  }
+  const { loading: loadingUserAttributes, me } = useUserAttributes()
 
   const [characters, setCharacter] = useState<NechronicaCharacter[]>([])
   useEffect(() => {
-    const sub = client.models.NechronicaCharacter.observeQuery().subscribe({
+    if (loadingUserAttributes) return () => {}
+    const sub = client.models.NechronicaCharacter.observeQuery({
+      filter: {
+        or: [
+          {
+            owner: {
+              eq: me?.userName ?? '',
+            },
+          },
+          {
+            public: {
+              eq: true,
+            },
+          },
+        ],
+      },
+    }).subscribe({
       next: ({ items }) => {
         setCharacter(
           items.map((item) => ({
@@ -56,8 +52,8 @@ const useNechronica = () => {
         setLoading(false)
       },
     })
-    return () => sub.unsubscribe()
-  }, [])
+    return void sub.unsubscribe
+  }, [loadingUserAttributes, me?.userName])
   const createCharacter = (
     character: NonNullable<
       PromiseType<ReturnType<typeof NechronicaDataHelper.fetch>>
@@ -65,32 +61,32 @@ const useNechronica = () => {
   ) => {
     // 重複チェック
     const compare = (c: NechronicaCharacter) =>
-      (['type', 'sheetId', 'owner'] as const).every(
+      (['type', 'sheetId'] as const).every(
         (p) => c.additionalData[p] === character.additionalData[p],
-      )
+      ) && c.owner === me?.userName
     if (characters.some(compare)) return
 
     const additionalData: NechronicaAdditionalData = {
       ...character.additionalData,
       stared: false,
-      public: false,
     }
 
     client.models.NechronicaCharacter.create({
       name: character.sheetData.basic.characterName,
       additionalData: JSON.stringify(additionalData),
       sheetData: JSON.stringify(character.sheetData),
+      owner: me?.userName || '',
+      public: false,
     })
   }
   const updateCharacter = (character: NechronicaCharacter) => {
     const oldCharacter = characters.find((c) => c.id === character.id)
     if (!oldCharacter) return
-    if (oldCharacter.additionalData.owner !== character.additionalData.owner)
-      return
+    if (oldCharacter.owner !== character.owner) return
 
     // createdAt, updatedAt は更新しない
     client.models.NechronicaCharacter.update({
-      id: character.id,
+      ...character,
       name: character.sheetData.basic.characterName,
       additionalData: JSON.stringify(character.additionalData),
       sheetData: JSON.stringify(character.sheetData),
@@ -125,8 +121,8 @@ const useNechronica = () => {
       [`${type}s`]: typedList,
       [`${type}sFilterByOwner`]: (owner: string, isMe: boolean) =>
         typedList.filter((c) => {
-          if (c.additionalData.owner !== owner) return false
-          if (!c.additionalData.public && !isMe) return false
+          if (c.owner !== owner) return false
+          if (!c.public && !isMe) return false
           //
           return true
         }),
@@ -135,12 +131,6 @@ const useNechronica = () => {
 
   return {
     loading,
-    todoCrud: {
-      todos,
-      createTodo,
-      updateTodo,
-      deleteTodo,
-    },
     ...makeTypedObj('doll'),
     ...makeTypedObj('savant'),
     ...makeTypedObj('horror'),
@@ -151,8 +141,5 @@ const useNechronica = () => {
   }
 }
 
-export const [NechronicaProvider, useNechronicaContext, useTodoCrud] = constate(
-  useNechronica,
-  (v) => omit(v, 'todoCrud'),
-  (v) => v.todoCrud,
-)
+export const [NechronicaProvider, useNechronicaContext] =
+  constate(useNechronica)

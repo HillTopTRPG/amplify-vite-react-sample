@@ -9,11 +9,9 @@ import {
   Button,
   Space,
 } from 'antd'
-import { useNechronicaContext, useTodoCrud } from '../context'
 import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
-import Todos from '@/components/todo/Todos.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import { useTestContext } from '@/context/test'
 import type { Screens } from '@/layouts/MainContentsLauout.tsx'
@@ -24,8 +22,6 @@ const authorize = true
 const icon = VideoCameraOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { loading } = useNechronicaContext()
-  const todoCrud = useTodoCrud()
   const { test1, test2Obj, test3, incrementTest1, incrementTest2, outputText } =
     useTestContext()
   const { setScreen } = useScreenContext()
@@ -81,7 +77,6 @@ function contents() {
           <StyledPie data={dashboardData} height={150} />
         </Col>
       </StatisticCardLayout>
-      <Todos {...todoCrud} loading={loading} />
     </ScreenContainer>
   )
 }
