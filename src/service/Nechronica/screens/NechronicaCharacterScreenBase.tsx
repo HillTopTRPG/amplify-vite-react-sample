@@ -75,6 +75,8 @@ export default function NechronicaCharacterScreenBase({
     searchedCharacters,
     selectedCharacters,
     setSelectedCharacters,
+    hoverCharacter,
+    setHoverCharacter,
   } = useSearchCharacter(useCharacters)
 
   const [sheetId, setSheetId] = useState('')
@@ -133,12 +135,17 @@ export default function NechronicaCharacterScreenBase({
         setSelectedCharacters(selectedCharacters.filter((c) => c !== id))
       }
     }
+    const onHoverCharacter = (id: string, isEnter: boolean) => {
+      setHoverCharacter(isEnter ? id : null)
+    }
+
     const resultList = searchedCharacters.map((character) => (
       <CharacterSmallCard
         key={character.id}
         character={character}
         selected={selectedCharacters.includes(character.id)}
         onSelect={onSelectCharacter}
+        onHover={onHoverCharacter}
       />
     ))
     return resultList.length ? (
@@ -160,12 +167,13 @@ export default function NechronicaCharacterScreenBase({
       </Flex>
     )
   }, [
+    searchedCharacters,
+    token.colorTextDescription,
     useCharacters.length,
     searchDivider,
-    searchedCharacters,
-    selectedCharacters,
     setSelectedCharacters,
-    token.colorTextDescription,
+    selectedCharacters,
+    setHoverCharacter,
   ])
 
   const onReloadSelectedCharacter = useMemo(
@@ -267,7 +275,13 @@ export default function NechronicaCharacterScreenBase({
   ])
 
   const selectedCharacterElms = useMemo(() => {
-    if (!selectedCharacters.length)
+    const targetList = [...selectedCharacters]
+    if (hoverCharacter) {
+      const index = targetList.indexOf(hoverCharacter)
+      if (index !== -1) targetList.splice(index, 1)
+      targetList.unshift(hoverCharacter)
+    }
+    if (!targetList.length)
       return (
         <Flex vertical style={{ padding: '0 10px' }}>
           <Skeleton title paragraph={{ rows: 0 }} />
@@ -275,12 +289,12 @@ export default function NechronicaCharacterScreenBase({
           <Skeleton round />
         </Flex>
       )
-    return selectedCharacters.map((selectId) => {
-      const character = useCharacters.find(({ id }) => id === selectId)
+    return targetList.map((targetId) => {
+      const character = useCharacters.find(({ id }) => id === targetId)
       if (!character) return null
       return <CharacterCard key={character.id} character={character} />
     })
-  }, [useCharacters, selectedCharacters])
+  }, [selectedCharacters, hoverCharacter, useCharacters])
 
   const detailSider = useMemo(
     () => (

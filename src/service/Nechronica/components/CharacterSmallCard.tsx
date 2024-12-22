@@ -38,27 +38,23 @@ type CharacterCardProps = {
   selected: boolean
   character: NechronicaCharacter
   onSelect: (id: string, isSelect: boolean) => void
+  onHover: (id: string, isEnter: boolean) => void
 }
 export default function CharacterSmallCard({
   selected,
   character,
   onSelect,
+  onHover,
 }: CharacterCardProps) {
   const { token } = theme.useToken()
   const { updateCharacter } = useNechronicaContext()
   const { currentIsMe } = useUserAttributes()
 
-  const onClickContainer = useMemo(
-    () => () => {
-      const after = !selected
-      onSelect(character.id, after)
-    },
-    [character.id, onSelect, selected],
-  )
-
   const cardProps: CardProps = useMemo(
     () => ({
-      onClick: onClickContainer,
+      onClick: () => onSelect(character.id, !selected),
+      onMouseEnter: () => onHover(character.id, true),
+      onMouseLeave: () => onHover(character.id, false),
       hoverable: true,
       styles: {
         body: {
@@ -73,7 +69,14 @@ export default function CharacterSmallCard({
           : token.colorBgElevated,
       },
     }),
-    [onClickContainer, selected, token.colorBgElevated, token.colorPrimaryBg],
+    [
+      character.id,
+      onSelect,
+      onHover,
+      selected,
+      token.colorBgElevated,
+      token.colorPrimaryBg,
+    ],
   )
 
   const toggleStared = useMemo(
