@@ -4,7 +4,7 @@ import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screen.ts'
-import type { Screens } from '@/layouts/MainContentsLauout.tsx'
+import type { Screen } from '@/service'
 import screens from '@/service/Nechronica/screens.ts'
 
 const label = 'レギオン'
@@ -14,7 +14,7 @@ const icon = DashboardOutlined
 function contents() {
   const { setScreen } = useScreenContext()
 
-  const statistics: [keyof Screens, number, string][] = [
+  const statistics: [keyof typeof screens, number, string][] = [
     ['dolls', 3, '体'],
     ['savants', 4, '体'],
     ['horrors', 5, '体'],
@@ -53,7 +53,7 @@ function contents() {
 }
 /* eslint-enable react-hooks/rules-of-hooks */
 
-const packed = {
+const packed: Screen = {
   label,
   authorize,
   icon,

@@ -1,4 +1,5 @@
 import screens from './screens'
+import { type Service } from '@/service'
 import baroqueImg from '@/service/Nechronica/images/class/baroque.png'
 import gothicImg from '@/service/Nechronica/images/class/gothic.png'
 import psychedelicImg from '@/service/Nechronica/images/class/psychedelic.png'
@@ -44,8 +45,14 @@ import courtImg from '@/service/Nechronica/images/position/court.png'
 import holicImg from '@/service/Nechronica/images/position/holic.png'
 import junkImg from '@/service/Nechronica/images/position/junk.png'
 import sororityImg from '@/service/Nechronica/images/position/sorority.png'
+import horrorImg from '@/service/Nechronica/images/type/horror.png'
+import legionImg from '@/service/Nechronica/images/type/legion.png'
+import savantImg from '@/service/Nechronica/images/type/savant.png'
 import unknownImg from '@/service/Nechronica/images/unknown.png'
-import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import {
+  type NechronicaManeuver,
+  type NechronicaType,
+} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
 export const PARTS_TUPLE: [string, number[]][] = [
@@ -68,13 +75,16 @@ export const getPositionClassName = (
   ]
 }
 
-export const getPositionSrc = (value: number) => {
-  if (value === 1) return aliceImg
-  if (value === 2) return holicImg
-  if (value === 3) return automatonImg
-  if (value === 4) return junkImg
-  if (value === 5) return courtImg
-  if (value === 6) return sororityImg
+export const getCharacterTypeSrc = (type: NechronicaType, position: number) => {
+  if (type === 'savant') return savantImg
+  if (type === 'horror') return horrorImg
+  if (type === 'legion') return legionImg
+  if (position === 1) return aliceImg
+  if (position === 2) return holicImg
+  if (position === 3) return automatonImg
+  if (position === 4) return junkImg
+  if (position === 5) return courtImg
+  if (position === 6) return sororityImg
   return unknownImg
 }
 
@@ -194,10 +204,10 @@ export const getBackImg = (maneuverType: number) => {
   return ''
 }
 
-const service = {
+const service: Service = {
   service: 'nechronica',
   serviceName: 'ネクロニカ',
   screens,
-} as const
+}
 
 export default service

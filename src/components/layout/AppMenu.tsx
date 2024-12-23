@@ -25,7 +25,6 @@ import MediaQuery, { useMediaQuery } from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useScreenContext } from '@/context/screen.ts'
 import { useUserAttributes } from '@/context/userAttributes.ts'
-import { type Screens } from '@/layouts/MainContentsLauout.tsx'
 import services from '@/service'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
@@ -73,6 +72,13 @@ export default function AppMenu() {
     },
   }
 
+  const useUsers = (
+    me ? [me, ...users.filter((u) => u.userName !== me?.userName)] : [...users]
+  ).map((user) => ({
+    ...user,
+    viewName: user.userName === me?.userName ? 'あなた' : user.userName,
+  }))
+
   return (
     <Layout.Header
       style={{
@@ -110,9 +116,9 @@ export default function AppMenu() {
           <Typography.Text>/</Typography.Text>
           <Dropdown
             menu={{
-              items: users.map((user) => ({
+              items: useUsers.map((user) => ({
                 key: user.userName,
-                label: user.userName,
+                label: user.viewName,
                 icon: <UserOutlined />,
               })),
               onClick: ({ key }) => setUser(key),
@@ -124,7 +130,8 @@ export default function AppMenu() {
               icon={<UserOutlined />}
               style={{ padding: '0 5px' }}
             >
-              {userName ?? me?.userName ?? ''}
+              {useUsers.find((u) => u.userName === userName)?.viewName ??
+                'あなた'}
             </Button>
           </Dropdown>
           <Typography.Text>/</Typography.Text>
@@ -156,7 +163,7 @@ export default function AppMenu() {
                   label: screens[key].label,
                   icon: React.createElement(screens[key].icon),
                 })),
-                onClick: ({ key }) => setScreen(key as keyof Screens),
+                onClick: ({ key }) => setScreen(key as keyof typeof screens),
               }}
               placement="bottomLeft"
             >

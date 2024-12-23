@@ -14,7 +14,7 @@ import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import { useTestContext } from '@/context/test'
-import type { Screens } from '@/layouts/MainContentsLauout.tsx'
+import type { Screen } from '@/service'
 import screens from '@/service/Nechronica/screens.ts'
 
 const label = 'ダッシュボード2'
@@ -26,7 +26,7 @@ function contents() {
     useTestContext()
   const { setScreen } = useScreenContext()
 
-  const statistics: [keyof Screens, number, string][] = [
+  const statistics: [keyof typeof screens, number, string][] = [
     ['dolls', 3, '体'],
     ['savants', 4, '体'],
     ['horrors', 5, '体'],
@@ -82,7 +82,7 @@ function contents() {
 }
 /* eslint-enable react-hooks/rules-of-hooks */
 
-const packed = {
+const packed: Screen = {
   label,
   authorize,
   icon,

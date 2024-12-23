@@ -12,22 +12,32 @@ import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screen.ts'
-import type { Screens } from '@/layouts/MainContentsLauout.tsx'
+import { useUserAttributes } from '@/context/userAttributes.ts'
+import type { Screen } from '@/service'
 import screens from '@/service/Nechronica/screens.ts'
+import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const label = 'ダッシュボード'
 const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
-  const { loading, dolls } = useNechronicaContext()
+  const { loading, characters } = useNechronicaContext()
+  const { currentUser } = useUserAttributes()
   const { setScreen } = useScreenContext()
 
-  const statistics: [keyof Screens, number, string][] = [
-    ['dolls', dolls.length, '体'],
-    ['savants', 4, '体'],
-    ['horrors', 5, '体'],
-    ['legions', 6, '種類'],
+  const getCharacterNum = (type: NechronicaType) => {
+    return characters.filter((c) => {
+      if (c.additionalData.type !== type) return false
+      return c.owner === currentUser?.userName
+    }).length
+  }
+
+  const statistics: [keyof typeof screens, number, string][] = [
+    ['dolls', getCharacterNum('doll'), '体'],
+    ['savants', getCharacterNum('savant'), '体'],
+    ['horrors', getCharacterNum('horror'), '体'],
+    ['legions', getCharacterNum('legion'), '種類'],
   ]
   const dashboardData: GetProps<typeof Statistic>[] = statistics.map(
     ([screen, value, suffix]) => ({
@@ -65,7 +75,7 @@ function contents() {
 }
 /* eslint-enable react-hooks/rules-of-hooks */
 
-const packed = {
+const packed: Screen = {
   label,
   authorize,
   icon,

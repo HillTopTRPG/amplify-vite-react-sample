@@ -11,12 +11,14 @@ import {
   type CardProps,
   Checkbox,
   Flex,
+  Image,
   theme,
   Typography,
 } from 'antd'
 import { clone } from 'lodash-es'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
 import { useUserAttributes } from '@/context/userAttributes.ts'
+import { getCharacterTypeSrc } from '@/service/Nechronica'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
@@ -38,32 +40,32 @@ type CharacterCardProps = {
   selected: boolean
   character: NechronicaCharacter
   onSelect: (id: string, isSelect: boolean) => void
+  onHover: (id: string, isEnter: boolean) => void
+  viewType?: 'normal' | 'simple'
 }
 export default function CharacterSmallCard({
   selected,
   character,
   onSelect,
+  onHover,
+  viewType = 'normal',
 }: CharacterCardProps) {
   const { token } = theme.useToken()
   const { updateCharacter } = useNechronicaContext()
   const { currentIsMe } = useUserAttributes()
 
-  const onClickContainer = useMemo(
-    () => () => {
-      const after = !selected
-      onSelect(character.id, after)
-    },
-    [character.id, onSelect, selected],
-  )
-
   const cardProps: CardProps = useMemo(
     () => ({
-      onClick: onClickContainer,
+      onClick: () => onSelect(character.id, !selected),
+      onMouseEnter: () => onHover(character.id, true),
+      onMouseLeave: () => onHover(character.id, false),
       hoverable: true,
       styles: {
         body: {
           padding: '8px 0',
           width: 180,
+          position: 'relative',
+          overflow: 'hidden',
         },
       },
       style: {
@@ -73,7 +75,14 @@ export default function CharacterSmallCard({
           : token.colorBgElevated,
       },
     }),
-    [onClickContainer, selected, token.colorBgElevated, token.colorPrimaryBg],
+    [
+      character.id,
+      onSelect,
+      onHover,
+      selected,
+      token.colorBgElevated,
+      token.colorPrimaryBg,
+    ],
   )
 
   const toggleStared = useMemo(
@@ -123,116 +132,88 @@ export default function CharacterSmallCard({
         />
       </>
     )
-  }, [character.additionalData.stared, toggleStared])
+  }, [
+    character.additionalData.stared,
+    character.public,
+    togglePublic,
+    toggleStared,
+  ])
 
   const operationBlock = useMemo(
     () => (
       <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
         <Checkbox checked={selected} style={{ alignSelf: 'center' }} />
 
-        {currentIsMe ? ownerOperations : null}
+        {currentIsMe && viewType === 'normal' ? ownerOperations : null}
       </Flex>
     ),
-    [currentIsMe, ownerOperations, selected],
+    [currentIsMe, ownerOperations, selected, viewType],
   )
 
-  const constBlocks = useMemo(() => {
-    return (
-      <Flex
-        vertical
-        align="flex-start"
-        style={{ flexGrow: 1, padding: '0 3px' }}
-      >
-        {operationBlock}
-        <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
-          {basic.characterName}
-        </Typography.Text>
+  const constBlocks = useMemo(
+    () => (
+      <>
         <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
-          <Typography.Text style={{ fontSize: 11 }}>
+          <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
             {mapping.CHARACTER_POSITION[basic.position].text}
           </Typography.Text>
         </Flex>
         <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
-          <Typography.Text style={{ fontSize: 11 }}>
+          <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
             {mapping.CHARACTER_CLASS[basic.mainClass].text}
           </Typography.Text>
-          <Typography.Text style={{ fontSize: 11 }}>/</Typography.Text>
-          <Typography.Text style={{ fontSize: 11 }}>
+          <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
+            /
+          </Typography.Text>
+          <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
             {mapping.CHARACTER_CLASS[basic.subClass].text}
           </Typography.Text>
         </Flex>
-      </Flex>
-    )
-  }, [
-    basic.characterName,
-    basic.mainClass,
-    basic.position,
-    basic.subClass,
-    operationBlock,
-  ])
-
-  // const onChangeBasePosition = useMemo(
-  //   () => (newValue: number) => {
-  //     const newData = clone(character)
-  //     newData.sheetData.basic.basePosition = newValue
-  //     updateCharacter(newData.id, newData.type, newData.sheetData)
-  //   },
-  //   [character, updateCharacter],
-  // )
-
-  // const isSameClass = basic.mainClass === basic.subClass
-  //
-  // const basicPositionSelect = useMemo(
-  //   () => (
-  //     <Flex justify="center" align="center" style={{ flexGrow: 1 }}>
-  //       <Flex vertical>
-  //         <Typography.Text
-  //           strong
-  //           style={{ fontSize: 10 }}
-  //           onClick={(e) => e.stopPropagation()}
-  //         >
-  //           初期配置
-  //         </Typography.Text>
-  //         <Select
-  //           value={basic.basePosition}
-  //           onChange={onChangeBasePosition}
-  //           onClick={(e) => e.stopPropagation()}
-  //           options={mapping.CHARACTER_LOCATION.map((l) => ({
-  //             value: l['init-pos-value'],
-  //             label: i18nT(l.text) || '-',
-  //           }))}
-  //           style={{ minWidth: 70 }}
-  //         />
-  //       </Flex>
-  //     </Flex>
-  //   ),
-  //   [basic.basePosition, i18nT, onChangeBasePosition],
-  // )
-
-  // const roiceButtons = useMemo(() => {
-  //   return character.sheetData.roiceList.map((roice, index) => (
-  //     <RoiceButton key={index} roice={roice} />
-  //   ))
-  // }, [character.sheetData.roiceList])
-  //
-  // const partsLineItems = useMemo(() => {
-  //   return PARTS_TUPLE.map(([src, parts], index) => (
-  //     <PartsListItem
-  //       key={index}
-  //       maneuverList={character.sheetData.maneuverList}
-  //       src={src}
-  //       parts={parts}
-  //       basic={character.sheetData.basic}
-  //     />
-  //   ))
-  // }, [character.sheetData.basic, character.sheetData.maneuverList])
+      </>
+    ),
+    [basic.mainClass, basic.position, basic.subClass],
+  )
 
   const radarData = makeChartData(character)
 
   return (
     <Card {...cardProps}>
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '-20%',
+          right: 0,
+          bottom: 0,
+          overflow: 'hidden',
+        }}
+      >
+        <Image
+          src={getCharacterTypeSrc(
+            character.additionalData.type,
+            basic.position,
+          )}
+          preview={false}
+          style={{
+            opacity: 0.1,
+            width: '140%',
+            height: '140%',
+            filter: 'blur(2px)',
+          }}
+        />
+      </div>
       <Flex vertical gap={3}>
-        {constBlocks}
+        <Flex
+          vertical
+          align="flex-start"
+          style={{ flexGrow: 1, padding: '0 3px' }}
+        >
+          {operationBlock}
+          <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
+            {basic.characterName}
+          </Typography.Text>
+          {character.additionalData.type === 'doll' ? constBlocks : null}
+        </Flex>
         <div
           style={{
             width: 180,

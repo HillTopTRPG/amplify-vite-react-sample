@@ -4,11 +4,11 @@ import screens from './screens'
 import service from './index'
 import PrivateLayout from '@/components/PrivateLayout.tsx'
 import PublicLayout from '@/components/PublicLayout.tsx'
-import { getKeys } from '@/utils/types.ts'
+import { getKeys, type ValueType } from '@/utils/types.ts'
 
 export default function Routes() {
   const getScreens = (
-    filter: (screen: (typeof screens)[keyof typeof screens]) => boolean,
+    filter: (screen: ValueType<typeof screens>) => boolean,
   ) => {
     const filtered = getKeys(screens).filter((screen) =>
       filter(screens[screen]),

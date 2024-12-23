@@ -46,7 +46,6 @@ export default [
     rules: {
       semi: [2, 'never'],
       'no-unexpected-multiline': 'error',
-      indent: ['error', 2, { SwitchCase: 1 }],
       'linebreak-style': ['error', 'unix'],
       'no-console': [
         'warn',

@@ -2,12 +2,12 @@ import React, { type RefObject } from 'react'
 import { Affix, Card, type CardProps } from 'antd'
 
 type AffixCardProps = {
-  affixContainer: RefObject<HTMLElement>
+  affixContainerRef: RefObject<HTMLElement>
   children: React.ReactNode
   onChangeAffix: (affixed: boolean) => void
 }
 export default function AffixCard({
-  affixContainer,
+  affixContainerRef,
   children,
   onChangeAffix,
 }: AffixCardProps) {
@@ -25,7 +25,7 @@ export default function AffixCard({
 
   return (
     <Affix
-      target={() => affixContainer.current}
+      target={() => affixContainerRef.current}
       onChange={(affixed) => onChangeAffix(affixed ?? false)}
       style={{ pointerEvents: 'none' }}
     >
