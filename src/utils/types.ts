@@ -1,4 +1,4 @@
-import { capitalize, pick } from 'lodash-es'
+import { capitalize, omit, pick } from 'lodash-es'
 
 export function getKeys<T extends Record<string | number | symbol, unknown>>(
   obj: T,
@@ -101,6 +101,13 @@ export const typedPick = <T extends Record<string, unknown>, U extends keyof T>(
   ...properties: U[]
 ): Pick<T, U> => {
   return pick(src, properties) as Pick<T, U>
+}
+
+export const typedOmit = <T extends Record<string, unknown>, U extends keyof T>(
+  src: T,
+  ...properties: U[]
+): Omit<T, U> => {
+  return omit(src, properties) as Omit<T, U>
 }
 
 export type PromiseType<T extends Promise<unknown>> =

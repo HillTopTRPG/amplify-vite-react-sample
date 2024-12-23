@@ -15,50 +15,47 @@ const client = generateClient<Schema>()
 const { defaultAlgorithm, darkAlgorithm } = theme
 
 export const [UserAttributesProvider, useUserAttributes] = constate(() => {
-  const [isLoadedUserAttribute, setIsLoadedUserAttribute] = useState(false)
+  const [userAttributeLoading, setUserAttributeLoading] = useState(true)
   const [attr, setAttrResult] = useState<FetchUserAttributesOutput>()
   const reloadUserAttributes = () => {
     fetchUserAttributes()
       .then(setAttrResult)
-      .then(() => setIsLoadedUserAttribute(true))
+      .then(() => setUserAttributeLoading(false))
   }
   useEffect(reloadUserAttributes, [])
 
   const [user, setUser] = useState<GetCurrentUserOutput | null>(null)
   useEffect(() => void getCurrentUser().then(setUser), [])
 
-  const [isLoadedUsers, setIsLoadedUsers] = useState(false)
   type User = Schema['User']['type'] & {
     setting: {
       darkMode: boolean
     }
   }
+
   const [users, setUsers] = useState<User[]>([])
-  const [me, setMe] = useState<User | null>(null)
+  const [usersLoading, setUsersLoading] = useState(true)
   useEffect(() => {
-    if (!user?.username) return () => {}
     const sub = client.models.User.observeQuery().subscribe({
       next: ({ items }) => {
         const newUsers = items.map((item) => {
           return { ...item, setting: JSON.parse(item.setting) } as User
         })
         setUsers(newUsers)
-        setMe(newUsers.find((u) => u.userName === user?.username) ?? null)
-        setIsLoadedUsers(true)
+        setUsersLoading(false)
       },
     })
     return void sub.unsubscribe
-  }, [user?.username])
+  }, [])
 
+  const [me, setMe] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   useEffect(() => {
-    const nextValue = !isLoadedUserAttribute || !isLoadedUsers || !user || !me
-    setLoading(nextValue)
-    if (
-      !nextValue &&
-      user &&
-      !users.some((u) => u.userName === user.username)
-    ) {
+    const me = users.find((u) => u.userName === user?.username) ?? null
+    setMe(me)
+    const loading = userAttributeLoading || usersLoading || !user || !me
+    setLoading(loading)
+    if (loading && user && !me) {
       client.models.User.create({
         userName: user.username,
         setting: JSON.stringify({
@@ -66,7 +63,7 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
         }),
       })
     }
-  }, [isLoadedUserAttribute, isLoadedUsers, me, user, users])
+  }, [userAttributeLoading, usersLoading, user, users])
 
   const { userName } = useParams<{ userName: string }>()
   const currentUser = userName ? users.find((u) => u.userName === userName) : me

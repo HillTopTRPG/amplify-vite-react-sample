@@ -1,7 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react'
 import {
   DeleteOutlined,
-  FolderOpenOutlined,
   ReloadOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
@@ -28,7 +27,6 @@ import ScreenSubTitle from '@/service/Nechronica/components/ScreenSubTitle.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 import {
-  type NechronicaCharacter,
   NechronicaDataHelper,
   type NechronicaType,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -52,20 +50,10 @@ export default function NechronicaCharacterScreenBase({
   const { token } = theme.useToken()
   const { currentUser, me, currentIsMe } = useUserAttributes()
 
-  const useCharacters = characters
-    .filter((c) => {
-      if (c.additionalData.type !== characterType) return false
-      if (c.owner !== (currentUser?.userName ?? '')) return false
-      if (!c.public && !currentIsMe) return false
-      //
-      return true
-    })
-    .slice()
-    .sort((a: NechronicaCharacter, b: NechronicaCharacter) => {
-      if (a.additionalData.stared && !b.additionalData.stared) return -1
-      if (b.additionalData.stared && !a.additionalData.stared) return 1
-      return b.updatedAt.getTime() - a.updatedAt.getTime()
-    })
+  const useCharacters = characters.filter((c) => {
+    if (c.additionalData.type !== characterType) return false
+    return c.owner === currentUser?.userName
+  })
 
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
@@ -222,28 +210,13 @@ export default function NechronicaCharacterScreenBase({
           onChange={setSearch}
           inputRef={searchInputRef}
         />
-        <Flex
-          vertical
-          style={{
-            backgroundColor: 'transparent',
-          }}
-        >
+        <Flex vertical style={{ backgroundColor: 'transparent' }}>
           <Typography.Text
-            style={{
-              color: token.colorTextPlaceholder,
-              fontSize: 10,
-            }}
+            style={{ color: token.colorTextPlaceholder, fontSize: 10 }}
           >
             まとめて操作
           </Typography.Text>
           <Flex gap={8} style={{ pointerEvents: 'all' }}>
-            <Popover content="選択キャラクターをグループに追加">
-              <Button
-                icon={<FolderOpenOutlined />}
-                type="primary"
-                shape="circle"
-              />
-            </Popover>
             <Popover content="選択キャラクターをキャラクター保管所からリロード">
               <Button
                 icon={<ReloadOutlined />}

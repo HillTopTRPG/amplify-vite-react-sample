@@ -23,16 +23,13 @@ const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
   const { loading, characters } = useNechronicaContext()
-  const { currentUser, currentIsMe } = useUserAttributes()
+  const { currentUser } = useUserAttributes()
   const { setScreen } = useScreenContext()
 
   const getCharacterNum = (type: NechronicaType) => {
     return characters.filter((c) => {
       if (c.additionalData.type !== type) return false
-      if (c.owner !== (currentUser?.userName ?? '')) return false
-      if (!c.public && !currentIsMe) return false
-      //
-      return true
+      return c.owner === currentUser?.userName
     }).length
   }
 

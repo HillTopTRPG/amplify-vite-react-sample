@@ -1,5 +1,6 @@
 import { clone, convertNumberZero } from '../../common/PrimaryDataUtility.ts'
 import { getJsonByGet, getJsonByJsonp } from '../../common/fetch-util.ts'
+import { type CharacterGroup } from '@/service'
 
 export type NechronicaViewOption = {
   roicePosition: 'before' | 'after' | 'none'
@@ -85,6 +86,10 @@ export type NechronicaCharacter = {
   public: boolean
   createdAt: Date
   updatedAt: Date
+}
+
+export type CharacterGroupRelation = CharacterGroup & {
+  characters: NechronicaCharacter[]
 }
 
 export type NechronicaManeuverStackType = 'use' | 'lost' | 'move'

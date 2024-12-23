@@ -12,6 +12,16 @@ const schema = a.schema({
       setting: a.string().required(),
     })
     .authorization((allow) => [allow.authenticated()]),
+  CharacterGroup: a
+    .model({
+      system: a.string().required(),
+      name: a.string().required(),
+      additionalData: a.string().required(),
+      characterIds: a.string().required(),
+      owner: a.string().required(),
+      public: a.boolean().required(),
+    })
+    .authorization((allow) => [allow.authenticated()]),
   NechronicaCharacter: a
     .model({
       name: a.string().required(),
