@@ -5,6 +5,7 @@ import NechronicaCharacterScreenBase from '@/service/Nechronica/screens/Nechroni
 const type = 'horror'
 const label = 'ホラー'
 const authorize = true
+const viewMenu = true
 const icon = RadarChartOutlined
 const contents = () => (
   <NechronicaCharacterScreenBase
@@ -17,6 +18,7 @@ const contents = () => (
 const packed: Screen = {
   label,
   authorize,
+  viewMenu,
   icon,
   contents,
 }

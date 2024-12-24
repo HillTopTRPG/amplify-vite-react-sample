@@ -28,7 +28,7 @@ export default function ScreenSelectMenu({
         flexGrow: 1,
         width: '100%',
       }}
-      items={getKeys(screens).map((key) => ({
+      items={getKeys(screens).filter(key => screens[key].viewMenu).map((key) => ({
         key,
         icon: React.createElement(screens[key].icon),
         label: screens[key].label,

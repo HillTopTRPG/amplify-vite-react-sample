@@ -21,6 +21,7 @@ export type Screen = {
   label: string
   authorize: boolean
   icon: React.FC
+  viewMenu: boolean
   contents: () => React.ReactNode
 }
 

@@ -19,6 +19,7 @@ import screens from '@/service/Nechronica/screens.ts'
 
 const label = 'ダッシュボード2'
 const authorize = true
+const viewMenu = true
 const icon = VideoCameraOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
@@ -85,6 +86,7 @@ function contents() {
 const packed: Screen = {
   label,
   authorize,
+  viewMenu,
   icon,
   contents,
 }

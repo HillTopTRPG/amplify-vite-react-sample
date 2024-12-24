@@ -158,11 +158,13 @@ export default function AppMenu() {
             <Typography.Text>/</Typography.Text>
             <Dropdown
               menu={{
-                items: getKeys(screens).map((key) => ({
-                  key,
-                  label: screens[key].label,
-                  icon: React.createElement(screens[key].icon),
-                })),
+                items: getKeys(screens)
+                  .filter((key) => screens[key].viewMenu)
+                  .map((key) => ({
+                    key,
+                    label: screens[key].label,
+                    icon: React.createElement(screens[key].icon),
+                  })),
                 onClick: ({ key }) => setScreen(key as keyof typeof screens),
               }}
               placement="bottomLeft"

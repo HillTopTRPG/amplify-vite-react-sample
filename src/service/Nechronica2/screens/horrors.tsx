@@ -9,6 +9,7 @@ import screens from '@/service/Nechronica/screens.ts'
 
 const label = 'ホラー'
 const authorize = true
+const viewMenu = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
@@ -56,6 +57,7 @@ function contents() {
 const packed: Screen = {
   label,
   authorize,
+  viewMenu,
   icon,
   contents,
 }
