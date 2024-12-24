@@ -334,7 +334,7 @@ export default function NechronicaCharacterScreenBase({
                 align="flex-start"
                 justify={screenSize.isMobile ? 'space-evenly' : 'flex-start'}
                 wrap
-                gap="6px 6px"
+                gap={9}
               >
                 {characterCards}
               </Flex>

@@ -15,7 +15,9 @@ import {
   theme,
   Typography,
 } from 'antd'
+import classNames from 'classnames'
 import { clone } from 'lodash-es'
+import style from './CharacterSmallCard.module.css'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
 import { useUserAttributes } from '@/context/userAttributes.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
@@ -59,11 +61,14 @@ export default function CharacterSmallCard({
       onClick: () => onSelect(character.id, !selected),
       onMouseEnter: () => onHover(character.id, true),
       onMouseLeave: () => onHover(character.id, false),
-      hoverable: true,
+      hoverable: false,
+      className: classNames(style.hoverable, selected ? style.active : null),
+      onMouseOver: () => onHover(character.id, true),
+      onMouseOut: () => onHover(character.id, false),
       styles: {
         body: {
           padding: '8px 0',
-          width: 180,
+          width: 178,
           position: 'relative',
           overflow: 'hidden',
         },

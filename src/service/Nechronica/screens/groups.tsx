@@ -4,12 +4,12 @@ import { Button, Flex, Input, type InputRef, Modal, Space } from 'antd'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import type { Screen } from '@/service'
 import CharacterSmallCard from '@/service/Nechronica/components/CharacterSmallCard.tsx'
 import GroupBlock from '@/service/Nechronica/components/GroupBlock.tsx'
 import ScreenSubTitle from '@/service/Nechronica/components/ScreenSubTitle.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 import type { CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { typedOmit } from '@/utils/types.ts'
 
@@ -32,8 +32,7 @@ const contents = () => {
     (c) => c.owner === currentUser?.userName,
   )
 
-  const { selectedCharacters, setSelectedCharacters } =
-    useSearchCharacter(useCharacters)
+  const [selectIds, setSelectIds, onSelectCharacter] = useSelectIds()
 
   const useCharacterGroups = characterGroupRelations.filter(
     (cg) => cg.owner === currentUser?.userName,
@@ -42,22 +41,18 @@ const contents = () => {
   const [targetCharacterGroup, setTargetCharacterGroup] =
     useState<CharacterGroupRelation | null>(null)
 
+  const handleCancel = () => {
+    setSelectIds([])
+    setTargetCharacterGroup(null)
+  }
+
   const handleOk = () => {
     if (!targetCharacterGroup) return
     updateCharacterGroup({
       ...typedOmit(targetCharacterGroup, 'characters'),
-      characterIds: [
-        ...targetCharacterGroup.characterIds,
-        ...selectedCharacters,
-      ],
+      characterIds: [...targetCharacterGroup.characterIds, ...selectIds],
     })
-    setSelectedCharacters([])
-    setTargetCharacterGroup(null)
-  }
-
-  const handleCancel = () => {
-    setSelectedCharacters([])
-    setTargetCharacterGroup(null)
+    handleCancel()
   }
 
   const [affixContainer, setAffixContainer] = useState<HTMLElement | null>(null)
@@ -72,6 +67,17 @@ const contents = () => {
         name,
       })
     }
+    const onDeleteCharacter = (
+      group: CharacterGroupRelation,
+      characterIds: string[],
+    ) => {
+      updateCharacterGroup({
+        ...typedOmit(group, 'characters'),
+        characterIds: group.characterIds.filter(
+          (id) => !characterIds.includes(id),
+        ),
+      })
+    }
     return useCharacterGroups.map((group) => {
       if (!affixContainer) return null
       return (
@@ -79,9 +85,10 @@ const contents = () => {
           key={group.id}
           group={group}
           affixContainer={affixContainer}
-          onAddCharacter={setTargetCharacterGroup}
-          onGroupDelete={onGroupDelete}
-          onChangeGroupName={onChangeGroupName}
+          onAddCharacter={() => setTargetCharacterGroup(group)}
+          onGroupDelete={() => onGroupDelete(group)}
+          onChangeGroupName={(name) => onChangeGroupName(group, name)}
+          onDeleteCharacter={(ids) => onDeleteCharacter(group, ids)}
         />
       )
     })
@@ -106,14 +113,6 @@ const contents = () => {
       name: newGroupName,
       characterIds: [],
     })
-  }
-
-  const onSelectCharacter = (id: string, isSelect: boolean) => {
-    if (isSelect) {
-      setSelectedCharacters([id, ...selectedCharacters])
-    } else {
-      setSelectedCharacters(selectedCharacters.filter((c) => c !== id))
-    }
   }
 
   return (
@@ -154,10 +153,10 @@ const contents = () => {
       >
         <Flex
           wrap
-          gap={5}
+          gap={9}
           align={'flex-start'}
           justify={screenSize.isMobile ? 'space-evenly' : 'flex-start'}
-          style={{ overflow: 'auto' }}
+          style={{ overflow: 'auto', height: '100%' }}
         >
           {useCharacters
             .filter((c) => !targetCharacterGroup?.characterIds.includes(c.id))
@@ -166,7 +165,7 @@ const contents = () => {
                 key={character.id}
                 viewType="simple"
                 character={character}
-                selected={selectedCharacters.includes(character.id)}
+                selected={selectIds.includes(character.id)}
                 onSelect={onSelectCharacter}
                 onHover={() => {}}
               />

@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
 export function useSearchCharacter(characters: NechronicaCharacter[]) {
   const [search, setSearch] = useState('')
-  const [selectedCharacters, setSelectedCharacters] = useState<string[]>([])
+  const [selectedCharacters, setSelectedCharacters] = useSelectIds()
   const [hoverCharacter, setHoverCharacter] = useState<string | null>(null)
 
   const searchedCharacters = characters.filter((character) => {
