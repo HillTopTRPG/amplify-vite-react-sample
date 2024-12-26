@@ -52,7 +52,8 @@ export default function NechronicaCharacterScreenBase({
 
   const useCharacters = characters.filter((c) => {
     if (c.additionalData.type !== characterType) return false
-    return c.owner === currentUser?.userName
+    if (!currentUser) return true
+    return c.owner === currentUser.userName
   })
 
   const sheetIdInputRef = useRef<InputRef>(null)
@@ -210,35 +211,38 @@ export default function NechronicaCharacterScreenBase({
           onChange={setSearch}
           inputRef={searchInputRef}
         />
-        <Flex vertical style={{ backgroundColor: 'transparent' }}>
-          <Typography.Text
-            style={{ color: token.colorTextPlaceholder, fontSize: 10 }}
-          >
-            まとめて操作
-          </Typography.Text>
-          <Flex gap={8} style={{ pointerEvents: 'all' }}>
-            <Popover content="選択キャラクターをキャラクター保管所からリロード">
-              <Button
-                icon={<ReloadOutlined />}
-                type="primary"
-                shape="circle"
-                onClick={onReloadSelectedCharacter}
-              />
-            </Popover>
-            <Popover content="選択キャラクターを削除">
-              <Button
-                icon={<DeleteOutlined />}
-                type="primary"
-                shape="circle"
-                danger
-                onClick={onDeleteSelectedCharacter}
-              />
-            </Popover>
+        {currentIsMe ? (
+          <Flex vertical style={{ backgroundColor: 'transparent' }}>
+            <Typography.Text
+              style={{ color: token.colorTextPlaceholder, fontSize: 10 }}
+            >
+              まとめて操作
+            </Typography.Text>
+            <Flex gap={8} style={{ pointerEvents: 'all' }}>
+              <Popover content="選択キャラクターをキャラクター保管所からリロード">
+                <Button
+                  icon={<ReloadOutlined />}
+                  type="primary"
+                  shape="circle"
+                  onClick={onReloadSelectedCharacter}
+                />
+              </Popover>
+              <Popover content="選択キャラクターを削除">
+                <Button
+                  icon={<DeleteOutlined />}
+                  type="primary"
+                  shape="circle"
+                  danger
+                  onClick={onDeleteSelectedCharacter}
+                />
+              </Popover>
+            </Flex>
           </Flex>
-        </Flex>
+        ) : null}
       </Flex>
     )
   }, [
+    currentIsMe,
     isAffixed,
     onDeleteSelectedCharacter,
     onReloadSelectedCharacter,

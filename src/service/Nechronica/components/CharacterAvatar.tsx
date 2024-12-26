@@ -1,5 +1,5 @@
 import { Flex, Typography } from 'antd'
-import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useThemeContext } from '@/context/theme.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
 import AvatarNoBorder from '@/service/Nechronica/components/AvatarNoBorder.tsx'
 import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -36,8 +36,8 @@ export default function CharacterAvatar({
   position,
   color,
 }: CharacterAvatarProps) {
-  const { isDarkMode } = useUserAttributes()
-  const avatarBgColor = MAP[type].color[isDarkMode ? 0 : 1]
+  const { theme } = useThemeContext()
+  const avatarBgColor = MAP[type].color[theme === 'dark' ? 0 : 1]
   const characterAvatarGradient = `radial-gradient(${avatarBgColor},${avatarBgColor} 60%,transparent 75%)`
 
   return (

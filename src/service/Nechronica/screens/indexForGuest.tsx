@@ -6,10 +6,7 @@ import {
   Typography,
   Space,
   Spin,
-  List,
 } from 'antd'
-import { generateClient } from 'aws-amplify/api'
-import type { Schema } from '../../../../amplify/data/resource.ts'
 import { useNechronicaContext } from '../context'
 import StatisticCardLayout from '@/components/StatisticCardLayout.tsx'
 import StyledPie from '@/components/StyledPie.tsx'
@@ -20,16 +17,14 @@ import type { Screen } from '@/service'
 import screens from '@/service/Nechronica/screens.ts'
 import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
-const client = generateClient<Schema>()
-
 const label = 'ダッシュボード'
-const authorize = true
+const authorize = false
 const viewMenu = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
   const { loading, characters } = useNechronicaContext()
-  const { currentUser, users } = useUserAttributes()
+  const { currentUser } = useUserAttributes()
   const { setScreen } = useScreenContext()
 
   const getCharacterNum = (type: NechronicaType) => {
@@ -66,12 +61,6 @@ function contents() {
     }),
   )
 
-  const onDeleteUser = (id: string) => {
-    const user = users.find((u) => u.id === id)
-    console.log(`delete user ${user?.userName} ${id}`)
-    client.models.User.delete({ id })
-  }
-
   return (
     <ScreenContainer title={label} icon={icon}>
       <StatisticCardLayout title="キャラクターデータ" data={dashboardData}>
@@ -82,13 +71,6 @@ function contents() {
           <StyledPie data={dashboardData} height={150} />
         </Col>
       </StatisticCardLayout>
-      <List>
-        {users.map((u) => (
-          <List.Item key={u.id} onClick={() => onDeleteUser(u.id)}>
-            {u.userName}
-          </List.Item>
-        ))}
-      </List>
     </ScreenContainer>
   )
 }

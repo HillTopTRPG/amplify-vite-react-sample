@@ -1,17 +1,16 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend'
 
 const schema = a.schema({
-  Todo: a
-    .model({
-      content: a.string(),
-    })
-    .authorization((allow) => [allow.authenticated()]),
   User: a
     .model({
       userName: a.string().required(),
       setting: a.string().required(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [
+      allow.authenticated('identityPool'),
+      allow.guest().to(['read']),
+    ]),
+
   CharacterGroup: a
     .model({
       system: a.string().required(),
@@ -21,7 +20,11 @@ const schema = a.schema({
       owner: a.string().required(),
       public: a.boolean().required(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [
+      allow.authenticated('identityPool'),
+      allow.guest().to(['read']),
+    ]),
+
   NechronicaCharacter: a
     .model({
       name: a.string().required(),
@@ -30,7 +33,10 @@ const schema = a.schema({
       owner: a.string().required(),
       public: a.boolean().required(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [
+      allow.authenticated('identityPool'),
+      allow.guest().to(['read']),
+    ]),
 })
 
 export type Schema = ClientSchema<typeof schema>
@@ -38,7 +44,7 @@ export type Schema = ClientSchema<typeof schema>
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: 'userPool',
+    defaultAuthorizationMode: 'identityPool',
     // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
