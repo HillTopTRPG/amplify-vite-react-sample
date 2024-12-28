@@ -1,17 +1,17 @@
-import { ConfigProvider, type GetProps, Layout } from 'antd'
+import { ConfigProvider, Layout, theme } from 'antd'
 import MediaQuery from 'react-responsive'
 import AppMenu from '@/components/layout/AppMenu.tsx'
 import Drawer from '@/components/layout/Drawer.tsx'
 import DynamicScreen from '@/components/layout/DynamicScreen.tsx'
 import Sider from '@/components/layout/Sider.tsx'
 import { MEDIA_QUERY } from '@/const/style.ts'
-import { ScreenProvider } from '@/context/screen.ts'
-import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useThemeContext } from '@/context/theme.ts'
 
-type ScreenProviderProps = GetProps<typeof ScreenProvider>
+const { defaultAlgorithm, darkAlgorithm } = theme
 
-export default function MainContentsLayout(props: ScreenProviderProps) {
-  const { algorithm } = useUserAttributes()
+export default function MainContentsLayout() {
+  const { theme } = useThemeContext()
+  const algorithm = theme === 'dark' ? darkAlgorithm : defaultAlgorithm
 
   return (
     <ConfigProvider
@@ -19,31 +19,29 @@ export default function MainContentsLayout(props: ScreenProviderProps) {
       divider={{ style: { margin: '5px 0' } }}
     >
       <Layout style={{ height: '100vh' }}>
-        <ScreenProvider {...props}>
-          <AppMenu />
-          <Layout
+        <AppMenu />
+        <Layout
+          style={{
+            backgroundColor: 'transparent',
+            overflow: 'hidden scroll',
+            zIndex: 0,
+          }}
+        >
+          <MediaQuery {...MEDIA_QUERY.PC}>
+            <Sider />
+          </MediaQuery>
+          <Layout.Content
             style={{
-              backgroundColor: 'transparent',
               overflow: 'hidden scroll',
-              zIndex: 0,
+              position: 'relative',
             }}
           >
-            <MediaQuery {...MEDIA_QUERY.PC}>
-              <Sider />
+            <MediaQuery {...MEDIA_QUERY.MOBILE}>
+              <Drawer />
             </MediaQuery>
-            <Layout.Content
-              style={{
-                overflow: 'hidden scroll',
-                position: 'relative',
-              }}
-            >
-              <MediaQuery {...MEDIA_QUERY.MOBILE}>
-                <Drawer />
-              </MediaQuery>
-              <DynamicScreen />
-            </Layout.Content>
-          </Layout>
-        </ScreenProvider>
+            <DynamicScreen />
+          </Layout.Content>
+        </Layout>
       </Layout>
     </ConfigProvider>
   )

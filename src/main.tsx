@@ -10,6 +10,7 @@ import App from '@/App.tsx'
 import '@aws-amplify/ui-react/styles.css'
 import '@/main.css'
 import './i18n/configs'
+import { ThemeProvider } from '@/context/theme.ts'
 
 Amplify.configure(outputs)
 
@@ -39,7 +40,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </Helmet>
       <Authenticator.Provider>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </Authenticator.Provider>
     </HelmetProvider>
   </React.StrictMode>,

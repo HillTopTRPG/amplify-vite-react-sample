@@ -15,26 +15,15 @@ import {
   theme,
   Typography,
 } from 'antd'
+import classNames from 'classnames'
 import { clone } from 'lodash-es'
+import style from './CharacterSmallCard.module.css'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
 import { useUserAttributes } from '@/context/userAttributes.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
-
-// const MANEUVER_LINE_RANGE = [3, 8] as const
-//
-// function getManeuverLineNum(maneuvers: NechronicaManeuver[]) {
-//   const lineManeuverMax = PARTS_TUPLE.map(
-//     (tuple) => maneuvers.filter((m) => tuple[1].includes(m.parts)).length,
-//   ).reduce((prev, curr) => (prev > curr ? prev : curr))
-//   return lineManeuverMax < MANEUVER_LINE_RANGE[0]
-//     ? MANEUVER_LINE_RANGE[0]
-//     : lineManeuverMax > MANEUVER_LINE_RANGE[1]
-//       ? MANEUVER_LINE_RANGE[1]
-//       : lineManeuverMax
-// }
 
 type CharacterCardProps = {
   selected: boolean
@@ -59,11 +48,14 @@ export default function CharacterSmallCard({
       onClick: () => onSelect(character.id, !selected),
       onMouseEnter: () => onHover(character.id, true),
       onMouseLeave: () => onHover(character.id, false),
-      hoverable: true,
+      hoverable: false,
+      className: classNames(style.hoverable, selected ? style.active : null),
+      onMouseOver: () => onHover(character.id, true),
+      onMouseOut: () => onHover(character.id, false),
       styles: {
         body: {
           padding: '8px 0',
-          width: 180,
+          width: 178,
           position: 'relative',
           overflow: 'hidden',
         },
@@ -176,6 +168,12 @@ export default function CharacterSmallCard({
 
   const radarData = makeChartData(character)
 
+  const onChangeCharacterName = (value: string) => {
+    const newData = clone(character)
+    newData.sheetData.basic.characterName = value
+    updateCharacter(newData)
+  }
+
   return (
     <Card {...cardProps}>
       <div
@@ -186,6 +184,7 @@ export default function CharacterSmallCard({
           right: 0,
           bottom: 0,
           overflow: 'hidden',
+          pointerEvents: 'none',
         }}
       >
         <Image
@@ -209,7 +208,14 @@ export default function CharacterSmallCard({
           style={{ flexGrow: 1, padding: '0 3px' }}
         >
           {operationBlock}
-          <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
+          <Typography.Text
+            strong
+            ellipsis
+            style={{ padding: '0 4px' }}
+            editable={{
+              onChange: onChangeCharacterName,
+            }}
+          >
             {basic.characterName}
           </Typography.Text>
           {character.additionalData.type === 'doll' ? constBlocks : null}

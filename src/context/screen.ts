@@ -6,10 +6,12 @@ import { useWindowSize } from '@/hooks/useWindowSize.ts'
 import { type Screen } from '@/service'
 
 const useScreen = ({
+  scope,
   service,
   screens,
   screen,
 }: {
+  scope: 'private' | 'public'
   service: string
   screens: Record<string, Screen>
   screen: keyof typeof screens
@@ -24,27 +26,45 @@ const useScreen = ({
   const screenContents = screens[screen].contents
   const toggleOpenStatus = () => setOpenStatus((v) => !v)
 
-  const setScreen = (screen: keyof typeof screens) => {
+  const getScreenBlock = (screen: keyof typeof screens) => {
+    return `/${screen.replace('ForGuest', '')}`.replace('/index', '')
+  }
+
+  const setScreen = (
+    screen: keyof typeof screens,
+    params?: Record<string, string>,
+  ) => {
     const userSection = userName ? `/${userName}` : ''
-    const suffix = screen === 'index' ? '' : `/${screen}`
-    navigate(`${userSection}/${service}${suffix}`)
+    const paramsStr = params
+      ? `/?${new URLSearchParams(params).toString()}`
+      : ''
+    navigate(
+      `/${scope}${userSection}/${service}${getScreenBlock(screen)}${paramsStr}`,
+    )
   }
 
   const setService = (
     services: Record<string, { screens: Record<string, unknown> }>,
     service: keyof typeof services,
   ) => {
-    const userSection = userName ? `/${userName}` : ''
     const useScreen = screen in services[service].screens ? screen : 'index'
-    const suffix = useScreen === 'index' ? '' : `/${useScreen}`
-    if (screen in services[service]) return
-    // const suffix = screen === 'index' ? '' : `/${screen}`
-    navigate(`${userSection}/${service}${suffix}`)
+    const userSection = userName ? `/${userName}` : ''
+    navigate(`/${scope}${userSection}/${service}${getScreenBlock(useScreen)}`)
   }
 
-  const setUser = (user: string) => {
-    const suffix = screen === 'index' ? '' : `/${screen}`
-    navigate(`/${user}/${service}${suffix}`)
+  const setUser = (userName: string | null) => {
+    const userSection = userName ? `/${userName}` : ''
+    navigate(`/${scope}${userSection}/${service}${getScreenBlock(screen)}`)
+  }
+
+  const setScope = (scope: 'private' | 'public') => {
+    const userSection = userName ? `/${userName}` : ''
+    navigate(`/${scope}${userSection}/${service}${getScreenBlock(screen)}`)
+  }
+
+  const getCurrentPageNav = () => {
+    const userSection = userName ? `/${userName}` : ''
+    return `/${scope}${userSection}/${service}${getScreenBlock(screen)}`
   }
 
   const [width] = useWindowSize()
@@ -56,6 +76,8 @@ const useScreen = ({
 
   return {
     userName,
+    scope,
+    setScope,
     setUser,
     service,
     setService,
@@ -68,6 +90,7 @@ const useScreen = ({
     open,
     setOpenStatus,
     toggleOpenStatus,
+    getCurrentPageNav,
     screenSize: {
       width,
       isMobile,

@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons'
 import { useAuthenticator } from '@aws-amplify/ui-react'
 import {
-  theme,
+  theme as AntdTheme,
   Button,
   Layout,
   Flex,
@@ -24,14 +24,17 @@ import {
 import MediaQuery, { useMediaQuery } from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useScreenContext } from '@/context/screen.ts'
+import { useThemeContext } from '@/context/theme.ts'
 import { useUserAttributes } from '@/context/userAttributes.ts'
 import services from '@/service'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const { users, me, loading, isDarkMode, toggleDarkMode } = useUserAttributes()
+  const { users, me, loading } = useUserAttributes()
+  const { theme, updateTheme } = useThemeContext()
 
   const {
+    scope,
     userName,
     setUser,
     service,
@@ -41,9 +44,10 @@ export default function AppMenu() {
     toggleOpenStatus,
     screens,
     setScreen,
+    setScope,
   } = useScreenContext()
 
-  const { token } = theme.useToken()
+  const { token } = AntdTheme.useToken()
   const { signOut } = useAuthenticator()
   const navigate = useNavigate()
 
@@ -72,12 +76,15 @@ export default function AppMenu() {
     },
   }
 
-  const useUsers = (
-    me ? [me, ...users.filter((u) => u.userName !== me?.userName)] : [...users]
-  ).map((user) => ({
-    ...user,
-    viewName: user.userName === me?.userName ? 'あなた' : user.userName,
-  }))
+  const useUsers = users
+    ? (me
+        ? [me, ...users.filter((u) => u.userName !== me?.userName)]
+        : [...users]
+      ).map((user) => ({
+        ...user,
+        viewName: user.userName === me?.userName ? 'あなた' : user.userName,
+      }))
+    : []
 
   return (
     <Layout.Header
@@ -86,8 +93,8 @@ export default function AppMenu() {
         lineHeight: '3rem',
         padding: '0 8px',
         background: 'transparent',
-        color: isDarkMode ? token.colorBgContainer : token.colorBgBlur,
-        borderBottom: `solid 1px ${isDarkMode ? '#222' : '#e7e7e7'}`,
+        color: theme === 'dark' ? token.colorBgContainer : token.colorBgBlur,
+        borderBottom: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
         zIndex: 1,
       }}
     >
@@ -116,11 +123,16 @@ export default function AppMenu() {
           <Typography.Text>/</Typography.Text>
           <Dropdown
             menu={{
-              items: useUsers.map((user) => ({
-                key: user.userName,
-                label: user.viewName,
-                icon: <UserOutlined />,
-              })),
+              items: [
+                scope === 'public'
+                  ? { key: '', label: '全ユーザー', icon: <UserOutlined /> }
+                  : null,
+                ...useUsers.map((user) => ({
+                  key: user.userName,
+                  label: user.viewName,
+                  icon: <UserOutlined />,
+                })),
+              ].filter((v) => v),
               onClick: ({ key }) => setUser(key),
             }}
             placement="bottomLeft"
@@ -131,7 +143,7 @@ export default function AppMenu() {
               style={{ padding: '0 5px' }}
             >
               {useUsers.find((u) => u.userName === userName)?.viewName ??
-                'あなた'}
+                (scope === 'private' ? 'あなた' : '全ユーザー')}
             </Button>
           </Dropdown>
           <Typography.Text>/</Typography.Text>
@@ -158,11 +170,19 @@ export default function AppMenu() {
             <Typography.Text>/</Typography.Text>
             <Dropdown
               menu={{
-                items: getKeys(screens).map((key) => ({
-                  key,
-                  label: screens[key].label,
-                  icon: React.createElement(screens[key].icon),
-                })),
+                items: getKeys(screens)
+                  .filter(
+                    (key) =>
+                      !screens[key].param &&
+                      (scope === 'private'
+                        ? screens[key].authorize
+                        : !screens[key].authorize),
+                  )
+                  .map((key) => ({
+                    key,
+                    label: screens[key].label,
+                    icon: React.createElement(screens[key].icon),
+                  })),
                 onClick: ({ key }) => setScreen(key as keyof typeof screens),
               }}
               placement="bottomLeft"
@@ -174,15 +194,21 @@ export default function AppMenu() {
             </Dropdown>
           </MediaQuery>
         </Flex>
-        <Dropdown menu={dropdownProps} placement="bottom" forceRender>
-          <Button type="text" style={{ padding: 5 }}>
-            {loading ? <Spin /> : <UserOutlined />}
+        {!loading && scope === 'public' ? (
+          <Button onClick={() => setScope('private')}>
+            {me ? 'プライベートへ' : 'ログイン'}
           </Button>
-        </Dropdown>
+        ) : (
+          <Dropdown menu={dropdownProps} placement="bottom" forceRender>
+            <Button type="text" style={{ padding: 5 }}>
+              {loading ? <Spin /> : <UserOutlined />}
+            </Button>
+          </Dropdown>
+        )}
         <Button
           type="text"
-          icon={isDarkMode ? <MoonFilled /> : <SunFilled />}
-          onClick={toggleDarkMode}
+          icon={theme === 'dark' ? <MoonFilled /> : <SunFilled />}
+          onClick={() => updateTheme(theme === 'dark' ? 'light' : 'dark')}
           size="middle"
         />
       </Flex>

@@ -23,3 +23,20 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
+
+## ネクロニカのサンプルキャラデータ
+
+[探す](https://charasheet.vampire-blood.net/find)
+
+| name                             | id      | url                                          |
+| -------------------------------- | ------- | -------------------------------------------- |
+| しかばねソロリティ               | 5132265 | https://charasheet.vampire-blood.net/5132265 |
+| つぎはぎアリス                   | 5132262 | https://charasheet.vampire-blood.net/5132262 |
+| アンジェリカ・Ｋ・クラルヴァイン | 1713315 | https://charasheet.vampire-blood.net/1713315 |
+| きぐるいジャンク                 | 340229  | https://charasheet.vampire-blood.net/340229  |
+| ゾンビクイーン                   | 5166308 | https://charasheet.vampire-blood.net/5166308 |
+| オチムシャ                       | 5287491 | https://charasheet.vampire-blood.net/5287491 |
+| ドラッグイーター                 | 5295276 | https://charasheet.vampire-blood.net/5295276 |
+| ソルジャー                       | 4694703 | https://charasheet.vampire-blood.net/4694703 |
+| ナイトメア                       | 5132480 | https://charasheet.vampire-blood.net/5132480 |
+| -                                | -       | https://charasheet.vampire-blood.net/        |

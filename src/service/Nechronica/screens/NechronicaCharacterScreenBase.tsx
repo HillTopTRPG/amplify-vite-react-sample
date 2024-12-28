@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   DeleteOutlined,
   ReloadOutlined,
@@ -46,13 +47,29 @@ export default function NechronicaCharacterScreenBase({
 }) {
   const { characters, createCharacter, updateCharacter, deleteCharacter } =
     useNechronicaContext()
+
+  const [searchParams] = useSearchParams()
+  const filterPosition = searchParams.get('position')
+  const filterClass = searchParams.get('class')
+  console.log(
+    JSON.stringify(
+      {
+        filterPosition,
+        filterClass,
+      },
+      null,
+      2,
+    ),
+  )
+
   const { screenSize } = useScreenContext()
   const { token } = theme.useToken()
   const { currentUser, me, currentIsMe } = useUserAttributes()
 
   const useCharacters = characters.filter((c) => {
     if (c.additionalData.type !== characterType) return false
-    return c.owner === currentUser?.userName
+    if (!currentUser) return true
+    return c.owner === currentUser.userName
   })
 
   const sheetIdInputRef = useRef<InputRef>(null)
@@ -210,35 +227,38 @@ export default function NechronicaCharacterScreenBase({
           onChange={setSearch}
           inputRef={searchInputRef}
         />
-        <Flex vertical style={{ backgroundColor: 'transparent' }}>
-          <Typography.Text
-            style={{ color: token.colorTextPlaceholder, fontSize: 10 }}
-          >
-            まとめて操作
-          </Typography.Text>
-          <Flex gap={8} style={{ pointerEvents: 'all' }}>
-            <Popover content="選択キャラクターをキャラクター保管所からリロード">
-              <Button
-                icon={<ReloadOutlined />}
-                type="primary"
-                shape="circle"
-                onClick={onReloadSelectedCharacter}
-              />
-            </Popover>
-            <Popover content="選択キャラクターを削除">
-              <Button
-                icon={<DeleteOutlined />}
-                type="primary"
-                shape="circle"
-                danger
-                onClick={onDeleteSelectedCharacter}
-              />
-            </Popover>
+        {currentIsMe ? (
+          <Flex vertical style={{ backgroundColor: 'transparent' }}>
+            <Typography.Text
+              style={{ color: token.colorTextPlaceholder, fontSize: 10 }}
+            >
+              まとめて操作
+            </Typography.Text>
+            <Flex gap={8} style={{ pointerEvents: 'all' }}>
+              <Popover content="選択キャラクターをキャラクター保管所からリロード">
+                <Button
+                  icon={<ReloadOutlined />}
+                  type="primary"
+                  shape="circle"
+                  onClick={onReloadSelectedCharacter}
+                />
+              </Popover>
+              <Popover content="選択キャラクターを削除">
+                <Button
+                  icon={<DeleteOutlined />}
+                  type="primary"
+                  shape="circle"
+                  danger
+                  onClick={onDeleteSelectedCharacter}
+                />
+              </Popover>
+            </Flex>
           </Flex>
-        </Flex>
+        ) : null}
       </Flex>
     )
   }, [
+    currentIsMe,
     isAffixed,
     onDeleteSelectedCharacter,
     onReloadSelectedCharacter,
@@ -334,7 +354,7 @@ export default function NechronicaCharacterScreenBase({
                 align="flex-start"
                 justify={screenSize.isMobile ? 'space-evenly' : 'flex-start'}
                 wrap
-                gap="6px 6px"
+                gap={9}
               >
                 {characterCards}
               </Flex>

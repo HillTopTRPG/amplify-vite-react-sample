@@ -2,7 +2,7 @@ import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
 import style from './StyledRadar.module.css'
-import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useThemeContext } from '@/context/theme.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const NECHRONICA_MANEUVER_TYPES = [
@@ -69,8 +69,7 @@ export default function StyledRadar({
   size,
   onChangeItem,
 }: StyledRadarProps) {
-  const { theme } = useUserAttributes()
-
+  const { theme } = useThemeContext()
   let lastItem = ''
 
   const onEvent = (chart: Chart, event: PlotEvent) => {

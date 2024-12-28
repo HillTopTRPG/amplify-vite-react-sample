@@ -16,39 +16,98 @@ import {
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { type PromiseType, typedOmit, typedPick } from '@/utils/types.ts'
 
+type PublishObject = {
+  readonly id: string
+  readonly owner: string
+  readonly public: boolean
+}
+
+const makeNewPublishObj = (items: PublishObject[]) => {
+  const newItems = [...items]
+  newItems.sort((a, b) => {
+    if (a.id < b.id) return -1
+    if (a.id > b.id) return 1
+    return 0
+  })
+  return newItems
+}
+
+const notEqualsPublishObjList = (a: PublishObject[], b: PublishObject[]) =>
+  a.length !== b.length ||
+  a.some(
+    (pc, idx) =>
+      b[idx].id !== pc.id ||
+      b[idx].owner !== pc.owner ||
+      b[idx].public !== pc.public,
+  )
+
 const client = generateClient<Schema>()
 
 const useNechronica = () => {
   const { loading: loadingUserAttributes, me } = useUserAttributes()
 
-  const AmplifyDataFilter = useMemo(
-    () => ({
-      or: [
-        {
-          owner: {
-            eq: me?.userName ?? '',
+  const AmplifyDataFilter = useMemo(() => {
+    if (me?.userName) {
+      return {
+        or: [
+          {
+            owner: {
+              eq: me?.userName ?? '',
+            },
           },
-        },
-        {
-          public: {
-            eq: true,
+          {
+            public: {
+              eq: true,
+            },
           },
-        },
-      ],
-    }),
-    [me],
-  )
+        ],
+      }
+    }
+    return {
+      public: {
+        eq: true,
+      },
+    }
+  }, [me])
 
-  const [characters, setCharacter] = useState<NechronicaCharacter[]>([])
-  const [characterLoading, setCharacterLoading] = useState<boolean>(true)
+  const [publishCharacters, setPublishCharacters] = useState<PublishObject[]>(
+    [],
+  )
+  const [publishCharacterLoading, setPublishCharacterLoading] =
+    useState<boolean>(true)
   useEffect(() => {
     if (loadingUserAttributes) return () => {}
     const sub = client.models.NechronicaCharacter.observeQuery({
+      selectionSet: ['id', 'owner', 'public'],
+    }).subscribe({
+      next: ({ items }: { items: PublishObject[] }) => {
+        const newItems = makeNewPublishObj(items)
+        if (
+          publishCharacterLoading ||
+          notEqualsPublishObjList(newItems, publishCharacters)
+        ) {
+          setPublishCharacters(newItems)
+          setPublishCharacterLoading(false)
+        }
+      },
+    })
+    return () => {
+      console.log('unsub1')
+      sub.unsubscribe()
+    }
+  }, [loadingUserAttributes, publishCharacterLoading, publishCharacters])
+
+  const [characters, setCharacters] = useState<NechronicaCharacter[]>([])
+  const [characterLoading, setCharacterLoading] = useState<boolean>(true)
+  useEffect(() => {
+    if (loadingUserAttributes || publishCharacterLoading) return () => {}
+    const sub = client.models.NechronicaCharacter.observeQuery({
       filter: AmplifyDataFilter,
     }).subscribe({
+      // const sub = client.models.NechronicaCharacter.observeQuery().subscribe({
       next: ({ items }) => {
         const types: NechronicaType[] = ['doll', 'savant', 'horror', 'legion']
-        setCharacter(
+        setCharacters(
           items
             .map((item) => ({
               ...item,
@@ -72,8 +131,16 @@ const useNechronica = () => {
         setCharacterLoading(false)
       },
     })
-    return void sub.unsubscribe
-  }, [AmplifyDataFilter, loadingUserAttributes])
+    return () => {
+      console.log('unsub2')
+      sub.unsubscribe()
+    }
+  }, [
+    AmplifyDataFilter,
+    loadingUserAttributes,
+    publishCharacterLoading,
+    publishCharacters,
+  ])
 
   const createCharacter = (
     character: NonNullable<
@@ -117,11 +184,42 @@ const useNechronica = () => {
     client.models.NechronicaCharacter.delete({ id })
   }
 
+  const [publishCharacterGroups, setPublishCharacterGroups] = useState<
+    PublishObject[]
+  >([])
+  const [publishCharacterGroupLoading, setPublishCharacterGroupLoading] =
+    useState<boolean>(true)
+  useEffect(() => {
+    if (loadingUserAttributes) return () => {}
+    const sub = client.models.CharacterGroup.observeQuery({
+      selectionSet: ['id', 'owner', 'public'],
+    }).subscribe({
+      next: ({ items }: { items: PublishObject[] }) => {
+        const newItems = makeNewPublishObj(items)
+        if (
+          publishCharacterGroupLoading ||
+          notEqualsPublishObjList(newItems, publishCharacterGroups)
+        ) {
+          setPublishCharacterGroups(newItems)
+          setPublishCharacterGroupLoading(false)
+        }
+      },
+    })
+    return () => {
+      console.log('unsub3')
+      sub.unsubscribe()
+    }
+  }, [
+    loadingUserAttributes,
+    publishCharacterGroupLoading,
+    publishCharacterGroups,
+  ])
+
   const [characterGroups, setCharacterGroups] = useState<CharacterGroup[]>([])
   const [characterGroupLoading, setCharacterGroupLoading] =
     useState<boolean>(true)
   useEffect(() => {
-    if (loadingUserAttributes) return () => {}
+    if (loadingUserAttributes || publishCharacterGroupLoading) return () => {}
     const sub = client.models.CharacterGroup.observeQuery({
       filter: AmplifyDataFilter,
     }).subscribe({
@@ -140,8 +238,16 @@ const useNechronica = () => {
         setCharacterGroupLoading(false)
       },
     })
-    return void sub.unsubscribe
-  }, [AmplifyDataFilter, loadingUserAttributes])
+    return () => {
+      console.log('unsub4')
+      sub.unsubscribe()
+    }
+  }, [
+    AmplifyDataFilter,
+    loadingUserAttributes,
+    publishCharacterGroupLoading,
+    publishCharacterGroups,
+  ])
 
   const createCharacterGroup = (
     group: Pick<CharacterGroup, 'name' | 'characterIds'>,

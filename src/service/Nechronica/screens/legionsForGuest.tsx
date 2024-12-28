@@ -1,12 +1,12 @@
 import { RadarChartOutlined } from '@ant-design/icons'
-import { type Screen } from '@/service'
+import type { Screen } from '@/service'
 import NechronicaCharacterScreenBase from '@/service/Nechronica/screens/NechronicaCharacterScreenBase.tsx'
 
-const label = 'ドール'
+const label = 'レギオン'
 const icon = RadarChartOutlined
 const contents = () => (
   <NechronicaCharacterScreenBase
-    characterType={'doll'}
+    characterType={'legion'}
     label={label}
     icon={icon}
   />
@@ -14,7 +14,7 @@ const contents = () => (
 
 const packed: Screen = {
   label,
-  authorize: true,
+  authorize: false,
   icon,
   contents,
 }

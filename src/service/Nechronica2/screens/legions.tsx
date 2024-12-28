@@ -8,7 +8,6 @@ import type { Screen } from '@/service'
 import screens from '@/service/Nechronica/screens.ts'
 
 const label = 'レギオン'
-const authorize = true
 const icon = DashboardOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 function contents() {
@@ -55,7 +54,7 @@ function contents() {
 
 const packed: Screen = {
   label,
-  authorize,
+  authorize: true,
   icon,
   contents,
 }

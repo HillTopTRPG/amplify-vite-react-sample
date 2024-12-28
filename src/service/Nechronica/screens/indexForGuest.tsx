@@ -13,7 +13,7 @@ const contents = () => (
 
 const packed: Screen = {
   label,
-  authorize: true,
+  authorize: false,
   icon,
   contents,
 }

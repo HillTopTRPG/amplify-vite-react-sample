@@ -4,24 +4,36 @@ import screens from './screens'
 import service from './index'
 import PrivateLayout from '@/components/PrivateLayout.tsx'
 import PublicLayout from '@/components/PublicLayout.tsx'
-import { getKeys, type ValueType } from '@/utils/types.ts'
+import { getKeys } from '@/utils/types.ts'
 
 export default function Routes() {
-  const getScreens = (
-    filter: (screen: ValueType<typeof screens>) => boolean,
-  ) => {
-    const filtered = getKeys(screens).filter((screen) =>
-      filter(screens[screen]),
+  const getScreens = (authorize: boolean) => {
+    const filtered = getKeys(screens).filter(
+      (screen) => screens[screen].authorize === authorize,
     )
+    const getPath = (screen: keyof typeof screens, hasUserName: boolean) => {
+      const authorizeBlock = authorize ? 'private' : 'public'
+      const userNameBlock = hasUserName ? '/:userName' : ''
+      const screenBlock = `/${screen.replace('ForGuest', '')}`.replace(
+        '/index',
+        '',
+      )
+      const paramBlock = screens[screen].param
+        ? `s/:${screens[screen].param}`
+        : ''
+      const path = `/${authorizeBlock}${userNameBlock}/${service.service}${screenBlock}${paramBlock}`
+      // console.log(path)
+      return path
+    }
     return filtered
       .map((screen) => ({
-        path: `/${service.service}${screen === 'index' ? '' : `/${screen.toString()}`}`,
-        element: Page(screen),
+        path: getPath(screen, false),
+        element: Page(screen, authorize ? 'private' : 'public'),
       }))
       .concat(
         filtered.map((screen) => ({
-          path: `/:userName/${service.service}${screen === 'index' ? '' : `/${screen.toString()}`}`,
-          element: Page(screen),
+          path: getPath(screen, true),
+          element: Page(screen, authorize ? 'private' : 'public'),
         })),
       )
   }
@@ -29,12 +41,12 @@ export default function Routes() {
   return (
     <>
       <Route element={<PublicLayout />}>
-        {getScreens((screen) => !screen.authorize).map(({ path, element }) => (
+        {getScreens(false).map(({ path, element }) => (
           <Route key={path} path={path} element={element} />
         ))}
       </Route>
       <Route element={<PrivateLayout />}>
-        {getScreens((screen) => screen.authorize).map(({ path, element }) => (
+        {getScreens(true).map(({ path, element }) => (
           <Route key={path} path={path} element={element} />
         ))}
       </Route>
