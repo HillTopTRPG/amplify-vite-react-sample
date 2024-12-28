@@ -11,14 +11,17 @@ export default function Routes() {
     const filtered = getKeys(screens).filter(
       (screen) => screens[screen].authorize === authorize,
     )
-    const getPath = (screen: string, hasUserName: boolean) => {
+    const getPath = (screen: keyof typeof screens, hasUserName: boolean) => {
       const authorizeBlock = authorize ? 'private' : 'public'
       const userNameBlock = hasUserName ? '/:userName' : ''
       const screenBlock = `/${screen.replace('ForGuest', '')}`.replace(
         '/index',
         '',
       )
-      const path = `/${authorizeBlock}${userNameBlock}/${service.service}${screenBlock}`
+      const paramBlock = screens[screen].param
+        ? `s/:${screens[screen].param}`
+        : ''
+      const path = `/${authorizeBlock}${userNameBlock}/${service.service}${screenBlock}${paramBlock}`
       // console.log(path)
       return path
     }

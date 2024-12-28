@@ -14,8 +14,6 @@ import type { CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaD
 import { typedOmit } from '@/utils/types.ts'
 
 const label = 'キャラクターグループ'
-const authorize = true
-const viewMenu = true
 const icon = GroupOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 const contents = () => {
@@ -180,8 +178,7 @@ const contents = () => {
 
 const packed: Screen = {
   label,
-  authorize,
-  viewMenu,
+  authorize: true,
   icon,
   contents,
 }

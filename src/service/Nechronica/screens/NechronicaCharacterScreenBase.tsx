@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   DeleteOutlined,
   ReloadOutlined,
@@ -46,6 +47,21 @@ export default function NechronicaCharacterScreenBase({
 }) {
   const { characters, createCharacter, updateCharacter, deleteCharacter } =
     useNechronicaContext()
+
+  const [searchParams] = useSearchParams()
+  const filterPosition = searchParams.get('position')
+  const filterClass = searchParams.get('class')
+  console.log(
+    JSON.stringify(
+      {
+        filterPosition,
+        filterClass,
+      },
+      null,
+      2,
+    ),
+  )
+
   const { screenSize } = useScreenContext()
   const { token } = theme.useToken()
   const { currentUser, me, currentIsMe } = useUserAttributes()

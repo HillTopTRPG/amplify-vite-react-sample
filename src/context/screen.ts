@@ -30,9 +30,17 @@ const useScreen = ({
     return `/${screen.replace('ForGuest', '')}`.replace('/index', '')
   }
 
-  const setScreen = (screen: keyof typeof screens) => {
+  const setScreen = (
+    screen: keyof typeof screens,
+    params?: Record<string, string>,
+  ) => {
     const userSection = userName ? `/${userName}` : ''
-    navigate(`/${scope}${userSection}/${service}${getScreenBlock(screen)}`)
+    const paramsStr = params
+      ? `/?${new URLSearchParams(params).toString()}`
+      : ''
+    navigate(
+      `/${scope}${userSection}/${service}${getScreenBlock(screen)}${paramsStr}`,
+    )
   }
 
   const setService = (
@@ -52,6 +60,11 @@ const useScreen = ({
   const setScope = (scope: 'private' | 'public') => {
     const userSection = userName ? `/${userName}` : ''
     navigate(`/${scope}${userSection}/${service}${getScreenBlock(screen)}`)
+  }
+
+  const getCurrentPageNav = () => {
+    const userSection = userName ? `/${userName}` : ''
+    return `/${scope}${userSection}/${service}${getScreenBlock(screen)}`
   }
 
   const [width] = useWindowSize()
@@ -77,6 +90,7 @@ const useScreen = ({
     open,
     setOpenStatus,
     toggleOpenStatus,
+    getCurrentPageNav,
     screenSize: {
       width,
       isMobile,

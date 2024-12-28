@@ -1,5 +1,7 @@
+import { useNavigate } from 'react-router-dom'
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons'
 import { Affix, Button, Card, Flex, QRCode, theme, Typography } from 'antd'
+import { useScreenContext } from '@/context/screen.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import CharacterSmallCard from '@/service/Nechronica/components/CharacterSmallCard.tsx'
 import { type CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -22,12 +24,19 @@ export default function GroupBlock({
   const { token } = theme.useToken()
 
   const [selectIds, setSelectIds, onSelectCharacter] = useSelectIds()
+  const { getCurrentPageNav } = useScreenContext()
 
   const onChangeGroupNameWrap = (name: string) => onChangeGroupName(name)
 
   const onDeleteCharacterWrap = () => {
     onDeleteCharacter(selectIds)
     setSelectIds([])
+  }
+
+  const navigate = useNavigate()
+
+  const onToDetailPage = () => {
+    return navigate(`${getCurrentPageNav()}/${group.id}`)
   }
 
   return (
@@ -90,6 +99,7 @@ export default function GroupBlock({
           >
             削除
           </Button>
+          <Button onClick={() => onToDetailPage()}>詳細ページへ</Button>
           <QRCode size={80} value={'https://www.google.com/'} />
         </Flex>
         {group.characters.map((c) => (

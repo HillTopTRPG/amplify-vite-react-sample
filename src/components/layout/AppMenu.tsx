@@ -168,7 +168,7 @@ export default function AppMenu() {
                 items: getKeys(screens)
                   .filter(
                     (key) =>
-                      screens[key].viewMenu &&
+                      !screens[key].param &&
                       (me ? screens[key].authorize : !screens[key].authorize),
                   )
                   .map((key) => ({

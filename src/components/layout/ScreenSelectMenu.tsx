@@ -33,7 +33,7 @@ export default function ScreenSelectMenu({
       items={getKeys(screens)
         .filter(
           (key) =>
-            screens[key].viewMenu &&
+            (key === screen || !screens[key].param) &&
             (me ? screens[key].authorize : !screens[key].authorize),
         )
         .map((key) => ({

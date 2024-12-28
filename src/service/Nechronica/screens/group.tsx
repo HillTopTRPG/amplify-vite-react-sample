@@ -1,31 +1,30 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { GroupOutlined } from '@ant-design/icons'
-import { Button, Flex, Input, type InputRef, Modal, Space } from 'antd'
+import { Empty, Flex, Modal } from 'antd'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screen.ts'
 import { useUserAttributes } from '@/context/userAttributes.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import type { Screen } from '@/service'
+import CharacterCard from '@/service/Nechronica/components/CharacterCard.tsx'
 import CharacterSmallCard from '@/service/Nechronica/components/CharacterSmallCard.tsx'
-import GroupBlock from '@/service/Nechronica/components/GroupBlock.tsx'
-import ScreenSubTitle from '@/service/Nechronica/components/ScreenSubTitle.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import type { CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { typedOmit } from '@/utils/types.ts'
 
 const label = 'グループ'
-const authorize = true
-const viewMenu = true
+const param = 'groupId'
 const icon = GroupOutlined
 /* eslint-disable react-hooks/rules-of-hooks */
 const contents = () => {
-  const {
-    characters,
-    characterGroupRelations,
-    createCharacterGroup,
-    updateCharacterGroup,
-    deleteCharacterGroup,
-  } = useNechronicaContext()
+  const { groupId } = useParams()
+
+  const { characters, characterGroupRelations, updateCharacterGroup } =
+    useNechronicaContext()
+  const characterGroupRelation = characterGroupRelations.find(
+    (cg) => cg.id === groupId,
+  )
   const { currentUser } = useUserAttributes()
   const { screenSize } = useScreenContext()
 
@@ -34,10 +33,6 @@ const contents = () => {
   )
 
   const [selectIds, setSelectIds, onSelectCharacter] = useSelectIds()
-
-  const useCharacterGroups = characterGroupRelations.filter(
-    (cg) => cg.owner === currentUser?.userName,
-  )
 
   const [targetCharacterGroup, setTargetCharacterGroup] =
     useState<CharacterGroupRelation | null>(null)
@@ -56,85 +51,18 @@ const contents = () => {
     handleCancel()
   }
 
-  const [affixContainer, setAffixContainer] = useState<HTMLElement | null>(null)
-
-  const groups = useMemo(() => {
-    const onGroupDelete = (group: CharacterGroupRelation) => {
-      deleteCharacterGroup(group.id)
-    }
-    const onChangeGroupName = (group: CharacterGroupRelation, name: string) => {
-      updateCharacterGroup({
-        ...typedOmit(group, 'characters'),
-        name,
-      })
-    }
-    const onDeleteCharacter = (
-      group: CharacterGroupRelation,
-      characterIds: string[],
-    ) => {
-      updateCharacterGroup({
-        ...typedOmit(group, 'characters'),
-        characterIds: group.characterIds.filter(
-          (id) => !characterIds.includes(id),
-        ),
-      })
-    }
-    return useCharacterGroups.map((group) => {
-      if (!affixContainer) return null
-      return (
-        <GroupBlock
-          key={group.id}
-          group={group}
-          affixContainer={affixContainer}
-          onAddCharacter={() => setTargetCharacterGroup(group)}
-          onGroupDelete={() => onGroupDelete(group)}
-          onChangeGroupName={(name) => onChangeGroupName(group, name)}
-          onDeleteCharacter={(ids) => onDeleteCharacter(group, ids)}
-        />
-      )
+  const charactersElm = useMemo(() => {
+    if (!characterGroupRelation?.characters)
+      return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+    return characterGroupRelation.characters.map((character) => {
+      return <CharacterCard key={character.id} character={character} />
     })
-  }, [
-    affixContainer,
-    deleteCharacterGroup,
-    updateCharacterGroup,
-    useCharacterGroups,
-  ])
-
-  const createGroupNameInputRef = useRef<InputRef>(null)
-  const [newGroupName, setNewGroupName] = useState('')
-  const onCreateCharacterGroup = async () => {
-    if (!newGroupName) return
-    if (characterGroupRelations.some(({ name }) => name === newGroupName))
-      return
-
-    setNewGroupName('')
-    createGroupNameInputRef?.current?.blur()
-    createGroupNameInputRef?.current?.focus()
-    createCharacterGroup({
-      name: newGroupName,
-      characterIds: [],
-    })
-  }
+  }, [characterGroupRelation?.characters])
 
   return (
-    <ScreenContainer title={label} icon={icon} ref={setAffixContainer}>
+    <ScreenContainer title={label} icon={icon}>
       <Flex vertical align="stretch" style={{ marginTop: 10, gap: 12 }}>
-        <Space.Compact direction="vertical" style={{ alignSelf: 'flex-start' }}>
-          <ScreenSubTitle title={`${label}登録`} />
-          <Space.Compact>
-            <Input
-              size="large"
-              value={newGroupName}
-              placeholder="追加するグループの名前"
-              onChange={(e) => setNewGroupName(e.target.value)}
-              ref={createGroupNameInputRef}
-            />
-            <Button size="large" onClick={onCreateCharacterGroup}>
-              追加
-            </Button>
-          </Space.Compact>
-        </Space.Compact>
-        {groups}
+        {charactersElm}
       </Flex>
       <Modal
         title="追加するキャラを選択してください。"
@@ -180,9 +108,9 @@ const contents = () => {
 
 const packed: Screen = {
   label,
-  authorize,
-  viewMenu,
+  authorize: true,
   icon,
+  param,
   contents,
 }
 
