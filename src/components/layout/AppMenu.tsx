@@ -34,6 +34,7 @@ export default function AppMenu() {
   const { theme, updateTheme } = useThemeContext()
 
   const {
+    scope,
     userName,
     setUser,
     service,
@@ -122,11 +123,16 @@ export default function AppMenu() {
           <Typography.Text>/</Typography.Text>
           <Dropdown
             menu={{
-              items: useUsers.map((user) => ({
-                key: user.userName,
-                label: user.viewName,
-                icon: <UserOutlined />,
-              })),
+              items: [
+                scope === 'public'
+                  ? { key: '', label: '全ユーザー', icon: <UserOutlined /> }
+                  : null,
+                ...useUsers.map((user) => ({
+                  key: user.userName,
+                  label: user.viewName,
+                  icon: <UserOutlined />,
+                })),
+              ].filter((v) => v),
               onClick: ({ key }) => setUser(key),
             }}
             placement="bottomLeft"
@@ -136,9 +142,8 @@ export default function AppMenu() {
               icon={<UserOutlined />}
               style={{ padding: '0 5px' }}
             >
-              {(useUsers.find((u) => u.userName === userName)?.viewName ?? me)
-                ? 'あなた'
-                : '全ユーザー'}
+              {useUsers.find((u) => u.userName === userName)?.viewName ??
+                (scope === 'private' ? 'あなた' : '全ユーザー')}
             </Button>
           </Dropdown>
           <Typography.Text>/</Typography.Text>
@@ -169,7 +174,9 @@ export default function AppMenu() {
                   .filter(
                     (key) =>
                       !screens[key].param &&
-                      (me ? screens[key].authorize : !screens[key].authorize),
+                      (scope === 'private'
+                        ? screens[key].authorize
+                        : !screens[key].authorize),
                   )
                   .map((key) => ({
                     key,
@@ -187,8 +194,10 @@ export default function AppMenu() {
             </Dropdown>
           </MediaQuery>
         </Flex>
-        {!loading && !me ? (
-          <Button onClick={() => setScope('private')}>ログイン</Button>
+        {!loading && scope === 'public' ? (
+          <Button onClick={() => setScope('private')}>
+            {me ? 'プライベートへ' : 'ログイン'}
+          </Button>
         ) : (
           <Dropdown menu={dropdownProps} placement="bottom" forceRender>
             <Button type="text" style={{ padding: 5 }}>

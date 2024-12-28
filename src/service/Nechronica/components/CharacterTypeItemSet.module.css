@@ -25,7 +25,7 @@
 
   &::before,
   &::after {
-    content: "";
+    content: '';
     background-image: inherit;
     position: absolute;
     width: 100%;
@@ -40,7 +40,7 @@
   /* 画像本体 */
   &::before {
     z-index: 2;
-    filter: drop-shadow(0 0 3px rgba(127,127,127,1));
+    filter: drop-shadow(0 0 3px rgba(127, 127, 127, 1));
   }
 
   /* 影 */
