@@ -1,4 +1,4 @@
-import type React from 'react'
+import { type ReactNode, type FC } from 'react'
 import nechronica from './Nechronica/index.ts'
 import nechronica2 from './Nechronica2/index.ts'
 
@@ -21,9 +21,9 @@ export type CharacterGroup = {
 export type Screen = {
   label: string
   authorize: boolean
-  icon: React.FC
+  icon: FC
   param?: string
-  contents: () => React.ReactNode
+  contents: () => ReactNode
 }
 
 export type Service = {

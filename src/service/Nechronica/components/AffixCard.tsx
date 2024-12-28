@@ -1,9 +1,9 @@
-import React, { type RefObject } from 'react'
+import { type ReactNode, type RefObject } from 'react'
 import { Affix, Card, type CardProps } from 'antd'
 
 type AffixCardProps = {
   affixContainerRef: RefObject<HTMLElement>
-  children: React.ReactNode
+  children: ReactNode
   onChangeAffix: (affixed: boolean) => void
 }
 export default function AffixCard({

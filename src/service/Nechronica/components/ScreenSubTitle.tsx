@@ -1,9 +1,9 @@
-import React from 'react'
+import { type ReactNode } from 'react'
 import { Flex, Typography } from 'antd'
 
 type ScreenSubTitleProps = {
   title: string
-  memo?: React.ReactNode
+  memo?: ReactNode
 }
 export default function ScreenSubTitle({ title, memo }: ScreenSubTitleProps) {
   return (

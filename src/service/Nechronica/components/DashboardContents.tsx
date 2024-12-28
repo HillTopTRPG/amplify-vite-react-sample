@@ -1,10 +1,13 @@
-import React from 'react'
-import { Flex, Tabs, Typography } from 'antd'
+import React, { type ReactNode } from 'react'
+import { Flex, type GetProps, Tabs, Typography } from 'antd'
 import { sum } from 'lodash-es'
 import { useScreenContext } from '@/context/screen.ts'
+import { useUserAttributes } from '@/context/userAttributes.ts'
 import AbsoluteCenterText from '@/service/Nechronica/components/AbsoluteCenterText.tsx'
 import CharacterTypeIcon from '@/service/Nechronica/components/CharacterTypeIcon.tsx'
 import CharacterTypeItemSet from '@/service/Nechronica/components/CharacterTypeItemSet.tsx'
+import { useNechronicaContext } from '@/service/Nechronica/context.ts'
+import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const enemies = ['savant', 'horror', 'legion'] as const
 
@@ -21,117 +24,152 @@ const visualizedDollContainerStyle: React.CSSProperties = {
 } as const
 
 export default function DashboardContents() {
-  const { setScreen } = useScreenContext()
+  const { scope, setScreen } = useScreenContext()
+  const { characters } = useNechronicaContext()
+  const { currentUser } = useUserAttributes()
+
+  const useCharacters = characters.filter((c) => {
+    if (scope === 'private') return c.owner === currentUser?.userName
+    return !currentUser || c.owner === currentUser.userName
+  })
+
   const summaryData = {
     doll: {
-      total: 4,
-      position: [1, 2, 0, 1, 2, 0],
-      class: [10, 21, 0, 1, 2, 0, 0],
+      position: [1, 2, 3, 4, 5, 6].map(
+        (positionNum) =>
+          useCharacters.filter(
+            (c) =>
+              c.additionalData.type === 'doll' &&
+              c.sheetData.basic.position === positionNum,
+          ).length,
+      ),
+      class: [1, 2, 3, 4, 5, 6, 7].map(
+        (cls) =>
+          useCharacters.flatMap((c) => {
+            if (c.additionalData.type !== 'doll') return []
+            const { mainClass, subClass } = c.sheetData.basic
+            return [mainClass === cls, subClass === cls].filter(Boolean)
+          }).length,
+      ),
     },
-    enemies: [1, 0, 11],
+    enemies: enemies.map(
+      (type) =>
+        useCharacters.filter((c) => c.additionalData.type === type).length,
+    ),
   }
 
-  const dollTitle = (
-    <Typography.Title level={3} style={{ margin: 0 }}>
-      <Typography.Link
-        style={{ fontSize: 'inherit' }}
-        onClick={() => setScreen('dolls')}
-      >
-        <Flex gap={16} align="center">
-          <Typography.Text style={{ fontSize: 'inherit' }}>
-            ドール
-          </Typography.Text>
-          <span style={{ userSelect: 'none' }}>
-            {sum(summaryData.doll.position)}体
-          </span>
-        </Flex>
-      </Typography.Link>
-    </Typography.Title>
-  )
-  const enemiesTitle = (
-    <Typography.Title level={3} style={{ margin: 0 }}>
-      <Typography.Link style={{ fontSize: 'inherit' }}>
-        <Flex gap={16} align="center">
-          <Typography.Text style={{ fontSize: 'inherit' }}>
-            手駒
-          </Typography.Text>
-          <span style={{ userSelect: 'none' }}>
-            {sum(summaryData.enemies)}種類
-          </span>
-        </Flex>
-      </Typography.Link>
-    </Typography.Title>
+  const makeTitleElm = (label: string, total: string, onClick: () => void) => {
+    return (
+      <Typography.Title level={3} style={{ margin: 0 }}>
+        <Typography.Link style={{ fontSize: 'inherit' }} onClick={onClick}>
+          <Flex gap={16} align="center">
+            <Typography.Text style={{ fontSize: 'inherit' }}>
+              {label}
+            </Typography.Text>
+            <span style={{ userSelect: 'none' }}>{total}</span>
+          </Flex>
+        </Typography.Link>
+      </Typography.Title>
+    )
+  }
+
+  const makeDollProps = (
+    p: 'position' | 'class',
+    iconValue: number,
+    num: number,
+  ): GetProps<typeof CharacterTypeIcon> & { key: number } => ({
+    key: iconValue,
+    type: 'doll',
+    [p]: iconValue,
+    num,
+    onClick: () => setScreen('dolls', { [p]: num.toString() }),
+  })
+
+  const makeEnemiesProps = (
+    type: Exclude<NechronicaType, 'doll'>,
+    num: number,
+    idx: number,
+  ): GetProps<typeof CharacterTypeIcon> & { key: number } => ({
+    key: idx,
+    type,
+    num,
+    onClick: () => setScreen(`${enemies[idx]}s`),
+  })
+
+  const makeStyle1 = (label: string, contents: ReactNode, idx?: number) => (
+    <div style={visualizedDollContainerStyle} key={idx}>
+      <AbsoluteCenterText text={label} />
+      {contents}
+    </div>
   )
 
-  const normalDollElm = dollConst.map(({ property, label }, idx) => (
+  const makeStyle2 = (label: string, contents: ReactNode, idx?: number) => (
     <Flex vertical gap={6} key={idx}>
       <Typography.Title level={5} style={{ margin: 0 }}>
         {label}
       </Typography.Title>
       <Flex wrap style={{ width: 406 }} gap={6}>
-        {summaryData.doll[property].map((num, index) => (
-          <CharacterTypeItemSet
-            type="doll"
-            {...{ [property]: index + 1 }}
-            num={num}
-            key={index}
-            onClick={() =>
-              setScreen('dolls', { [property]: (index + 1).toString() })
-            }
-          />
-        ))}
+        {contents}
       </Flex>
     </Flex>
-  ))
-  const visualizedDollElm = dollConst.map(({ property, label }, idx) => (
-    <div style={visualizedDollContainerStyle} key={idx}>
-      <AbsoluteCenterText text={label} />
-      {summaryData.doll[property].map((num, index) => (
-        <CharacterTypeIcon
-          type="doll"
-          {...{ [property]: index + 1 }}
-          num={num}
-          key={index}
-          onClick={() =>
-            setScreen('dolls', { [property]: (index + 1).toString() })
-          }
-        />
-      ))}
-    </div>
-  ))
+  )
 
-  const normalEnemiesElm = (
-    <Flex vertical gap={6}>
-      <Typography.Title level={5} style={{ margin: 0 }}>
-        手駒
-      </Typography.Title>
-      <Flex>
-        <Flex vertical gap={6}>
-          {summaryData.enemies.map((num, idx) => (
-            <CharacterTypeItemSet
-              type={enemies[idx]}
-              num={num}
-              key={idx}
-              onClick={() => setScreen(`${enemies[idx]}s`)}
-            />
-          ))}
+  const dollsElm1 = dollConst.map(({ property, label }, idx) =>
+    makeStyle1(
+      label,
+      summaryData.doll[property].map((num, index) => (
+        <CharacterTypeIcon {...makeDollProps(property, index + 1, num)} />
+      )),
+      idx,
+    ),
+  )
+
+  const dollsElm2 = dollConst.map(({ property, label }, idx) =>
+    makeStyle2(
+      label,
+      summaryData.doll[property].map((num, index) => (
+        <CharacterTypeItemSet {...makeDollProps(property, index + 1, num)} />
+      )),
+      idx,
+    ),
+  )
+
+  const enemiesElm1 = makeStyle1(
+    '手駒',
+    summaryData.enemies.map((num, idx) => (
+      <CharacterTypeIcon {...makeEnemiesProps(enemies[idx], num, idx)} />
+    )),
+  )
+  const enemiesElm2 = makeStyle2(
+    '手駒',
+    summaryData.enemies.map((num, idx) => (
+      <CharacterTypeItemSet {...makeEnemiesProps(enemies[idx], num, idx)} />
+    )),
+  )
+
+  const makeCharacterTabContents = (
+    dollsElm: ReactNode,
+    enemiesElm: ReactNode,
+  ) => {
+    return (
+      <Flex gap={16} wrap align="stretch" justify="stretch">
+        <Flex gap={16} vertical align="flex-start">
+          {makeTitleElm('ドール', `${sum(summaryData.doll.position)}体`, () =>
+            setScreen('dolls'),
+          )}
+          <Flex gap={16} wrap>
+            {dollsElm}
+          </Flex>
+        </Flex>
+        <Flex gap={16} vertical align="flex-start">
+          {makeTitleElm('手駒', `${sum(summaryData.enemies)}種類`, () => {})}
+          <Flex gap={16} wrap>
+            {enemiesElm}
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
-  )
-  const visualizedEnemiesElm = (
-    <div style={visualizedDollContainerStyle}>
-      <AbsoluteCenterText text="手駒" />
-      {summaryData.enemies.map((num, idx) => (
-        <CharacterTypeIcon
-          type={enemies[idx]}
-          num={num}
-          key={idx}
-          onClick={() => setScreen(`${enemies[idx]}s`)}
-        />
-      ))}
-    </div>
-  )
+    )
+  }
 
   return (
     <Flex vertical>
@@ -141,42 +179,12 @@ export default function DashboardContents() {
           {
             label: '見え方1',
             key: '1',
-            children: (
-              <Flex gap={16} wrap align="stretch" justify="stretch">
-                <Flex gap={16} vertical align="flex-start">
-                  {dollTitle}
-                  <Flex gap={16} wrap>
-                    {visualizedDollElm}
-                  </Flex>
-                </Flex>
-                <Flex gap={16} vertical align="flex-start">
-                  {enemiesTitle}
-                  <Flex gap={16} wrap>
-                    {visualizedEnemiesElm}
-                  </Flex>
-                </Flex>
-              </Flex>
-            ),
+            children: makeCharacterTabContents(dollsElm1, enemiesElm1),
           },
           {
             label: '見え方2',
             key: '2',
-            children: (
-              <Flex gap={16} wrap>
-                <Flex gap={16} vertical align="flex-start">
-                  {dollTitle}
-                  <Flex gap={16} wrap>
-                    {normalDollElm}
-                  </Flex>
-                </Flex>
-                <Flex gap={16} vertical align="flex-start">
-                  {enemiesTitle}
-                  <Flex gap={16} wrap>
-                    {normalEnemiesElm}
-                  </Flex>
-                </Flex>
-              </Flex>
-            ),
+            children: makeCharacterTabContents(dollsElm2, enemiesElm2),
           },
         ]}
         tabBarStyle={{ paddingLeft: 10 }}

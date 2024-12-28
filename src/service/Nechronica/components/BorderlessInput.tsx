@@ -1,4 +1,4 @@
-import React, { type RefObject } from 'react'
+import { type ReactNode, type RefObject } from 'react'
 import { Input, type InputRef, Space, theme } from 'antd'
 import KeyText from '@/service/Nechronica/components/KeyText.tsx'
 
@@ -8,7 +8,7 @@ type BorderlessInputProps = {
   onChange: (value: string) => void
   placeholder: string
   width: number
-  icon: React.ReactNode
+  icon: ReactNode
   shortcutKey?: string
   inputRef: RefObject<InputRef>
 }

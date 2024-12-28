@@ -1,4 +1,4 @@
-import React from 'react'
+import { type ReactNode } from 'react'
 import {
   Authenticator as AwsAuthenticator,
   useTheme,
@@ -42,7 +42,7 @@ const components = {
 } as const
 
 type AuthenticatorProps = {
-  children: React.ReactNode
+  children: ReactNode
 }
 export default function Authenticator({ children }: AuthenticatorProps) {
   return (

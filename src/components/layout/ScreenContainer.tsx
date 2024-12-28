@@ -1,4 +1,4 @@
-import React, { forwardRef, type Ref } from 'react'
+import React, { forwardRef, type ReactNode, type Ref } from 'react'
 import { Flex, Space, theme, Typography } from 'antd'
 import { useMediaQuery } from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
@@ -6,7 +6,7 @@ import { MEDIA_QUERY } from '@/const/style.ts'
 type ComponentProps = {
   title: string
   icon: React.FC
-  children?: React.ReactNode
+  children?: ReactNode
 }
 function component(
   { title, icon, children }: ComponentProps,

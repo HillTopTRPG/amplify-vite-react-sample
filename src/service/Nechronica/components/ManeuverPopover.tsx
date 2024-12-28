@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { type ReactNode } from 'react'
 import { Col, Popover, Row, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -7,7 +7,7 @@ import mapping from '@/service/Nechronica/ts/mapping.json'
 type ManeuverPopoverProps = {
   maneuver: NechronicaManeuver
   onChangeOpen: (open: boolean) => void
-  children: React.ReactNode
+  children: ReactNode
 }
 export default function ManeuverPopover({
   maneuver,
