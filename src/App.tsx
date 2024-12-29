@@ -1,16 +1,29 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import PrivateLayout from '@/components/PrivateLayout.tsx'
+import PublicLayout from '@/components/PublicLayout.tsx'
 import Home from '@/pages/Home.tsx'
 import NotFound from '@/pages/NotFound.tsx'
-import NechronicaRoutes from '@/service/Nechronica/Routes.tsx'
+import nechronicaRoutes from '@/service/Nechronica/Routes.tsx'
+
+const routes = createBrowserRouter([
+  {
+    path: '/nechronica',
+    Component: Home,
+  },
+  {
+    element: <PublicLayout />,
+    children: [...nechronicaRoutes.public],
+  },
+  {
+    element: <PrivateLayout />,
+    children: [...nechronicaRoutes.private],
+  },
+  {
+    path: '*',
+    Component: NotFound,
+  },
+])
 
 export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        {NechronicaRoutes()}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  )
+  return <RouterProvider router={routes} />
 }
