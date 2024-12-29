@@ -5,7 +5,7 @@ import DashboardContents from '@/service/Nechronica/components/DashboardContents
 
 const spec = { label: 'ダッシュボード', icon: DashboardOutlined }
 
-const screen: Omit<Screen, 'authorize'> = {
+const screen: Screen = {
   ...spec,
   contents: () => (
     <ScreenContainer {...spec}>

@@ -4,7 +4,7 @@ import NechronicaCharacterScreenBase from '@/service/Nechronica/screens/Nechroni
 
 const spec = { label: 'ホラー', icon: RadarChartOutlined }
 
-const screen: Omit<Screen, 'authorize'> = {
+const screen: Screen = {
   ...spec,
   contents: () => (
     <NechronicaCharacterScreenBase characterType={'horror'} {...spec} />

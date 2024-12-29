@@ -3,24 +3,23 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import constate from 'constate'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useWindowSize } from '@/hooks/useWindowSize.ts'
-import { type Screen } from '@/service'
-import { type Scope } from '@/service/Nechronica/Page.tsx'
+import { type Scope, type Screen, type Services } from '@/service'
 
-const useScreen = ({
-  scope,
-  service,
-  screens,
-  screen,
-}: {
-  scope: Scope
-  service: string
-  screens: Record<string, Screen>
-  screen: keyof typeof screens
-}) => {
+const useScreen = ({ screens }: { screens: Record<string, Screen> }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const baseUrl = window.location.href.replace(location.pathname, '')
   const { userName } = useParams()
+
+  const [scope, service, screenRaw, urlParam] = location.pathname
+    .split('/')
+    .slice(1)
+  const screen = screenRaw
+    ? urlParam
+      ? screenRaw.replace(/s$/, '')
+      : screenRaw
+    : 'index'
+  console.log(JSON.stringify({ scope, service, screen, urlParam }, null, 2))
 
   const [open, setOpenStatus] = useState(false)
 
@@ -77,10 +76,7 @@ const useScreen = ({
     },
   ) => `${baseUrl}${getScreenPathName(screen, props)}`
 
-  const setService = (
-    services: Record<string, { screens: Record<string, unknown> }>,
-    service: keyof typeof services,
-  ) => {
+  const setService = (services: Services, service: keyof typeof services) => {
     const useScreen = screen in services[service].screens ? screen : 'index'
     const userSection = userName ? `/${userName}` : ''
     navigate(`/${scope}${userSection}/${service}${getScreenBlock(useScreen)}`)

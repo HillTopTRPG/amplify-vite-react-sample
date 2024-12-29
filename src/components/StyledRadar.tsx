@@ -2,7 +2,7 @@ import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
 import style from './StyledRadar.module.css'
-import { useThemeContext } from '@/context/theme.ts'
+import { useThemeContext } from '@/context/themeContext.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const NECHRONICA_MANEUVER_TYPES = [

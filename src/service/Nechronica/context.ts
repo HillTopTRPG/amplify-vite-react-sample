@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
 import type { Schema } from '../../../amplify/data/resource.ts'
-import { useScreenContext } from '@/context/screen.ts'
-import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useScreenContext } from '@/context/screenContext.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import {
   type CharacterGroup,
   type CharacterGroupAdditionalData,

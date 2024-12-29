@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons'
 import { Affix, Button, Card, Flex, QRCode, theme, Typography } from 'antd'
-import { useScreenContext } from '@/context/screen.ts'
+import { useScreenContext } from '@/context/screenContext.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import CharacterSmallCard from '@/service/Nechronica/components/CharacterSmallCard.tsx'
 import { type CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'

@@ -21,12 +21,9 @@ function component(
       vertical
       className="screen-container"
       style={{
-        overflowY: 'auto',
         padding: '24px 16px',
         boxSizing: 'border-box',
         backgroundColor: token.colorBgContainer,
-        minHeight: 'calc(100vh - 48px)',
-        maxHeight: 'calc(100vh - 48px)',
       }}
       ref={ref}
     >

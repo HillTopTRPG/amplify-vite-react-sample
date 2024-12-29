@@ -1,7 +1,7 @@
 import React from 'react'
 import { Menu } from 'antd'
-import { useScreenContext } from '@/context/screen.ts'
-import { useThemeContext } from '@/context/theme.ts'
+import { useScreenContext } from '@/context/screenContext.ts'
+import { useThemeContext } from '@/context/themeContext.ts'
 import { getKeys, isIncludes } from '@/utils/types.ts'
 
 export default function ScreenSelectMenu({
@@ -10,7 +10,7 @@ export default function ScreenSelectMenu({
   onSelect: (key: string) => void
 }) {
   const { theme } = useThemeContext()
-  const { screens, screen, setScreen, scope } = useScreenContext()
+  const { screens, screen, setScreen } = useScreenContext()
   const onSelectHandler = (key: string) => {
     if (!isIncludes(getKeys(screens), key)) return
     setScreen(key)
@@ -29,13 +29,7 @@ export default function ScreenSelectMenu({
         width: '100%',
       }}
       items={getKeys(screens)
-        .filter(
-          (key) =>
-            (key === screen || !screens[key].param) &&
-            (scope === 'private'
-              ? screens[key].authorize
-              : !screens[key].authorize),
-        )
+        .filter((key) => key === screen || !screens[key].param)
         .map((key) => ({
           key,
           icon: React.createElement(screens[key].icon),

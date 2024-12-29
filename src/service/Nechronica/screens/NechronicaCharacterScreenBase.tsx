@@ -17,8 +17,8 @@ import {
   Typography,
 } from 'antd'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
-import { useScreenContext } from '@/context/screen.ts'
-import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useScreenContext } from '@/context/screenContext.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
 import AffixCard from '@/service/Nechronica/components/AffixCard.tsx'
 import BorderlessInput from '@/service/Nechronica/components/BorderlessInput.tsx'
@@ -310,14 +310,11 @@ export default function NechronicaCharacterScreenBase({
   )
 
   return (
-    <Layout style={{ backgroundColor: 'transparent', height: '100%' }}>
+    <Layout style={{ backgroundColor: 'transparent' }}>
       <Layout>
         <Layout.Content
           ref={affixContainerRef}
-          style={{
-            overflow: 'hidden scroll',
-            position: 'relative',
-          }}
+          style={{ position: 'relative' }}
         >
           <ScreenContainer label={label} icon={icon}>
             {currentIsMe ? (

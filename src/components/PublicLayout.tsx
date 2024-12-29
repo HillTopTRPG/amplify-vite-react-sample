@@ -1,10 +1,14 @@
 import { Outlet } from 'react-router-dom'
-import { UserAttributesProvider } from '@/context/userAttributes.ts'
+import { ServicesProvider } from '@/context/servicesContext.ts'
+import { UserAttributesProvider } from '@/context/userAttributesContext.ts'
+import services from '@/service'
 
 export default function PublicLayout() {
   return (
-    <UserAttributesProvider>
-      <Outlet />
-    </UserAttributesProvider>
+    <ServicesProvider services={services}>
+      <UserAttributesProvider>
+        <Outlet />
+      </UserAttributesProvider>
+    </ServicesProvider>
   )
 }

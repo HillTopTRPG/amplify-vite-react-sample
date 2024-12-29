@@ -1,7 +1,7 @@
 import { Layout } from 'antd'
 import ScreenSelectMenu from '@/components/layout/ScreenSelectMenu.tsx'
-import { useScreenContext } from '@/context/screen.ts'
-import { useThemeContext } from '@/context/theme.ts'
+import { useScreenContext } from '@/context/screenContext.ts'
+import { useThemeContext } from '@/context/themeContext.ts'
 
 export default function Sider() {
   const { theme } = useThemeContext()

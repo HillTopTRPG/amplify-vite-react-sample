@@ -1,11 +1,11 @@
+import { Outlet } from 'react-router-dom'
 import { ConfigProvider, Layout, theme } from 'antd'
 import MediaQuery from 'react-responsive'
 import AppMenu from '@/components/layout/AppMenu.tsx'
 import Drawer from '@/components/layout/Drawer.tsx'
-import DynamicScreen from '@/components/layout/DynamicScreen.tsx'
 import Sider from '@/components/layout/Sider.tsx'
 import { MEDIA_QUERY } from '@/const/style.ts'
-import { useThemeContext } from '@/context/theme.ts'
+import { useThemeContext } from '@/context/themeContext.ts'
 
 const { defaultAlgorithm, darkAlgorithm } = theme
 
@@ -23,7 +23,7 @@ export default function MainContentsLayout() {
         <Layout
           style={{
             backgroundColor: 'transparent',
-            overflow: 'hidden scroll',
+            overflow: 'hidden',
             zIndex: 0,
           }}
         >
@@ -39,7 +39,7 @@ export default function MainContentsLayout() {
             <MediaQuery {...MEDIA_QUERY.MOBILE}>
               <Drawer />
             </MediaQuery>
-            <DynamicScreen />
+            <Outlet />
           </Layout.Content>
         </Layout>
       </Layout>
