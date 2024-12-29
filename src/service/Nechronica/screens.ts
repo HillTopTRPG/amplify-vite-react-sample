@@ -1,6 +1,5 @@
 import dolls from './screens/dolls.tsx'
 import group from './screens/group.tsx'
-import groups from './screens/groups.tsx'
 import horrors from './screens/horrors.tsx'
 import index from './screens/index.tsx'
 import legions from './screens/legions.tsx'
@@ -14,7 +13,6 @@ const omitScreens: Record<string, Omit<Screen, 'authorize'>> = {
   savants,
   horrors,
   legions,
-  groups,
   group,
 }
 

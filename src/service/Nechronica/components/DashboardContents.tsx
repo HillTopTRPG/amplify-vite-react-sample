@@ -424,9 +424,7 @@ export default function DashboardContents() {
         tabBarStyle={{ paddingLeft: 10 }}
         style={{ marginBottom: 12 }}
       />
-      {makeTitleElm('キャラクターグループ', `${groupsElm.length}個`, () =>
-        setScreen('groups'),
-      )}
+      {makeTitleElm('キャラクターグループ', `${groupsElm.length}個`)}
       {scope === 'private' ? (
         <Space.Compact size="large">
           <Input
