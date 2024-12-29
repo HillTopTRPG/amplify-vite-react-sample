@@ -319,7 +319,7 @@ export default function NechronicaCharacterScreenBase({
             position: 'relative',
           }}
         >
-          <ScreenContainer title={label} icon={icon}>
+          <ScreenContainer label={label} icon={icon}>
             {currentIsMe ? (
               <Flex
                 vertical

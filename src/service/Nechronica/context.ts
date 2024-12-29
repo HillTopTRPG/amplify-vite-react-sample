@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
 import type { Schema } from '../../../amplify/data/resource.ts'
+import { useScreenContext } from '@/context/screen.ts'
 import { useUserAttributes } from '@/context/userAttributes.ts'
 import {
   type CharacterGroup,
@@ -45,14 +46,16 @@ const client = generateClient<Schema>()
 
 const useNechronica = () => {
   const { loading: loadingUserAttributes, me } = useUserAttributes()
+  const { scope } = useScreenContext()
 
   const AmplifyDataFilter = useMemo(() => {
+    console.log(scope)
     if (me?.userName) {
       return {
         or: [
           {
             owner: {
-              eq: me?.userName ?? '',
+              eq: scope === 'private' ? (me?.userName ?? '') : '',
             },
           },
           {
@@ -68,7 +71,7 @@ const useNechronica = () => {
         eq: true,
       },
     }
-  }, [me])
+  }, [me?.userName, scope])
 
   const [publishCharacters, setPublishCharacters] = useState<PublishObject[]>(
     [],

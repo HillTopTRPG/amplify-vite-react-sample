@@ -1,0 +1,16 @@
+.hoverable {
+  transition: 20ms;
+  transform-origin: center center;
+
+  &:active {
+    transform: scale(1.02);
+  }
+
+  &:not(:active)&:hover {
+    transform: scale(1.03);
+  }
+
+  &:not(:active)&.active {
+    transform: scale(1.03);
+  }
+}

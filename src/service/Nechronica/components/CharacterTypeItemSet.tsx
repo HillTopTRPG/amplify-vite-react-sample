@@ -1,4 +1,6 @@
+import { SelectOutlined } from '@ant-design/icons'
 import { Typography, Flex, theme } from 'antd'
+import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './CharacterTypeItemSet.module.css'
 import { getCharacterTypeSrc, getClassSrc } from '@/service/Nechronica'
@@ -41,10 +43,6 @@ export default function CharacterTypeItemSet(
     text = i18nT(`Nechronica.CHARACTER_TYPE.${props.type}`)
   }
 
-  const containerStyle = {
-    opacity: props.num === 0 ? 0.5 : 1,
-  }
-
   const valueText =
     props.type !== 'doll'
       ? props.type === 'legion'
@@ -55,29 +53,35 @@ export default function CharacterTypeItemSet(
         : '-'
 
   return (
-    <Flex
-      align="stretch"
-      gap={20}
-      className={styles.container}
-      style={containerStyle}
-      onClick={props.onClick}
-    >
-      <div
-        className={styles.image}
-        style={{ backgroundImage: `url(${src})` }}
-      />
-      <Flex vertical align="flex-start" justify="space-evenly">
-        <Typography.Text style={{ fontSize: 12 }}>{text}</Typography.Text>
-        <Typography.Text
-          style={{
-            fontSize: 24,
-            userSelect: 'none',
-            color: token.colorLink,
-          }}
-        >
-          {valueText}
-        </Typography.Text>
+    <Typography.Link style={{ overflow: 'visible' }}>
+      <Flex
+        align="stretch"
+        gap={20}
+        className={classNames(
+          styles.container,
+          props.num === 0 && styles.empty,
+        )}
+        onClick={props.onClick}
+      >
+        <div
+          className={styles.image}
+          style={{ backgroundImage: `url(${src})` }}
+        />
+        <Flex vertical align="flex-start" justify="space-evenly">
+          <Typography.Text style={{ fontSize: 12 }}>{text}</Typography.Text>
+          <Flex
+            gap={10}
+            align="baseline"
+            style={{
+              userSelect: 'none',
+              color: valueText === '-' ? token.colorTextDisabled : undefined,
+            }}
+          >
+            <span style={{ fontSize: 24 }}>{valueText}</span>
+            <SelectOutlined />
+          </Flex>
+        </Flex>
       </Flex>
-    </Flex>
+    </Typography.Link>
   )
 }

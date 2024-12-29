@@ -23,6 +23,14 @@
   right: 0;
   transform: translate(50%, -50%) rotate(var(--deg-neg));
 
+  &.empty {
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+
   &:hover {
     transform: translate(50%, -50%) rotate(var(--deg-neg)) scale(1.06);
   }

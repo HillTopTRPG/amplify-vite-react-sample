@@ -1,4 +1,5 @@
 import { Badge, Space, Typography } from 'antd'
+import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './CharacterTypeIcon.module.css'
 import { getCharacterTypeSrc, getClassSrc } from '@/service/Nechronica'
@@ -59,17 +60,13 @@ export default function CharacterTypeIcon(
         ['--deg' as never]: deg,
         ['--deg-neg' as never]: `-${deg}`,
         ['--distance' as never]: distance,
-        opacity: props.num === 0 ? 0.5 : 1,
       }}
       onClick={props.onClick}
     >
       <Space.Compact
         direction="vertical"
-        className={styles.contents}
-        style={{
-          textAlign: 'center',
-          borderRadius: 4,
-        }}
+        className={classNames(styles.contents, props.num === 0 && styles.empty)}
+        style={{ textAlign: 'center', borderRadius: 4 }}
       >
         <Typography.Text style={{ fontSize: 10, height: 14, marginTop: -14 }}>
           {text}

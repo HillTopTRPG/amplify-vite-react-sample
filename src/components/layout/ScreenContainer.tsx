@@ -4,12 +4,12 @@ import { useMediaQuery } from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 
 type ComponentProps = {
-  title: string
+  label: string
   icon: React.FC
   children?: ReactNode
 }
 function component(
-  { title, icon, children }: ComponentProps,
+  { label, icon, children }: ComponentProps,
   ref: Ref<HTMLDivElement>,
 ) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -33,7 +33,7 @@ function component(
       <Typography.Title level={3} style={{ marginTop: -12 }}>
         <Space>
           {isMobile ? React.createElement(icon) : null}
-          {title}
+          {label}
         </Space>
       </Typography.Title>
       {children}

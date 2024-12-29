@@ -21,7 +21,7 @@ import {
   Space,
   Spin,
 } from 'antd'
-import MediaQuery, { useMediaQuery } from 'react-responsive'
+import MediaQuery from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useScreenContext } from '@/context/screen.ts'
 import { useThemeContext } from '@/context/theme.ts'
@@ -54,8 +54,6 @@ export default function AppMenu() {
   const serviceName = isProperty(service, services)
     ? services[service].serviceName
     : 'unknown'
-
-  const isFullView = useMediaQuery(MEDIA_QUERY.FULL_VIEW)
 
   const dropdownProps: MenuProps = {
     items: [
@@ -117,9 +115,7 @@ export default function AppMenu() {
             icon={<HomeOutlined />}
             onClick={() => navigate('/')}
             style={{ padding: '0 5px' }}
-          >
-            {isFullView ? 'Amplify-Vite-React-Sample' : null}
-          </Button>
+          />
           <Typography.Text>/</Typography.Text>
           <Dropdown
             menu={{

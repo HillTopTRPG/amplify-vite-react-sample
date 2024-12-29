@@ -2,7 +2,14 @@
   cursor: pointer;
   width: 200px;
   transition: 20ms;
-  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.8));
+
+  &.empty {
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.75;
+    }
+  }
 
   &:active {
     transform: scale(1.02);

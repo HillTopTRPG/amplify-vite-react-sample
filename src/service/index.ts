@@ -1,6 +1,5 @@
 import { type ReactNode, type FC } from 'react'
 import nechronica from './Nechronica/index.ts'
-import nechronica2 from './Nechronica2/index.ts'
 
 export type CharacterGroupAdditionalData = {
   stared: boolean
@@ -35,7 +34,6 @@ export type Services = Record<string, Service>
 
 const services: Services = {
   nechronica,
-  nechronica2,
 } as const
 
 export default services

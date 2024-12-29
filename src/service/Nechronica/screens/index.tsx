@@ -3,19 +3,14 @@ import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import type { Screen } from '@/service'
 import DashboardContents from '@/service/Nechronica/components/DashboardContents.tsx'
 
-const label = 'ダッシュボード'
-const icon = DashboardOutlined
-const contents = () => (
-  <ScreenContainer title={label} icon={icon}>
-    <DashboardContents />
-  </ScreenContainer>
-)
+const spec = { label: 'ダッシュボード', icon: DashboardOutlined }
 
-const packed: Screen = {
-  label,
-  authorize: true,
-  icon,
-  contents,
+const screen: Omit<Screen, 'authorize'> = {
+  ...spec,
+  contents: () => (
+    <ScreenContainer {...spec}>
+      <DashboardContents />
+    </ScreenContainer>
+  ),
 }
-
-export default packed
+export default screen

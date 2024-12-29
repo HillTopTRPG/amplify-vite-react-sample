@@ -4,15 +4,14 @@ import type screens from './screens'
 import { ScreenProvider } from '@/context/screen.ts'
 import MainContentsLayout from '@/layouts/MainContentsLauout.tsx'
 
-export default function Page(
-  screen: keyof typeof screens,
-  scope: 'private' | 'public',
-) {
+export type Scope = 'private' | 'public'
+
+export default function Page(screen: keyof typeof screens, scope: Scope) {
   return (
-    <NechronicaProvider>
-      <ScreenProvider {...service} screen={screen} scope={scope}>
+    <ScreenProvider {...service} screen={screen} scope={scope}>
+      <NechronicaProvider>
         <MainContentsLayout />
-      </ScreenProvider>
-    </NechronicaProvider>
+      </NechronicaProvider>
+    </ScreenProvider>
   )
 }

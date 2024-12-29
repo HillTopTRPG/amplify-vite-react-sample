@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import constate from 'constate'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useWindowSize } from '@/hooks/useWindowSize.ts'
 import { type Screen } from '@/service'
+import { type Scope } from '@/service/Nechronica/Page.tsx'
 
 const useScreen = ({
   scope,
@@ -11,12 +12,14 @@ const useScreen = ({
   screens,
   screen,
 }: {
-  scope: 'private' | 'public'
+  scope: Scope
   service: string
   screens: Record<string, Screen>
   screen: keyof typeof screens
 }) => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const baseUrl = window.location.href.replace(location.pathname, '')
   const { userName } = useParams()
 
   const [open, setOpenStatus] = useState(false)
@@ -30,18 +33,49 @@ const useScreen = ({
     return `/${screen.replace('ForGuest', '')}`.replace('/index', '')
   }
 
+  const getScreenPathName = (
+    screen: keyof typeof screens,
+    props?: {
+      scope?: Scope
+      userName?: string
+      service?: string
+      urlParam?: string
+      queryParam?: Record<string, string>
+    },
+  ) => {
+    const useUserName = props?.userName ?? userName
+
+    const userBlock = useUserName ? `/${useUserName}` : ''
+    const urlParamBlock = props?.urlParam ? `/${props.urlParam}` : ''
+    const queryParamBlock = props?.queryParam
+      ? `/?${new URLSearchParams(props.queryParam).toString()}`
+      : ''
+    return `/${props?.scope ?? scope}${userBlock}/${props?.service ?? service}${getScreenBlock(screen)}${urlParamBlock}${queryParamBlock}`
+  }
+
   const setScreen = (
     screen: keyof typeof screens,
-    params?: Record<string, string>,
+    props?: {
+      scope?: Scope
+      userName?: string
+      service?: string
+      urlParam?: string
+      queryParam?: Record<string, string>
+    },
   ) => {
-    const userSection = userName ? `/${userName}` : ''
-    const paramsStr = params
-      ? `/?${new URLSearchParams(params).toString()}`
-      : ''
-    navigate(
-      `/${scope}${userSection}/${service}${getScreenBlock(screen)}${paramsStr}`,
-    )
+    navigate(getScreenPathName(screen, props))
   }
+
+  const getScreenUrl = (
+    screen: keyof typeof screens,
+    props?: {
+      scope?: Scope
+      userName?: string
+      service?: string
+      urlParam?: string
+      queryParam?: Record<string, string>
+    },
+  ) => `${baseUrl}${getScreenPathName(screen, props)}`
 
   const setService = (
     services: Record<string, { screens: Record<string, unknown> }>,
@@ -57,7 +91,7 @@ const useScreen = ({
     navigate(`/${scope}${userSection}/${service}${getScreenBlock(screen)}`)
   }
 
-  const setScope = (scope: 'private' | 'public') => {
+  const setScope = (scope: Scope) => {
     const userSection = userName ? `/${userName}` : ''
     navigate(`/${scope}${userSection}/${service}${getScreenBlock(screen)}`)
   }
@@ -84,6 +118,7 @@ const useScreen = ({
     screens,
     screen,
     setScreen,
+    getScreenUrl,
     screenIcon,
     screenLabel,
     screenContents,
