@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { Flex, Typography } from 'antd'
 import { type TextProps } from 'antd/es/typography/Text'
 import classNames from 'classnames'
-import style from './ManeuverButton.module.css'
+import AvatarNoBorder from './AvatarNoBorder.tsx'
+import styles from './ManeuverButton.module.css'
+import ManeuverPopover from './ManeuverPopover.tsx'
 import { getBackImg, getManeuverSrc } from '@/service/Nechronica'
-import AvatarNoBorder from '@/service/Nechronica/components/AvatarNoBorder.tsx'
-import ManeuverPopover from '@/service/Nechronica/components/ManeuverPopover.tsx'
 import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const FONT_SIZE = 11
@@ -68,7 +68,7 @@ export default function ManeuverButton({
         {/* stacked avatar */}
         <div
           {...avatarStackDivProps}
-          className={classNames(style.hoverable, popoverOpen && style.active)}
+          className={classNames(styles.hoverable, popoverOpen && styles.active)}
         >
           <ManeuverAvatar src={getBackImg(maneuver.type)} />
           <ManeuverAvatar

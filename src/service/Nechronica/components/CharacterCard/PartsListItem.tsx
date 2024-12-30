@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Flex, type FlexProps, List } from 'antd'
-import AvatarNoBorder from '@/service/Nechronica/components/AvatarNoBorder.tsx'
-import ManeuverButton from '@/service/Nechronica/components/ManeuverButton.tsx'
+import AvatarNoBorder from './AvatarNoBorder.tsx'
+import ManeuverButton from './ManeuverButton.tsx'
 import unknownImg from '@/service/Nechronica/images/unknown.png'
 import {
   type NechronicaBasic,

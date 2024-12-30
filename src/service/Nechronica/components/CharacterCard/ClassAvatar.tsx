@@ -1,13 +1,11 @@
 import { Flex, Typography } from 'antd'
 import { getClassSrc } from '@/service/Nechronica'
-import AvatarNoBorder from '@/service/Nechronica/components/AvatarNoBorder.tsx'
+import AvatarNoBorder from '@/service/Nechronica/components/CharacterCard/AvatarNoBorder.tsx'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const AVATAR_SIZE = 60
 
-type ClassAvatarProps = {
-  value: number
-}
+type ClassAvatarProps = { value: number }
 export default function ClassAvatar({ value }: ClassAvatarProps) {
   return (
     <Flex vertical align="center">

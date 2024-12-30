@@ -17,9 +17,9 @@ import {
 } from 'antd'
 import classNames from 'classnames'
 import { clone } from 'lodash-es'
-import style from './CharacterSmallCard.module.css'
+import styles from './CharacterSmallCard.module.css'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
-import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -46,12 +46,11 @@ export default function CharacterSmallCard({
   const cardProps: CardProps = useMemo(
     () => ({
       onClick: () => onSelect(character.id, !selected),
-      onMouseEnter: () => onHover(character.id, true),
-      onMouseLeave: () => onHover(character.id, false),
       hoverable: false,
-      className: classNames(style.hoverable, selected ? style.active : null),
-      onMouseOver: () => onHover(character.id, true),
-      onMouseOut: () => onHover(character.id, false),
+      className: classNames(styles.hoverable, selected ? styles.active : null),
+      onMouseOverCapture: () => onHover(character.id, true),
+      onMouseOutCapture: () => onHover(character.id, false),
+      onTouchStartCapture: () => {},
       styles: {
         body: {
           padding: '8px 0',

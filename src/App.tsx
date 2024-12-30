@@ -1,9 +1,11 @@
+import { useCallback } from 'react'
 import {
   createBrowserRouter,
   Outlet,
   RouterProvider,
   ScrollRestoration,
 } from 'react-router-dom'
+import type { Location } from 'react-router-dom'
 import PrivateLayout from '@/components/PrivateLayout.tsx'
 import PublicLayout from '@/components/PublicLayout.tsx'
 import Home from '@/pages/Home.tsx'
@@ -11,9 +13,10 @@ import NotFound from '@/pages/NotFound.tsx'
 import nechronicaRoutes from '@/service/Nechronica/Routes.tsx'
 
 function Root() {
+  const getKey = useCallback((l: Location) => l.pathname, [])
   return (
     <>
-      <ScrollRestoration />
+      <ScrollRestoration getKey={getKey} />
       <Outlet />
     </>
   )
@@ -25,16 +28,18 @@ const routes = createBrowserRouter([
     Component: Root,
     children: [
       {
-        path: '/',
+        index: true,
         Component: Home,
       },
       {
-        element: <PublicLayout />,
-        children: [...nechronicaRoutes.public],
+        path: '/public',
+        Component: PublicLayout,
+        children: [nechronicaRoutes.public],
       },
       {
-        element: <PrivateLayout />,
-        children: [...nechronicaRoutes.private],
+        path: '/private',
+        Component: PrivateLayout,
+        children: [nechronicaRoutes.private],
       },
       {
         path: '*',

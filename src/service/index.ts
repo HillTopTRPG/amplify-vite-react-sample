@@ -1,5 +1,7 @@
-import { type ReactNode, type FC } from 'react'
-import nechronica from './Nechronica/index.ts'
+import { type FC, type ComponentType } from 'react'
+import { service as nechronica } from './Nechronica/index.ts'
+
+export type Scope = 'private' | 'public'
 
 export type CharacterGroupAdditionalData = {
   stared: boolean
@@ -19,10 +21,9 @@ export type CharacterGroup = {
 
 export type Screen = {
   label: string
-  authorize: boolean
   icon: FC
   param?: string
-  contents: () => ReactNode
+  contents: ComponentType
 }
 
 export type Service = {
@@ -30,6 +31,7 @@ export type Service = {
   serviceName: string
   screens: Record<string, Screen>
 }
+
 export type Services = Record<string, Service>
 
 const services: Services = {

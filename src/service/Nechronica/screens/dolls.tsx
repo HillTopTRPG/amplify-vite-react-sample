@@ -1,13 +1,11 @@
 import { RadarChartOutlined } from '@ant-design/icons'
 import type { Screen } from '@/service'
-import NechronicaCharacterScreenBase from '@/service/Nechronica/screens/NechronicaCharacterScreenBase.tsx'
+import CharacterTypeScreen from '@/service/Nechronica/components/CharacterTypeScreen'
 
 const spec = { label: 'ドール', icon: RadarChartOutlined }
 
-const screen: Omit<Screen, 'authorize'> = {
+const screen: Screen = {
   ...spec,
-  contents: () => (
-    <NechronicaCharacterScreenBase characterType={'doll'} {...spec} />
-  ),
+  contents: () => <CharacterTypeScreen characterType="doll" {...spec} />,
 }
 export default screen

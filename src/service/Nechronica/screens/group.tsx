@@ -3,19 +3,19 @@ import { useParams } from 'react-router-dom'
 import { GroupOutlined } from '@ant-design/icons'
 import { Empty, Flex, Modal } from 'antd'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
-import { useScreenContext } from '@/context/screen.ts'
-import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useScreenContext } from '@/context/screenContext.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import type { Screen } from '@/service'
-import CharacterCard from '@/service/Nechronica/components/CharacterCard.tsx'
-import CharacterSmallCard from '@/service/Nechronica/components/CharacterSmallCard.tsx'
+import CharacterCard from '@/service/Nechronica/components/CharacterCard'
+import CharacterSmallCard from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCard.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import type { CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { typedOmit } from '@/utils/types.ts'
 
 const spec = { label: 'グループ', icon: GroupOutlined }
 
-const screen: Omit<Screen, 'authorize'> = {
+const screen: Screen = {
   ...spec,
   param: 'groupId',
   /* eslint-disable react-hooks/rules-of-hooks */
@@ -106,6 +106,7 @@ const screen: Omit<Screen, 'authorize'> = {
       </ScreenContainer>
     )
   },
+  /* eslint-enable react-hooks/rules-of-hooks */
 }
 
 export default screen
