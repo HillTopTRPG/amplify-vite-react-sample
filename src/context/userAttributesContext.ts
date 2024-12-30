@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { generateClient } from 'aws-amplify/api'
 import {
@@ -9,33 +9,33 @@ import { getCurrentUser, type GetCurrentUserOutput } from 'aws-amplify/auth'
 import constate from 'constate'
 import { type Schema } from '../../amplify/data/resource.ts'
 
+type User = Schema['User']['type'] & {
+  setting: {
+    darkMode: boolean
+  }
+}
+
 const client = generateClient<Schema>()
 
 export const [UserAttributesProvider, useUserAttributes] = constate(() => {
   const [attr, setAttrResult] = useState<FetchUserAttributesOutput>()
   const [userAttributeLoading, setUserAttributeLoading] = useState(true)
-  const reloadUserAttributes = () => {
+  const reloadUserAttributes = useCallback(() => {
     fetchUserAttributes()
       .then(setAttrResult)
-      .then(() => setUserAttributeLoading(false))
-      .catch(() => setUserAttributeLoading(false))
-  }
-  useEffect(reloadUserAttributes, [])
+      .then(() => setTimeout(() => setUserAttributeLoading(false), 10))
+      .catch(() => setTimeout(() => setUserAttributeLoading(false), 10))
+  }, [])
+  useEffect(() => reloadUserAttributes, [reloadUserAttributes])
 
   const [user, setUser] = useState<GetCurrentUserOutput | null>(null)
   const [userLoading, setUserLoading] = useState(true)
   useEffect(() => {
     getCurrentUser()
       .then(setUser)
-      .then(() => setUserLoading(false))
-      .catch(() => setUserLoading(false))
+      .then(() => setTimeout(() => setUserLoading(false), 10))
+      .catch(() => setTimeout(() => setUserLoading(false), 10))
   }, [])
-
-  type User = Schema['User']['type'] & {
-    setting: {
-      darkMode: boolean
-    }
-  }
 
   const [users, setUsers] = useState<User[]>([])
   const [usersLoading, setUsersLoading] = useState(true)
@@ -52,16 +52,31 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
     return void sub.unsubscribe
   }, [])
 
+  const { userName } = useParams<{ userName: string }>()
+
   const [me, setMe] = useState<User | null>(null)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [currentIsMe, setCurrentIsMe] = useState(false)
   const [loading, setLoading] = useState(true)
   useEffect(() => {
-    setMe(users.find((u) => u.userName === user?.username) ?? null)
-    setLoading(userAttributeLoading || userLoading || usersLoading)
-  }, [users, user?.username, userAttributeLoading, userLoading, usersLoading])
+    const loading = userAttributeLoading || userLoading || usersLoading
+    if (!loading) {
+      // console.log('set currentUser', users.length, user?.username, userName)
+      const me = users.find((u) => u.userName === user?.username) ?? null
+      setMe(me)
+      const currentUser = userName
+        ? (users.find((u) => u.userName === userName) ?? null)
+        : me
+      setCurrentUser(currentUser)
+      setCurrentIsMe(Boolean(user) && user?.username === userName)
+    }
+    setLoading(loading)
+  }, [userAttributeLoading, userLoading, usersLoading, users, user, userName])
 
   useEffect(() => {
     if (!loading && user && !me) {
-      console.log('create user')
+      // eslint-disable-next-line no-console
+      console.log('create user', user.username)
       client.models.User.create({
         userName: user.username,
         setting: JSON.stringify({
@@ -70,10 +85,6 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
       })
     }
   }, [loading, me, user])
-
-  const { userName } = useParams<{ userName: string }>()
-  const currentUser = userName ? users.find((u) => u.userName === userName) : me
-  const currentIsMe = me && me?.userName === currentUser?.userName
 
   return {
     attr,

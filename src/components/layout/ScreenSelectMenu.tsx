@@ -20,7 +20,7 @@ export default function ScreenSelectMenu({
     <Menu
       theme={theme}
       mode="inline"
-      onSelect={({ key }) => onSelectHandler(key)}
+      onSelect={(e) => onSelectHandler(e.key)}
       selectedKeys={[screen]}
       style={{
         background: 'transparent',

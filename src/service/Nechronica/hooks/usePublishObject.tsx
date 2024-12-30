@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 type PublishObject = {
   readonly id: string
@@ -32,16 +32,19 @@ export function usePublishObject() {
   const [publishCharacterLoading, setPublishCharacterLoading] =
     useState<boolean>(true)
 
-  const next = ({ items }: { items: PublishObject[] }) => {
-    const newItems = makeNewPublishObj(items)
-    if (
-      publishCharacterLoading ||
-      notEqualsPublishObjList(newItems, publishCharacters)
-    ) {
-      setPublishCharacters(newItems)
-      setPublishCharacterLoading(false)
-    }
-  }
+  const next = useCallback(
+    ({ items }: { items: PublishObject[] }) => {
+      const newItems = makeNewPublishObj(items)
+      if (
+        publishCharacterLoading ||
+        notEqualsPublishObjList(newItems, publishCharacters)
+      ) {
+        setPublishCharacters(newItems)
+        setPublishCharacterLoading(false)
+      }
+    },
+    [publishCharacterLoading, publishCharacters],
+  )
 
   return [publishCharacters, publishCharacterLoading, next] as const
 }

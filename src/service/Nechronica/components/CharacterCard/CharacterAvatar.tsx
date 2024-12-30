@@ -1,7 +1,7 @@
 import { Flex, Typography } from 'antd'
+import AvatarNoBorder from './AvatarNoBorder.tsx'
 import { useThemeContext } from '@/context/themeContext.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
-import AvatarNoBorder from '@/service/Nechronica/components/AvatarNoBorder.tsx'
 import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 

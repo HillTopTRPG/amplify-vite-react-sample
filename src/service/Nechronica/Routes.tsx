@@ -1,3 +1,4 @@
+import React from 'react'
 import { type RouteObject } from 'react-router-dom'
 import { service } from './index'
 import { ScreenProvider } from '@/context/screenContext.ts'
@@ -10,7 +11,7 @@ function getPath(screen: keyof typeof service.screens) {
     ? `s/:${service.screens[screen].param}`
     : ''
   const path = `${screen.replace('index', '')}${paramBlock}`
-  console.log(path)
+  // console.log(path)
   return path
 }
 
@@ -25,8 +26,9 @@ const screenRouteObj: RouteObject = {
   ),
   children: getKeys(service.screens).map((screen) => ({
     path: getPath(screen),
-    Component: service.screens[screen].contents,
-    handle: { scrollMode: 'pathname' },
+    element: React.createElement(service.screens[screen].contents, {
+      key: screen,
+    }),
   })),
 }
 

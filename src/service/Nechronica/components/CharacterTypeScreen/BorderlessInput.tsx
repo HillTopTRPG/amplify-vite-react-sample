@@ -1,6 +1,6 @@
 import { type ReactNode, type RefObject } from 'react'
 import { Input, type InputRef, Space, theme } from 'antd'
-import KeyText from '@/service/Nechronica/components/KeyText.tsx'
+import KeyText from './KeyText.tsx'
 
 type BorderlessInputProps = {
   value: string
