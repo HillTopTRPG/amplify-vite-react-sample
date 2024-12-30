@@ -1,18 +1,54 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { useCallback } from 'react'
+import {
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  ScrollRestoration,
+} from 'react-router-dom'
+import type { Location } from 'react-router-dom'
+import PrivateLayout from '@/components/PrivateLayout.tsx'
+import PublicLayout from '@/components/PublicLayout.tsx'
 import Home from '@/pages/Home.tsx'
 import NotFound from '@/pages/NotFound.tsx'
-import NechronicaRoutes from '@/service/Nechronica/Routes.tsx'
-import NechronicaRoutes2 from '@/service/Nechronica2/Routes.tsx'
+import nechronicaRoutes from '@/service/Nechronica/Routes.tsx'
+
+function Root() {
+  const getKey = useCallback((l: Location) => l.pathname, [])
+  return (
+    <>
+      <ScrollRestoration getKey={getKey} />
+      <Outlet />
+    </>
+  )
+}
+
+const routes = createBrowserRouter([
+  {
+    path: '/',
+    Component: Root,
+    children: [
+      {
+        index: true,
+        Component: Home,
+      },
+      {
+        path: '/public',
+        Component: PublicLayout,
+        children: [nechronicaRoutes.public],
+      },
+      {
+        path: '/private',
+        Component: PrivateLayout,
+        children: [nechronicaRoutes.private],
+      },
+      {
+        path: '*',
+        Component: NotFound,
+      },
+    ],
+  },
+])
 
 export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        {NechronicaRoutes()}
-        {NechronicaRoutes2()}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  )
+  return <RouterProvider router={routes} />
 }

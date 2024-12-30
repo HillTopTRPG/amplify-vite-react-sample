@@ -1,21 +1,16 @@
 import { DashboardOutlined } from '@ant-design/icons'
 import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
 import type { Screen } from '@/service'
-import DashboardContents from '@/service/Nechronica/components/DashboardContents.tsx'
+import DashboardContents from '@/service/Nechronica/components/DashboardContents'
 
-const label = 'ダッシュボード'
-const icon = DashboardOutlined
-const contents = () => (
-  <ScreenContainer title={label} icon={icon}>
-    <DashboardContents />
-  </ScreenContainer>
-)
+const spec = { label: 'ダッシュボード', icon: DashboardOutlined }
 
-const packed: Screen = {
-  label,
-  authorize: true,
-  icon,
-  contents,
+const screen: Screen = {
+  ...spec,
+  contents: () => (
+    <ScreenContainer {...spec}>
+      <DashboardContents />
+    </ScreenContainer>
+  ),
 }
-
-export default packed
+export default screen

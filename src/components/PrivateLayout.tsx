@@ -1,13 +1,17 @@
 import { Outlet } from 'react-router-dom'
 import Authenticator from '@/Authenticator.tsx'
-import { UserAttributesProvider } from '@/context/userAttributes.ts'
+import { ServicesProvider } from '@/context/servicesContext.ts'
+import { UserAttributesProvider } from '@/context/userAttributesContext.ts'
+import services from '@/service'
 
 export default function PrivateLayout() {
   return (
-    <Authenticator>
-      <UserAttributesProvider>
-        <Outlet />
-      </UserAttributesProvider>
-    </Authenticator>
+    <ServicesProvider services={services}>
+      <Authenticator>
+        <UserAttributesProvider>
+          <Outlet />
+        </UserAttributesProvider>
+      </Authenticator>
+    </ServicesProvider>
   )
 }

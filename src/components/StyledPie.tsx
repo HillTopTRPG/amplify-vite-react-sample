@@ -1,6 +1,6 @@
 import { Pie } from '@ant-design/plots'
 import { type GetProps } from 'antd'
-import { useThemeContext } from '@/context/theme.ts'
+import { useThemeContext } from '@/context/themeContext.ts'
 
 export default function StyledPie({
   data,

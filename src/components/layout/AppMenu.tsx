@@ -21,17 +21,18 @@ import {
   Space,
   Spin,
 } from 'antd'
-import MediaQuery, { useMediaQuery } from 'react-responsive'
+import MediaQuery from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
-import { useScreenContext } from '@/context/screen.ts'
-import { useThemeContext } from '@/context/theme.ts'
-import { useUserAttributes } from '@/context/userAttributes.ts'
-import services from '@/service'
+import { useScreenContext } from '@/context/screenContext.ts'
+import { useServicesContext } from '@/context/servicesContext.ts'
+import { useThemeContext } from '@/context/themeContext.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
   const { users, me, loading } = useUserAttributes()
   const { theme, updateTheme } = useThemeContext()
+  const { services } = useServicesContext()
 
   const {
     scope,
@@ -54,8 +55,6 @@ export default function AppMenu() {
   const serviceName = isProperty(service, services)
     ? services[service].serviceName
     : 'unknown'
-
-  const isFullView = useMediaQuery(MEDIA_QUERY.FULL_VIEW)
 
   const dropdownProps: MenuProps = {
     items: [
@@ -117,9 +116,7 @@ export default function AppMenu() {
             icon={<HomeOutlined />}
             onClick={() => navigate('/')}
             style={{ padding: '0 5px' }}
-          >
-            {isFullView ? 'Amplify-Vite-React-Sample' : null}
-          </Button>
+          />
           <Typography.Text>/</Typography.Text>
           <Dropdown
             menu={{
@@ -171,13 +168,7 @@ export default function AppMenu() {
             <Dropdown
               menu={{
                 items: getKeys(screens)
-                  .filter(
-                    (key) =>
-                      !screens[key].param &&
-                      (scope === 'private'
-                        ? screens[key].authorize
-                        : !screens[key].authorize),
-                  )
+                  .filter((key) => !screens[key].param)
                   .map((key) => ({
                     key,
                     label: screens[key].label,

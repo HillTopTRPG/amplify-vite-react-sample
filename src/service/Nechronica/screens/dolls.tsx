@@ -1,22 +1,11 @@
 import { RadarChartOutlined } from '@ant-design/icons'
-import { type Screen } from '@/service'
-import NechronicaCharacterScreenBase from '@/service/Nechronica/screens/NechronicaCharacterScreenBase.tsx'
+import type { Screen } from '@/service'
+import CharacterTypeScreen from '@/service/Nechronica/components/CharacterTypeScreen'
 
-const label = 'ドール'
-const icon = RadarChartOutlined
-const contents = () => (
-  <NechronicaCharacterScreenBase
-    characterType={'doll'}
-    label={label}
-    icon={icon}
-  />
-)
+const spec = { label: 'ドール', icon: RadarChartOutlined }
 
-const packed: Screen = {
-  label,
-  authorize: true,
-  icon,
-  contents,
+const screen: Screen = {
+  ...spec,
+  contents: () => <CharacterTypeScreen characterType="doll" {...spec} />,
 }
-
-export default packed
+export default screen

@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
 import type { Schema } from '../../../amplify/data/resource.ts'
-import { useUserAttributes } from '@/context/userAttributes.ts'
+import { useScreenContext } from '@/context/screenContext.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import {
   type CharacterGroup,
   type CharacterGroupAdditionalData,
@@ -32,27 +33,51 @@ const makeNewPublishObj = (items: PublishObject[]) => {
   return newItems
 }
 
-const notEqualsPublishObjList = (a: PublishObject[], b: PublishObject[]) =>
-  a.length !== b.length ||
-  a.some(
-    (pc, idx) =>
-      b[idx].id !== pc.id ||
-      b[idx].owner !== pc.owner ||
-      b[idx].public !== pc.public,
-  )
-
 const client = generateClient<Schema>()
+
+const updateCharacter = (character: NechronicaCharacter) => {
+  // createdAt, updatedAt は更新しない
+  client.models.NechronicaCharacter.update({
+    ...typedOmit(character, 'createdAt', 'updatedAt'),
+    name: character.sheetData.basic.characterName,
+    additionalData: JSON.stringify(character.additionalData),
+    sheetData: JSON.stringify(character.sheetData),
+  })
+}
+const deleteCharacter = (id: string) => {
+  client.models.NechronicaCharacter.delete({ id })
+}
+
+const updateCharacterGroup = (group: CharacterGroup) => {
+  // createdAt, updatedAt は更新しない
+  client.models.CharacterGroup.update({
+    ...typedOmit(group, 'createdAt', 'updatedAt'),
+    additionalData: JSON.stringify(group.additionalData),
+    characterIds: JSON.stringify(group.characterIds),
+  })
+}
+const deleteCharacterGroup = (id: string) => {
+  client.models.CharacterGroup.delete({ id })
+}
 
 const useNechronica = () => {
   const { loading: loadingUserAttributes, me } = useUserAttributes()
+  const { scope } = useScreenContext()
 
-  const AmplifyDataFilter = useMemo(() => {
+  const [filterLoading, setFilterLoading] = useState(true)
+  const [filter, setFilter] = useState<object>({
+    public: {
+      eq: true,
+    },
+  })
+
+  if (filterLoading && loadingUserAttributes) {
     if (me?.userName) {
-      return {
+      setFilter({
         or: [
           {
             owner: {
-              eq: me?.userName ?? '',
+              eq: scope === 'private' ? (me.userName ?? '') : '',
             },
           },
           {
@@ -61,14 +86,10 @@ const useNechronica = () => {
             },
           },
         ],
-      }
+      })
     }
-    return {
-      public: {
-        eq: true,
-      },
-    }
-  }, [me])
+    setFilterLoading(false)
+  }
 
   const [publishCharacters, setPublishCharacters] = useState<PublishObject[]>(
     [],
@@ -82,27 +103,22 @@ const useNechronica = () => {
     }).subscribe({
       next: ({ items }: { items: PublishObject[] }) => {
         const newItems = makeNewPublishObj(items)
-        if (
-          publishCharacterLoading ||
-          notEqualsPublishObjList(newItems, publishCharacters)
-        ) {
-          setPublishCharacters(newItems)
-          setPublishCharacterLoading(false)
-        }
+        setPublishCharacters(newItems)
+        setPublishCharacterLoading(false)
       },
     })
     return () => {
       console.log('unsub1')
       sub.unsubscribe()
     }
-  }, [loadingUserAttributes, publishCharacterLoading, publishCharacters])
+  }, [loadingUserAttributes])
 
   const [characters, setCharacters] = useState<NechronicaCharacter[]>([])
   const [characterLoading, setCharacterLoading] = useState<boolean>(true)
   useEffect(() => {
-    if (loadingUserAttributes || publishCharacterLoading) return () => {}
+    if (filterLoading || publishCharacterLoading) return () => {}
     const sub = client.models.NechronicaCharacter.observeQuery({
-      filter: AmplifyDataFilter,
+      filter,
     }).subscribe({
       // const sub = client.models.NechronicaCharacter.observeQuery().subscribe({
       next: ({ items }) => {
@@ -135,54 +151,36 @@ const useNechronica = () => {
       console.log('unsub2')
       sub.unsubscribe()
     }
-  }, [
-    AmplifyDataFilter,
-    loadingUserAttributes,
-    publishCharacterLoading,
-    publishCharacters,
-  ])
+  }, [filter, filterLoading, publishCharacterLoading, publishCharacters])
 
-  const createCharacter = (
-    character: NonNullable<
-      PromiseType<ReturnType<typeof NechronicaDataHelper.fetch>>
-    >,
-  ) => {
-    // 重複チェック
-    const compare = (c: NechronicaCharacter) =>
-      (['type', 'sheetId'] as const).every(
-        (p) => c.additionalData[p] === character.additionalData[p],
-      ) && c.owner === me?.userName
-    if (characters.some(compare)) return
+  const createCharacter = useCallback(
+    (
+      character: NonNullable<
+        PromiseType<ReturnType<typeof NechronicaDataHelper.fetch>>
+      >,
+    ) => {
+      // 重複チェック
+      const compare = (c: NechronicaCharacter) =>
+        (['type', 'sheetId'] as const).every(
+          (p) => c.additionalData[p] === character.additionalData[p],
+        ) && c.owner === me?.userName
+      if (characters.some(compare)) return
 
-    const additionalData: NechronicaAdditionalData = {
-      ...character.additionalData,
-      stared: false,
-    }
+      const additionalData: NechronicaAdditionalData = {
+        ...character.additionalData,
+        stared: false,
+      }
 
-    client.models.NechronicaCharacter.create({
-      name: character.sheetData.basic.characterName,
-      additionalData: JSON.stringify(additionalData),
-      sheetData: JSON.stringify(character.sheetData),
-      owner: me?.userName || '',
-      public: false,
-    })
-  }
-  const updateCharacter = (character: NechronicaCharacter) => {
-    const old = characters.find((c) => c.id === character.id)
-    if (!old) return
-    if (old.owner !== character.owner) return
-
-    // createdAt, updatedAt は更新しない
-    client.models.NechronicaCharacter.update({
-      ...typedOmit(character, 'createdAt', 'updatedAt'),
-      name: character.sheetData.basic.characterName,
-      additionalData: JSON.stringify(character.additionalData),
-      sheetData: JSON.stringify(character.sheetData),
-    })
-  }
-  const deleteCharacter = (id: string) => {
-    client.models.NechronicaCharacter.delete({ id })
-  }
+      client.models.NechronicaCharacter.create({
+        name: character.sheetData.basic.characterName,
+        additionalData: JSON.stringify(additionalData),
+        sheetData: JSON.stringify(character.sheetData),
+        owner: me?.userName || '',
+        public: false,
+      })
+    },
+    [characters, me?.userName],
+  )
 
   const [publishCharacterGroups, setPublishCharacterGroups] = useState<
     PublishObject[]
@@ -196,32 +194,23 @@ const useNechronica = () => {
     }).subscribe({
       next: ({ items }: { items: PublishObject[] }) => {
         const newItems = makeNewPublishObj(items)
-        if (
-          publishCharacterGroupLoading ||
-          notEqualsPublishObjList(newItems, publishCharacterGroups)
-        ) {
-          setPublishCharacterGroups(newItems)
-          setPublishCharacterGroupLoading(false)
-        }
+        setPublishCharacterGroups(newItems)
+        setPublishCharacterGroupLoading(false)
       },
     })
     return () => {
       console.log('unsub3')
       sub.unsubscribe()
     }
-  }, [
-    loadingUserAttributes,
-    publishCharacterGroupLoading,
-    publishCharacterGroups,
-  ])
+  }, [loadingUserAttributes])
 
   const [characterGroups, setCharacterGroups] = useState<CharacterGroup[]>([])
   const [characterGroupLoading, setCharacterGroupLoading] =
     useState<boolean>(true)
   useEffect(() => {
-    if (loadingUserAttributes || publishCharacterGroupLoading) return () => {}
+    if (filterLoading || publishCharacterGroupLoading) return () => {}
     const sub = client.models.CharacterGroup.observeQuery({
-      filter: AmplifyDataFilter,
+      filter,
     }).subscribe({
       next: ({ items }) => {
         setCharacterGroups(
@@ -243,50 +232,40 @@ const useNechronica = () => {
       sub.unsubscribe()
     }
   }, [
-    AmplifyDataFilter,
-    loadingUserAttributes,
+    filter,
+    filterLoading,
     publishCharacterGroupLoading,
     publishCharacterGroups,
   ])
 
-  const createCharacterGroup = (
-    group: Pick<CharacterGroup, 'name' | 'characterIds'>,
-  ) => {
-    // 重複チェック
-    const compare = (cg: CharacterGroup) =>
-      (['name'] as const).every((p) => cg[p] === group[p]) &&
-      cg.system === 'nechronica' &&
-      cg.owner === me?.userName
-    if (characterGroups.some(compare)) return
+  const createCharacterGroup = useCallback(
+    (group: Pick<CharacterGroup, 'name' | 'characterIds'>) => {
+      // 重複チェック
+      const compare = (cg: CharacterGroup) =>
+        (['name'] as const).every((p) => cg[p] === group[p]) &&
+        cg.system === 'nechronica' &&
+        cg.owner === me?.userName
+      if (characterGroups.some(compare)) return
 
-    client.models.CharacterGroup.create({
-      system: 'nechronica',
-      ...typedPick(group, 'name'),
-      additionalData: JSON.stringify({ stared: false }),
-      characterIds: JSON.stringify(group.characterIds),
-      owner: me?.userName || '',
-      public: false,
-    })
-  }
-  const updateCharacterGroup = (group: CharacterGroup) => {
-    const old = characterGroups.find((cg) => cg.id === group.id)
-    if (!old) return
-    if (old.owner !== group.owner) return
-
-    // createdAt, updatedAt は更新しない
-    client.models.CharacterGroup.update({
-      ...typedOmit(group, 'createdAt', 'updatedAt'),
-      additionalData: JSON.stringify(group.additionalData),
-      characterIds: JSON.stringify(group.characterIds),
-    })
-  }
-  const deleteCharacterGroup = (id: string) => {
-    client.models.CharacterGroup.delete({ id })
-  }
-  const characterGroupRelations = characterGroups.map((cg) => ({
-    ...cg,
-    characters: characters.filter((c) => cg.characterIds.includes(c.id)),
-  }))
+      client.models.CharacterGroup.create({
+        system: 'nechronica',
+        ...typedPick(group, 'name'),
+        additionalData: JSON.stringify({ stared: false }),
+        characterIds: JSON.stringify(group.characterIds),
+        owner: me?.userName || '',
+        public: false,
+      })
+    },
+    [characterGroups, me?.userName],
+  )
+  const characterGroupRelations = useMemo(
+    () =>
+      characterGroups.map((cg) => ({
+        ...cg,
+        characters: characters.filter((c) => cg.characterIds.includes(c.id)),
+      })),
+    [characterGroups, characters],
+  )
 
   return {
     loading: characterLoading || characterGroupLoading,
