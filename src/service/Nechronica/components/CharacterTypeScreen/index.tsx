@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { type InputRef, Layout, theme } from 'antd'
+import { type InputRef } from 'antd'
 import CharacterTypeScreenContainer from './CharacterTypeScreenContainer.tsx'
-import DetailSider from './DetailSider.tsx'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
@@ -17,7 +16,6 @@ export default function CharacterTypeScreen({
 }: CharacterTypeScreenProps) {
   const { loading, characters } = useNechronicaContext()
   const { currentUser } = useUserAttributes()
-  const { token } = theme.useToken()
 
   const makeUseCharacters = useCallback(
     () =>
@@ -58,8 +56,6 @@ export default function CharacterTypeScreen({
     },
   })
 
-  const [detailList, setDetailList] = useState<string[]>([])
-
   // const [searchParams] = useSearchParams()
   //
   // const outputParams = () => {
@@ -79,34 +75,12 @@ export default function CharacterTypeScreen({
   // outputParams()
 
   return (
-    <Layout style={{ backgroundColor: 'transparent', height: '100%' }}>
-      <Layout>
-        <Layout.Content
-          ref={affixContainerRef}
-          style={{ overflow: 'hidden scroll', position: 'relative' }}
-        >
-          <CharacterTypeScreenContainer
-            label={label}
-            characterType={characterType}
-            searchInputRef={searchInputRef}
-            affixContainerRef={affixContainerRef}
-            useCharacters={useCharacters}
-            setDetailList={setDetailList}
-          />
-        </Layout.Content>
-      </Layout>
-      <Layout.Sider
-        breakpoint="md"
-        reverseArrow
-        width={420}
-        style={{
-          backgroundColor: token.colorBgElevated,
-          overflow: 'hidden scroll',
-          position: 'relative',
-        }}
-      >
-        <DetailSider detailList={detailList} />
-      </Layout.Sider>
-    </Layout>
+    <CharacterTypeScreenContainer
+      label={label}
+      characterType={characterType}
+      searchInputRef={searchInputRef}
+      affixContainerRef={affixContainerRef}
+      useCharacters={useCharacters}
+    />
   )
 }

@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Input, Space } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 export default function AddGroupInput() {
   const { scope } = useScreenContext()
   const { createCharacterGroup } = useNechronicaContext()
+  const { currentIsMe } = useUserAttributes()
   // 入力の変換モードの管理
   const [composition, setComposition] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
@@ -21,7 +23,7 @@ export default function AddGroupInput() {
     setNewGroupName('')
   }
 
-  if (scope === 'private') return null
+  if (scope === 'public' || !currentIsMe) return null
   return (
     <Space.Compact size="large">
       <Input

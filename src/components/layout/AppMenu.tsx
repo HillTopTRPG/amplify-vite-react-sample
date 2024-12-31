@@ -30,14 +30,14 @@ import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const { users, me, loading } = useUserAttributes()
+  const { users, me, currentUser, loading } = useUserAttributes()
   const { theme, updateTheme } = useThemeContext()
   const { services } = useServicesContext()
+  const { screenSize } = useScreenContext()
 
   const {
     scope,
     userName,
-    setUser,
     service,
     setService,
     screenIcon,
@@ -45,7 +45,6 @@ export default function AppMenu() {
     toggleOpenStatus,
     screens,
     setScreen,
-    setScope,
   } = useScreenContext()
 
   const { token } = AntdTheme.useToken()
@@ -130,7 +129,7 @@ export default function AppMenu() {
                   icon: <UserOutlined />,
                 })),
               ].filter((v) => v),
-              onClick: ({ key }) => setUser(key),
+              onClick: ({ key }) => setScreen({ userName: key }),
             }}
             placement="bottomLeft"
           >
@@ -174,7 +173,7 @@ export default function AppMenu() {
                     label: screens[key].label,
                     icon: React.createElement(screens[key].icon),
                   })),
-                onClick: ({ key }) => setScreen(key as keyof typeof screens),
+                onClick: ({ key }) => setScreen({ screen: key }),
               }}
               placement="bottomLeft"
             >
@@ -186,13 +185,20 @@ export default function AppMenu() {
           </MediaQuery>
         </Flex>
         {!loading && scope === 'public' ? (
-          <Button onClick={() => setScope('private')}>
+          <Button onClick={() => setScreen({ scope: 'private' })}>
             {me ? 'プライベートへ' : 'ログイン'}
           </Button>
         ) : (
           <Dropdown menu={dropdownProps} placement="bottom" forceRender>
             <Button type="text" style={{ padding: 5 }}>
-              {loading ? <Spin /> : <UserOutlined />}
+              {loading ? (
+                <Spin />
+              ) : (
+                <>
+                  {screenSize.isFullView ? currentUser?.userName : ''}
+                  <UserOutlined />
+                </>
+              )}
             </Button>
           </Dropdown>
         )}

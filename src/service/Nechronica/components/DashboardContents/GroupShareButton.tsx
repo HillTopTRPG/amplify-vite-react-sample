@@ -11,8 +11,9 @@ export default function GroupShareButton({ group }: { group: CharacterGroup }) {
   const { getScreenUrl } = useScreenContext()
   const shareUrl = useMemo(
     () =>
-      getScreenUrl('groups', {
+      getScreenUrl({
         scope: 'public',
+        screen: 'groups',
         urlParam: group.id,
       }),
     [getScreenUrl, group.id],

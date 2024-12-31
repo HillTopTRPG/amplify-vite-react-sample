@@ -5,6 +5,14 @@ import { MEDIA_QUERY } from '@/const/style.ts'
 import { useWindowSize } from '@/hooks/useWindowSize.ts'
 import { type Scope, type Screen, type Services } from '@/service'
 
+export type ScreenSize = {
+  width: number
+  isMobile: boolean
+  isPC: boolean
+  isFullView: boolean
+  viewPortWidth: number
+}
+
 const useScreen = ({ screens }: { screens: Record<string, Screen> }) => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -36,85 +44,65 @@ const useScreen = ({ screens }: { screens: Record<string, Screen> }) => {
   const toggleOpenStatus = useCallback(() => setOpenStatus((v) => !v), [])
 
   const getScreenBlock = useCallback((screen: keyof typeof screens) => {
-    return `/${screen.replace('ForGuest', '')}`.replace('/index', '')
+    return `/${screen}`.replace('/index', '')
   }, [])
 
   const getScreenPathName = useCallback(
-    (
-      screen: keyof typeof screens,
-      props?: {
-        scope?: Scope
-        userName?: string
-        service?: string
-        urlParam?: string
-        queryParam?: Record<string, string>
-      },
-    ) => {
+    (props: {
+      scope?: Scope
+      service?: string
+      screen?: string
+      userName?: string
+      urlParam?: string
+      queryParam?: Record<string, string>
+    }) => {
       const useUserName = props?.userName ?? userName
 
-      const userBlock = useUserName ? `/${useUserName}` : ''
+      const useQueryParam = {
+        ...props?.queryParam,
+      }
+      if (useUserName) useQueryParam.userName = useUserName
       const urlParamBlock = props?.urlParam ? `/${props.urlParam}` : ''
-      const queryParamBlock = props?.queryParam
-        ? `/?${new URLSearchParams(props.queryParam).toString()}`
+      const queryParamBlock = Object.keys(useQueryParam).length
+        ? `/?${new URLSearchParams(useQueryParam).toString()}`
         : ''
-      return `/${props?.scope ?? scope}${userBlock}/${props?.service ?? service}${getScreenBlock(screen)}${urlParamBlock}${queryParamBlock}`
+      return `/${props?.scope ?? scope}/${props?.service ?? service}${getScreenBlock(props?.screen ?? screen)}${urlParamBlock}${queryParamBlock}`
     },
-    [getScreenBlock, scope, service, userName],
+    [getScreenBlock, scope, screen, service, userName],
   )
 
   const setScreen = useCallback(
-    (
-      screen: keyof typeof screens,
-      props?: {
-        scope?: Scope
-        userName?: string
-        service?: string
-        urlParam?: string
-        queryParam?: Record<string, string>
-      },
-    ) => {
-      navigate(getScreenPathName(screen, props))
+    (props: {
+      scope?: Scope
+      service?: string
+      screen?: string
+      userName?: string
+      urlParam?: string
+      queryParam?: Record<string, string>
+    }) => {
+      navigate(getScreenPathName(props))
     },
     [getScreenPathName, navigate],
   )
 
   const getScreenUrl = useCallback(
-    (
-      screen: keyof typeof screens,
-      props?: {
-        scope?: Scope
-        userName?: string
-        service?: string
-        urlParam?: string
-        queryParam?: Record<string, string>
-      },
-    ) => `${baseUrl}${getScreenPathName(screen, props)}`,
+    (props: {
+      scope?: Scope
+      service?: string
+      screen?: string
+      userName?: string
+      urlParam?: string
+      queryParam?: Record<string, string>
+    }) => `${baseUrl}${getScreenPathName(props)}`,
     [baseUrl, getScreenPathName],
   )
 
   const setService = useCallback(
     (services: Services, service: keyof typeof services) => {
       const useScreen = screen in services[service].screens ? screen : 'index'
-      const userSection = userName ? `/${userName}` : ''
-      navigate(`/${scope}${userSection}/${service}${getScreenBlock(useScreen)}`)
+      navigate(getScreenPathName({ service, screen: useScreen }))
     },
-    [getScreenBlock, navigate, scope, screen, userName],
-  )
-
-  const setUser = useCallback(
-    (userName: string | null) => {
-      const userSection = userName ? `/${userName}` : ''
-      navigate(`/${scope}${userSection}/${service}${getScreenBlock(screen)}`)
-    },
-    [getScreenBlock, navigate, scope, screen, service],
-  )
-
-  const setScope = useCallback(
-    (scope: Scope) => {
-      const userSection = userName ? `/${userName}` : ''
-      navigate(`/${scope}${userSection}/${service}${getScreenBlock(screen)}`)
-    },
-    [getScreenBlock, navigate, screen, service, userName],
+    [getScreenPathName, navigate, screen],
   )
 
   const getCurrentPageNav = useCallback(() => {
@@ -140,8 +128,6 @@ const useScreen = ({ screens }: { screens: Record<string, Screen> }) => {
   return {
     userName,
     scope,
-    setScope,
-    setUser,
     service,
     setService,
     screens,
@@ -156,7 +142,7 @@ const useScreen = ({ screens }: { screens: Record<string, Screen> }) => {
     toggleOpenStatus,
     getCurrentPageNav,
     screenSize: useMemo(
-      () => ({
+      (): ScreenSize => ({
         width,
         isMobile,
         isPC,

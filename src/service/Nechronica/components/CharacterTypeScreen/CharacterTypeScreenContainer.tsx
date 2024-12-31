@@ -7,6 +7,7 @@ import AffixCard from '@/service/Nechronica/components/CharacterTypeScreen/Affix
 import AffixContents from '@/service/Nechronica/components/CharacterTypeScreen/AffixContents.tsx'
 import CharacterIdInput from '@/service/Nechronica/components/CharacterTypeScreen/CharacterIdInput.tsx'
 import CharacterSmallCards from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
+import DetailSider from '@/service/Nechronica/components/CharacterTypeScreen/DetailSider.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 import {
@@ -22,7 +23,6 @@ type CharacterTypeScreenContainerProps = {
   searchInputRef: RefObject<InputRef>
   affixContainerRef: RefObject<HTMLDivElement>
   useCharacters: NechronicaCharacter[]
-  setDetailList: (list: string[]) => void
 }
 export default function CharacterTypeScreenContainer({
   label,
@@ -30,8 +30,8 @@ export default function CharacterTypeScreenContainer({
   searchInputRef,
   affixContainerRef,
   useCharacters,
-  setDetailList,
 }: CharacterTypeScreenContainerProps) {
+  const { loading } = useNechronicaContext()
   const { screenSize } = useScreenContext()
   const [isAffixed, setIsAffixed] = useState(false)
   const {
@@ -43,7 +43,8 @@ export default function CharacterTypeScreenContainer({
     setSelectedCharacters,
     setHoverCharacter,
   } = useSearchCharacter(useCharacters)
-  const { loading } = useNechronicaContext()
+
+  const [detailList, setDetailList] = useState<string[]>([])
 
   useEffect(() => {
     const list = [...selectedCharacters]
@@ -59,6 +60,17 @@ export default function CharacterTypeScreenContainer({
     return (
       <ScreenContainer label={label} icon={RadarChartOutlined}>
         <Spin size="large" />
+        <div
+          style={{
+            position: 'fixed',
+            right: 0,
+            top: 48,
+            bottom: 0,
+            width: 420,
+          }}
+        >
+          <Spin size="large" />
+        </div>
       </ScreenContainer>
     )
 
@@ -108,6 +120,7 @@ export default function CharacterTypeScreenContainer({
           setHoverCharacter={setHoverCharacter}
         />
       </Flex>
+      <DetailSider detailList={detailList} />
     </ScreenContainer>
   )
 }

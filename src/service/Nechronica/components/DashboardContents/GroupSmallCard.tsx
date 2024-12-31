@@ -62,7 +62,7 @@ export default function GroupSmallCard({
             width: '100%',
             height: '100%',
           }}
-          onClick={() => setScreen('groups', { urlParam: group.id })}
+          onClick={() => setScreen({ screen: 'groups', urlParam: group.id })}
         >
           <Flex vertical>
             <Flex gap={6} align="baseline" style={{ marginBottom: 6 }}>

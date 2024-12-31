@@ -5,8 +5,10 @@ import { useDebounce } from '@/hooks/useDebounce.tsx'
 
 export default function PageScrollDispatcher({
   scrollContainer,
+  forceTop = false,
 }: {
   scrollContainer: RefObject<HTMLElement>
+  forceTop?: boolean
 }) {
   const { scrollMap, setScrollMap } = useScreenContext()
   const debounce = useDebounce(100)
@@ -30,15 +32,14 @@ export default function PageScrollDispatcher({
   useEffect(() => {
     const elm = scrollContainer.current
     if (!elm) return
-    elm.scroll(0, scrollMap[pathname] ?? 0)
+    setTimeout(() => elm.scroll(0, forceTop ? 0 : (scrollMap[pathname] ?? 0)))
     elm.addEventListener('scroll', onScroll, {
       capture: true,
     })
     return () => {
       elm.removeEventListener('scroll', onScroll)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollContainer, scrollMap[pathname], onScroll])
+  }, [scrollContainer, scrollMap, pathname, onScroll, forceTop])
 
   return <></>
 }

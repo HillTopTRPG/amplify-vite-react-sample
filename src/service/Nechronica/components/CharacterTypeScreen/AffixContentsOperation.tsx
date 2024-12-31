@@ -21,11 +21,10 @@ export default function AffixContentsOperation({
 }: AffixContentsOperationProps) {
   const { loading, updateCharacter, deleteCharacter } = useNechronicaContext()
   const { currentIsMe } = useUserAttributes()
+  const { token } = theme.useToken()
 
   if (!currentIsMe) return
   if (loading) return <Spin size="large" />
-
-  const { token } = theme.useToken()
 
   const onReloadSelectedCharacter = async () => {
     await sequentialPromiseReduce(selectedCharacters, async (id) => {

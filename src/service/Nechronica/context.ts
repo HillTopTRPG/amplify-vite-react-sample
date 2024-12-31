@@ -71,7 +71,7 @@ const useNechronica = () => {
     },
   })
 
-  if (filterLoading && loadingUserAttributes) {
+  if (filterLoading && !loadingUserAttributes) {
     if (me?.userName) {
       setFilter({
         or: [

@@ -1,5 +1,5 @@
 import React from 'react'
-import { type RouteObject } from 'react-router-dom'
+import { Outlet, type RouteObject } from 'react-router-dom'
 import { service } from './index'
 import { ScreenProvider } from '@/context/screenContext.ts'
 import MainContentsLayout from '@/layouts/MainContentsLauout.tsx'
@@ -20,15 +20,19 @@ const screenRouteObj: RouteObject = {
   element: (
     <ScreenProvider {...service}>
       <NechronicaProvider>
-        <MainContentsLayout />
+        <Outlet />
       </NechronicaProvider>
     </ScreenProvider>
   ),
   children: getKeys(service.screens).map((screen) => ({
     path: getPath(screen),
-    element: React.createElement(service.screens[screen].contents, {
-      key: screen,
-    }),
+    element: (
+      <MainContentsLayout
+        containerStyle={service.screens[screen].containerStyle}
+      >
+        {React.createElement(service.screens[screen].contents)}
+      </MainContentsLayout>
+    ),
   })),
 }
 
