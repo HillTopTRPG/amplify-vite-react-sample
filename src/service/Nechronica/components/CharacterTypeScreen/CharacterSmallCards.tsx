@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { Divider, Flex, Spin, theme, Typography } from 'antd'
 import CharacterSmallCard from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCard.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
@@ -21,6 +22,23 @@ export default function CharacterSmallCards({
 }: CharacterSmallCardsProps) {
   const { loading } = useNechronicaContext()
   const { token } = theme.useToken()
+
+  const onSelectCharacter = useCallback(
+    (id: string, isSelect: boolean) => {
+      if (isSelect) {
+        setSelectedCharacters([id, ...selectedCharacters])
+      } else {
+        setSelectedCharacters(selectedCharacters.filter((c) => c !== id))
+      }
+    },
+    [selectedCharacters, setSelectedCharacters],
+  )
+  const onHoverCharacter = useCallback(
+    (id: string, isEnter: boolean) => {
+      setHoverCharacter(isEnter ? id : null)
+    },
+    [setHoverCharacter],
+  )
 
   if (loading) return <Spin size="large" />
 
@@ -50,17 +68,6 @@ export default function CharacterSmallCards({
         />
       </Flex>
     )
-  }
-
-  const onSelectCharacter = (id: string, isSelect: boolean) => {
-    if (isSelect) {
-      setSelectedCharacters([id, ...selectedCharacters])
-    } else {
-      setSelectedCharacters(selectedCharacters.filter((c) => c !== id))
-    }
-  }
-  const onHoverCharacter = (id: string, isEnter: boolean) => {
-    setHoverCharacter(isEnter ? id : null)
   }
 
   return searchedCharacters.map((character) => (

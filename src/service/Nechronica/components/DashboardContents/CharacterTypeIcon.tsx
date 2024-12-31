@@ -1,4 +1,5 @@
-import { Badge, Space, Typography } from 'antd'
+import { SelectOutlined } from '@ant-design/icons'
+import { Badge, Flex, theme, Typography } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './CharacterTypeIcon.module.css'
@@ -24,6 +25,7 @@ export default function CharacterTypeIcon(
       },
 ) {
   const { t: i18nT } = useTranslation()
+  const { token } = theme.useToken()
   let src: string
   let text: string
   let deg: string
@@ -63,13 +65,22 @@ export default function CharacterTypeIcon(
       }}
       onClick={props.onClick}
     >
-      <Space.Compact
-        direction="vertical"
+      <Flex
+        vertical
         className={classNames(styles.contents, props.num === 0 && styles.empty)}
-        style={{ textAlign: 'center', borderRadius: 4 }}
+        align="center"
+        gap={5}
       >
-        <Typography.Text style={{ fontSize: 10, height: 14, marginTop: -14 }}>
+        <Typography.Text
+          style={{
+            fontSize: 13,
+            height: 14,
+            marginTop: -14,
+            color: token.colorLink,
+          }}
+        >
           {text}
+          <SelectOutlined style={{ fontSize: 10 }} />
         </Typography.Text>
         <Badge
           count={props.num}
@@ -99,7 +110,7 @@ export default function CharacterTypeIcon(
             }}
           />
         </Badge>
-      </Space.Compact>
+      </Flex>
     </div>
   )
 }

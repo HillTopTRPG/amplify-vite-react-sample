@@ -1,5 +1,5 @@
 import { type ReactElement, useLayoutEffect, useMemo, useState } from 'react'
-import { Flex, type GetProps, Tabs } from 'antd'
+import { Flex, type GetProps, Spin, Tabs } from 'antd'
 import { sum } from 'lodash-es'
 import CharacterTypeIcon from './CharacterTypeIcon.tsx'
 import CharacterTypeItemSet from './CharacterTypeItemSet.tsx'
@@ -196,7 +196,7 @@ export default function DashboardContents() {
         />
         <AddGroupInput />
         <Flex gap={18} align="stretch" wrap>
-          {groupsElm}
+          {loading ? <Spin size="large" /> : groupsElm}
         </Flex>
       </Flex>
     )

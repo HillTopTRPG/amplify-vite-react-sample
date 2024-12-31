@@ -15,6 +15,10 @@ export default function DetailSider({ detailList }: { detailList: string[] }) {
         top: 48,
         bottom: 0,
         width: 420,
+        overflow: 'auto',
+      }}
+      onScrollCapture={(e) => {
+        e.stopPropagation()
       }}
     >
       <Flex vertical align="stretch" gap={8}>
