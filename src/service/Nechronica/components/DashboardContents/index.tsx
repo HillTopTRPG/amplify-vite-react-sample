@@ -24,7 +24,7 @@ const dollConst = [
 export default function DashboardContents() {
   const { loading, characters, characterGroupRelations } =
     useNechronicaContext()
-  const { scope, setScreen } = useScreenContext()
+  const { scope, setScreen, screenSize } = useScreenContext()
   const { currentUser } = useUserAttributes()
 
   const [summaryData, setSummaryData] = useState<{
@@ -111,6 +111,20 @@ export default function DashboardContents() {
       onClick: () => setScreen({ screen: `${enemies[idx]}s` }),
     })
 
+    const dollStyle2Cols = (property: 'position' | 'class') => {
+      if (screenSize.viewPortWidth < 612) return 2
+      if (screenSize.viewPortWidth < 828) return 3
+      if (property === 'position') return 2
+      if (screenSize.viewPortWidth < 1034) return 2
+      return 3
+    }
+
+    const enemiesStyle2Cols = () => {
+      if (screenSize.viewPortWidth < 612) return 2
+      if (screenSize.viewPortWidth < 1250) return 3
+      return 1
+    }
+
     return (
       <Flex vertical align="flex-start" gap={16}>
         <Tabs
@@ -161,7 +175,7 @@ export default function DashboardContents() {
                     <Style2
                       key={idx}
                       label={label}
-                      columns={property === 'position' ? 2 : 3}
+                      columns={dollStyle2Cols(property)}
                     >
                       {summaryData.doll[property].map((num, index) => (
                         <CharacterTypeItemSet
@@ -172,7 +186,7 @@ export default function DashboardContents() {
                     </Style2>
                   ))}
                   enemiesElm={
-                    <Style2 label="手駒" columns={1}>
+                    <Style2 label="手駒" columns={enemiesStyle2Cols()}>
                       {summaryData.enemies.map((num, idx) => (
                         <CharacterTypeItemSet
                           key={idx}
@@ -198,5 +212,12 @@ export default function DashboardContents() {
         </Flex>
       </Flex>
     )
-  }, [summaryData.enemies, summaryData.doll, groupsElm, loading, setScreen])
+  }, [
+    summaryData.enemies,
+    summaryData.doll,
+    groupsElm,
+    loading,
+    setScreen,
+    screenSize.viewPortWidth,
+  ])
 }

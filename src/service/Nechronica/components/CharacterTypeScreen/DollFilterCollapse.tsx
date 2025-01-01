@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
   Button,
   Collapse,
@@ -33,11 +33,16 @@ export default function DollFilterCollapse({
 }) {
   const { token } = theme.useToken()
 
+  const isEmptyFilter =
+    filter.text === '' &&
+    filter.position.length === 0 &&
+    filter.class.length === 0
+
+  const [collapseValue, setCollapseValue] = useState<string[]>(
+    isEmptyFilter ? [] : ['1'],
+  )
+
   const elm = useMemo(() => {
-    const isEmptyFilter =
-      filter.text === '' &&
-      filter.position.length === 0 &&
-      filter.class.length === 0
     const items: CollapseProps['items'] = [
       {
         key: '1',
@@ -46,8 +51,10 @@ export default function DollFilterCollapse({
           <Button
             type="text"
             size="small"
-            onClick={() => {
+            onClick={(e) => {
               setFilter(() => ({ text: '', position: [], class: [] }))
+              setCollapseValue([])
+              e.stopPropagation()
             }}
             disabled={isEmptyFilter}
             style={{ pointerEvents: isEmptyFilter ? 'none' : undefined }}
@@ -134,16 +141,15 @@ export default function DollFilterCollapse({
     return (
       <Collapse
         items={items}
-        defaultActiveKey={
-          filter.text || filter.position.length || filter.class.length
-            ? ['1']
-            : []
-        }
+        activeKey={collapseValue}
+        onChange={setCollapseValue}
         size="small"
         style={{ marginTop: 10 }}
       />
     )
   }, [
+    collapseValue,
+    isEmptyFilter,
     filter.class,
     filter.position,
     filter.text,

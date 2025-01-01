@@ -121,8 +121,7 @@ export default function CharacterTypeScreen({
         align="flex-start"
         justify={screenSize.isMobile ? 'space-evenly' : 'flex-start'}
         style={{
-          marginTop: 10,
-          height: 'calc(100vh - 122px)',
+          margin: '10px 0',
           alignContent: 'flex-start',
         }}
         wrap

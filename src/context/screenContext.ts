@@ -1,5 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import {
+  type NavigateOptions,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom'
 import constate from 'constate'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useWindowSize } from '@/hooks/useWindowSize.ts'
@@ -70,15 +75,18 @@ const useScreen = ({ screens }: { screens: Record<string, Screen> }) => {
   )
 
   const setScreen = useCallback(
-    (props: {
-      scope?: Scope
-      service?: string
-      screen?: string
-      userName?: string
-      urlParam?: string
-      queryParam?: string[][]
-    }) => {
-      navigate(getScreenPathName(props))
+    (
+      props: {
+        scope?: Scope
+        service?: string
+        screen?: string
+        userName?: string
+        urlParam?: string
+        queryParam?: string[][]
+      },
+      navigationOption?: NavigateOptions,
+    ) => {
+      navigate(getScreenPathName(props), navigationOption)
     },
     [getScreenPathName, navigate],
   )

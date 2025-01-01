@@ -14,20 +14,23 @@ export type Filter = {
 
 export function useSearchCharacter(characters: NechronicaCharacter[]) {
   const [searchParams] = useSearchParams()
-  const { setScreen } = useScreenContext()
 
-  const filterText = searchParams.get('text')
-  const filterPosition = searchParams.getAll('position')
-  const filterClass = searchParams.getAll('class')
-  const [filter, setFilter] = useState<Filter>({
-    text: decodeURIComponent(filterText ?? ''),
-    position: filterPosition
-      .map(parseIntOrNull)
-      .filter((p): p is number => p !== null),
-    class: filterClass
-      .map(parseIntOrNull)
-      .filter((c): c is number => c !== null),
-  })
+  const filter = useMemo(
+    () => ({
+      text: decodeURIComponent(searchParams.get('text') ?? ''),
+      position: searchParams
+        .getAll('position')
+        .map(parseIntOrNull)
+        .filter((p): p is number => p !== null),
+      class: searchParams
+        .getAll('class')
+        .map(parseIntOrNull)
+        .filter((c): c is number => c !== null),
+    }),
+    [searchParams],
+  )
+
+  const { setScreen } = useScreenContext()
   const [selectedCharacters, setSelectedCharacters] = useSelectIds()
   const [hoverCharacter, setHoverCharacter] = useState<string | null>(null)
 
@@ -87,7 +90,6 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
     setFilter: useCallback(
       (fc: (filter: Filter) => Filter) => {
         const newFilter = fc(filter)
-        setFilter(newFilter)
         const queryParam: string[][] = []
         if (newFilter.text) {
           queryParam.push(['text', encodeURIComponent(newFilter.text)])
@@ -102,7 +104,7 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
             ...newFilter.class.map((p) => ['class', p.toString()]),
           )
         }
-        setScreen({ queryParam })
+        setScreen({ queryParam }, { replace: true })
         setSelectedCharacters([])
       },
       [filter, setScreen, setSelectedCharacters],
