@@ -8,6 +8,7 @@ import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import PublicCard from '@/components/PublicCard.tsx'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
 import CharacterSettingButton from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSettingButton.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
@@ -29,6 +30,7 @@ export default function CharacterSmallCard({
 }: CharacterCardProps) {
   const { updateCharacter, deleteCharacter } = useNechronicaContext()
   const { scope } = useScreenContext()
+  const { currentIsMe } = useUserAttributes()
 
   const toggleStared = useMemo(
     () => () => {
@@ -58,7 +60,7 @@ export default function CharacterSmallCard({
         cursor: 'pointer',
       },
       actions:
-        scope === 'private'
+        scope === 'private' && currentIsMe
           ? [
               <DeleteConfirmButton
                 key={0}
@@ -80,7 +82,7 @@ export default function CharacterSmallCard({
             ]
           : undefined,
     }),
-    [scope, character, onHover, deleteCharacter, toggleStared],
+    [scope, currentIsMe, character, toggleStared, onHover, deleteCharacter],
   )
 
   const basic = character.sheetData.basic

@@ -6,6 +6,7 @@ import styles from '../Hoverable.module.css'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import PublicCard from '@/components/PublicCard.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import GroupShareButton from '@/service/Nechronica/components/DashboardContents/GroupShareButton.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -20,6 +21,7 @@ export default function GroupSmallCard({
   const { token } = theme.useToken()
   const { setScreen } = useScreenContext()
   const { updateCharacterGroup, deleteCharacterGroup } = useNechronicaContext()
+  const { currentIsMe } = useUserAttributes()
 
   const toggleStared = useMemo(
     () => () => {
@@ -32,7 +34,7 @@ export default function GroupSmallCard({
 
   const actions = useMemo(
     () =>
-      scope === 'private'
+      scope === 'private' && currentIsMe
         ? [
             <DeleteConfirmButton
               key={0}
@@ -50,7 +52,7 @@ export default function GroupSmallCard({
             <GroupShareButton key={2} group={group} />,
           ]
         : undefined,
-    [deleteCharacterGroup, group, scope, toggleStared],
+    [currentIsMe, deleteCharacterGroup, group, scope, toggleStared],
   )
 
   return (
@@ -64,7 +66,9 @@ export default function GroupSmallCard({
           width: '100%',
           height: '100%',
         }}
-        onClick={() => setScreen({ screen: 'groups', urlParam: group.id })}
+        onClick={() =>
+          setScreen((v) => ({ ...v, screen: 'group', urlParam: group.id }))
+        }
       >
         <Flex vertical>
           <Flex gap={6} align="baseline" style={{ marginBottom: 6 }}>

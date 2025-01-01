@@ -12,11 +12,12 @@ export default function GroupShareButton({ group }: { group: CharacterGroup }) {
   const { getScreenUrl } = useScreenContext()
   const shareUrl = useMemo(
     () =>
-      getScreenUrl({
+      getScreenUrl((v) => ({
+        ...v,
         scope: 'public',
         screen: 'groups',
         urlParam: group.id,
-      }),
+      })),
     [getScreenUrl, group.id],
   )
   const onChangeGroupPublic = useCallback(
@@ -46,7 +47,7 @@ export default function GroupShareButton({ group }: { group: CharacterGroup }) {
           <Flex align="center" gap={6}>
             <Typography.Text style={{ color: 'inherit' }}>
               <Typography.Link href={shareUrl} target="_blank">
-                シェアページのリンク
+                共有ページのリンク
                 <SelectOutlined />
               </Typography.Link>
             </Typography.Text>

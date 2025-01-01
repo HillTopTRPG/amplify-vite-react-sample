@@ -13,7 +13,7 @@ import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import type { CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { typedOmit } from '@/utils/types.ts'
 
-const spec = { label: 'グループ', icon: GroupOutlined }
+const spec = { label: 'キャラクターグループ', icon: GroupOutlined }
 
 const screen: Screen = {
   ...spec,

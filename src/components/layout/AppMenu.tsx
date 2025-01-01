@@ -30,7 +30,7 @@ import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const { users, me, currentUser, loading } = useUserAttributes()
+  const { users, me, loading } = useUserAttributes()
   const { theme, updateTheme } = useThemeContext()
   const { services } = useServicesContext()
   const { screenSize } = useScreenContext()
@@ -129,7 +129,14 @@ export default function AppMenu() {
                   icon: <UserOutlined />,
                 })),
               ].filter((v) => v),
-              onClick: ({ key }) => setScreen({ userName: key }),
+              onClick: ({ key }) =>
+                setScreen((v) => ({
+                  ...v,
+                  queryParam: [
+                    ['userName', key],
+                    ...v.queryParam.filter(([p]) => p !== 'userName'),
+                  ],
+                })),
             }}
             placement="bottomLeft"
           >
@@ -173,7 +180,12 @@ export default function AppMenu() {
                     label: screens[key].label,
                     icon: React.createElement(screens[key].icon),
                   })),
-                onClick: ({ key }) => setScreen({ screen: key }),
+                onClick: ({ key }) =>
+                  setScreen((v) => ({
+                    ...v,
+                    screen: key,
+                    queryParam: v.queryParam.filter(([p]) => p === 'userName'),
+                  })),
               }}
               placement="bottomLeft"
             >
@@ -185,7 +197,9 @@ export default function AppMenu() {
           </MediaQuery>
         </Flex>
         {!loading && scope === 'public' ? (
-          <Button onClick={() => setScreen({ scope: 'private' })}>
+          <Button
+            onClick={() => setScreen((v) => ({ ...v, scope: 'private' }))}
+          >
             {me ? 'プライベートへ' : 'ログイン'}
           </Button>
         ) : (
@@ -195,7 +209,7 @@ export default function AppMenu() {
                 <Spin />
               ) : (
                 <>
-                  {screenSize.isFullView ? currentUser?.userName : ''}
+                  {screenSize.isFullView ? me?.userName : ''}
                   <UserOutlined />
                 </>
               )}

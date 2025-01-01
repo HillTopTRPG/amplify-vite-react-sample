@@ -13,7 +13,11 @@ export default function ScreenSelectMenu({
   const { screens, screen, setScreen } = useScreenContext()
   const onSelectHandler = (key: string) => {
     if (!isIncludes(getKeys(screens), key)) return
-    setScreen({ screen: key })
+    setScreen((v) => ({
+      ...v,
+      screen: key,
+      queryParam: v.queryParam.filter(([p]) => p === 'userName'),
+    }))
     onSelect(key)
   }
   return (

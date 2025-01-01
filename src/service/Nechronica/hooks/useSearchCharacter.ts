@@ -90,21 +90,25 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
     setFilter: useCallback(
       (fc: (filter: Filter) => Filter) => {
         const newFilter = fc(filter)
-        const queryParam: string[][] = []
+        const queryParam: [string, string][] = []
         if (newFilter.text) {
           queryParam.push(['text', encodeURIComponent(newFilter.text)])
         }
         if (newFilter.position.length) {
           queryParam.push(
-            ...newFilter.position.map((p) => ['position', p.toString()]),
+            ...newFilter.position.map(
+              (p) => ['position', p.toString()] as [string, string],
+            ),
           )
         }
         if (newFilter.class.length) {
           queryParam.push(
-            ...newFilter.class.map((p) => ['class', p.toString()]),
+            ...newFilter.class.map(
+              (p) => ['class', p.toString()] as [string, string],
+            ),
           )
         }
-        setScreen({ queryParam }, { replace: true })
+        setScreen((v) => ({ ...v, queryParam }), { replace: true })
         setSelectedCharacters([])
       },
       [filter, setScreen, setSelectedCharacters],

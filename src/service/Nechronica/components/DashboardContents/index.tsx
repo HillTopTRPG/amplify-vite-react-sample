@@ -51,6 +51,7 @@ export default function DashboardContents() {
     }
 
     const useCharacters = characters.filter((c) => dataFilterFc(c))
+    // eslint-disable-next-line no-console
     console.log('re-make summaryData.', characters.length)
     setSummaryData({
       doll: {
@@ -64,10 +65,10 @@ export default function DashboardContents() {
         ),
         class: [1, 2, 3, 4, 5, 6, 7].map(
           (cls) =>
-            useCharacters.flatMap((c) => {
-              if (c.additionalData.type !== 'doll') return []
+            useCharacters.filter((c) => {
+              if (c.additionalData.type !== 'doll') return false
               const { mainClass, subClass } = c.sheetData.basic
-              return [mainClass === cls, subClass === cls].filter(Boolean)
+              return [mainClass, subClass].includes(cls)
             }).length,
         ),
       },
@@ -87,6 +88,7 @@ export default function DashboardContents() {
   }, [loading, currentUser, scope, characters, characterGroupRelations])
 
   return useMemo(() => {
+    // eslint-disable-next-line no-console
     console.log('re-rendering dashboard(memo).')
 
     const makeDollProps = (
@@ -98,7 +100,11 @@ export default function DashboardContents() {
       [p]: iconValue,
       num,
       onClick: () =>
-        setScreen({ screen: 'dolls', queryParam: [[p, iconValue.toString()]] }),
+        setScreen((v) => ({
+          ...v,
+          screen: 'dolls',
+          queryParam: [...v.queryParam, [p, iconValue.toString()]],
+        })),
     })
 
     const makeEnemiesProps = (
@@ -108,7 +114,7 @@ export default function DashboardContents() {
     ): GetProps<typeof CharacterTypeIcon> => ({
       type,
       num,
-      onClick: () => setScreen({ screen: `${enemies[idx]}s` }),
+      onClick: () => setScreen((v) => ({ ...v, screen: `${enemies[idx]}s` })),
     })
 
     const dollStyle2Cols = (property: 'position' | 'class') => {

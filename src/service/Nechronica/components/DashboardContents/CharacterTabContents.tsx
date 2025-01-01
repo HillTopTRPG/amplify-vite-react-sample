@@ -27,7 +27,7 @@ export default function CharacterTabContents({
         <SectionTitle
           label="ドール"
           total={dollsTotal}
-          onClick={() => setScreen({ screen: 'dolls' })}
+          onClick={() => setScreen((v) => ({ ...v, screen: 'dolls' }))}
         />
         <Flex gap={16} wrap>
           {dollsElm}

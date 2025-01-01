@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { generateClient } from 'aws-amplify/api'
 import {
   fetchUserAttributes,
@@ -52,7 +52,8 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
     return void sub.unsubscribe
   }, [])
 
-  const { userName } = useParams<{ userName: string }>()
+  const [searchParams] = useSearchParams()
+  const userName = searchParams.get('userName')
 
   const [me, setMe] = useState<User | null>(null)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
