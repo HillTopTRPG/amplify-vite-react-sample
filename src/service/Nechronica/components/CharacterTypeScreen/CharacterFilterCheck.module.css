@@ -1,0 +1,29 @@
+.item {
+  display: flex !important;
+  white-space: nowrap;
+  margin: 0 !important;
+  border-radius: 10px;
+  outline-style: solid;
+  outline-width: 1px !important;
+  padding: 0 5px !important;
+  cursor: pointer;
+  transition: 20ms;
+
+  &:not(:active):hover {
+    /*transform: scale(1.03);*/
+    outline-color: #3c89e8 !important;
+    color: #3c89e8 !important;
+  }
+
+  &.active {
+    /*transform: scale(1.03);*/
+    outline-color: #3c89e8 !important;
+    color: #3c89e8 !important;
+  }
+
+  &:active {
+    /*transform: scale(1.02);*/
+    outline-color: #1554ad !important;
+    color: #1554ad !important;
+  }
+}

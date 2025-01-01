@@ -1,52 +1,113 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { useScreenContext } from '@/context/screenContext.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
+import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
+
+type Filter = {
+  text: string
+  position: number[]
+  class: number[]
+}
 
 export function useSearchCharacter(characters: NechronicaCharacter[]) {
-  const [search, setSearch] = useState('')
+  const [searchParams] = useSearchParams()
+  const { setScreen } = useScreenContext()
+
+  const filterText = searchParams.get('text')
+  const filterPosition = searchParams.getAll('position')
+  const filterClass = searchParams.getAll('class')
+  const [filter, setFilter] = useState<Filter>({
+    text: decodeURIComponent(filterText ?? ''),
+    position: filterPosition
+      .map(parseIntOrNull)
+      .filter((p): p is number => p !== null),
+    class: filterClass
+      .map(parseIntOrNull)
+      .filter((c): c is number => c !== null),
+  })
   const [selectedCharacters, setSelectedCharacters] = useSelectIds()
   const [hoverCharacter, setHoverCharacter] = useState<string | null>(null)
 
   const searchedCharacters = useMemo(
     () =>
       characters.filter((character) => {
-        if (character.sheetData.basic.characterName.includes(search))
+        if (!filter.text && !filter.position.length && !filter.class.length)
           return true
+
         const { position, mainClass, subClass } = character.sheetData.basic
-        if (mapping.CHARACTER_POSITION[position].text.includes(search))
+        if (filter.position.length && filter.position.includes(position))
           return true
-        if (mapping.CHARACTER_CLASS[mainClass].text.includes(search))
-          return true
-        if (mapping.CHARACTER_CLASS[subClass].text.includes(search)) return true
-        if (
-          character.sheetData.maneuverList.some((m) => {
-            if (m.name.includes(search)) return true
-            if (m.memo.includes(search)) return true
-            if (m.shozoku.includes(search)) return true
-            // comment
-            return false
-          })
-        )
-          return true
-        if (character.sheetData.roiceList.some((r) => r.name.includes(search)))
-          return true
-        // comment
-        return false
+        if (filter.class.length && filter.class.includes(mainClass)) return true
+        if (filter.class.length && filter.class.includes(subClass)) return true
+
+        const filterText = filter.text
+        if (filterText) {
+          // キャラクター名
+          if (character.sheetData.basic.characterName.includes(filterText))
+            return true
+
+          // ポジション
+          if (mapping.CHARACTER_POSITION[position].text.includes(filterText))
+            return true
+
+          // メインクラス
+          if (mapping.CHARACTER_CLASS[mainClass].text.includes(filterText))
+            return true
+
+          // サブクラス
+          if (mapping.CHARACTER_CLASS[subClass].text.includes(filterText))
+            return true
+
+          // マニューバー情報
+          if (
+            character.sheetData.maneuverList.some((m) => {
+              if (m.name.includes(filterText)) return true
+              if (m.memo.includes(filterText)) return true
+              if (m.shozoku.includes(filterText)) return true
+              // comment
+              return false
+            })
+          )
+            return true
+
+          // 未練
+          return character.sheetData.roiceList.some((r) =>
+            r.name.includes(filterText),
+          )
+        }
       }),
-    [characters, search],
+    [characters, filter],
   )
 
   return {
-    search,
-    searchedCharacters,
-    setSearch: useCallback(
-      (search: string) => {
-        setSearch(search)
+    filter,
+    setFilter: useCallback(
+      (fc: (filter: Filter) => Filter) => {
+        const newFilter = fc(filter)
+        setFilter(newFilter)
+        const queryParam: string[][] = []
+        if (newFilter.text) {
+          queryParam.push(['text', encodeURIComponent(newFilter.text)])
+        }
+        if (newFilter.position.length) {
+          queryParam.push(
+            ...newFilter.position.map((p) => ['position', p.toString()]),
+          )
+        }
+        if (newFilter.class.length) {
+          queryParam.push(
+            ...newFilter.class.map((p) => ['class', p.toString()]),
+          )
+        }
+        setScreen({ queryParam })
         setSelectedCharacters([])
       },
-      [setSelectedCharacters],
+      [filter, setScreen, setSelectedCharacters],
     ),
+    searchedCharacters,
     selectedCharacters,
     setSelectedCharacters,
     hoverCharacter,

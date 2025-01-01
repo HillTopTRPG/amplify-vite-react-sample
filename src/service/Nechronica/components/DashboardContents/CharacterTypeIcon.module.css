@@ -32,11 +32,11 @@
   }
 
   &:active {
-    transform: translate(50%, -50%) rotate(var(--deg-neg)) scale(1.04)
+    transform: translate(50%, -50%) rotate(var(--deg-neg)) scale(1.04);
   }
 
   &:not(:active)&:hover {
-    transform: translate(50%, -50%) rotate(var(--deg-neg)) scale(1.06)
+    transform: translate(50%, -50%) rotate(var(--deg-neg)) scale(1.06);
   }
 }
 

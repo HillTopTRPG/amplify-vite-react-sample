@@ -77,8 +77,6 @@ export default function DashboardContents() {
       ),
     })
 
-    console.log(characterGroupRelations)
-
     setGroupsElm(
       characterGroupRelations
         .filter((cgr) => dataFilterFc(cgr))
@@ -100,7 +98,7 @@ export default function DashboardContents() {
       [p]: iconValue,
       num,
       onClick: () =>
-        setScreen({ screen: 'dolls', queryParam: { [p]: num.toString() } }),
+        setScreen({ screen: 'dolls', queryParam: [[p, iconValue.toString()]] }),
     })
 
     const makeEnemiesProps = (
@@ -200,5 +198,5 @@ export default function DashboardContents() {
         </Flex>
       </Flex>
     )
-  }, [groupsElm, summaryData.doll, summaryData.enemies, setScreen])
+  }, [summaryData.enemies, summaryData.doll, groupsElm, loading, setScreen])
 }

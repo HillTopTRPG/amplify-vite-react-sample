@@ -1,0 +1,7 @@
+.collapseHeader {
+  overflow: hidden;
+
+  & > * {
+    overflow: hidden;
+  }
+}

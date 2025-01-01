@@ -54,16 +54,14 @@ const useScreen = ({ screens }: { screens: Record<string, Screen> }) => {
       screen?: string
       userName?: string
       urlParam?: string
-      queryParam?: Record<string, string>
+      queryParam?: string[][]
     }) => {
       const useUserName = props?.userName ?? userName
 
-      const useQueryParam = {
-        ...props?.queryParam,
-      }
-      if (useUserName) useQueryParam.userName = useUserName
+      const useQueryParam = props.queryParam ?? []
+      if (useUserName) useQueryParam.push(['userName', useUserName])
       const urlParamBlock = props?.urlParam ? `/${props.urlParam}` : ''
-      const queryParamBlock = Object.keys(useQueryParam).length
+      const queryParamBlock = useQueryParam.length
         ? `/?${new URLSearchParams(useQueryParam).toString()}`
         : ''
       return `/${props?.scope ?? scope}/${props?.service ?? service}${getScreenBlock(props?.screen ?? screen)}${urlParamBlock}${queryParamBlock}`
@@ -78,7 +76,7 @@ const useScreen = ({ screens }: { screens: Record<string, Screen> }) => {
       screen?: string
       userName?: string
       urlParam?: string
-      queryParam?: Record<string, string>
+      queryParam?: string[][]
     }) => {
       navigate(getScreenPathName(props))
     },
@@ -92,7 +90,7 @@ const useScreen = ({ screens }: { screens: Record<string, Screen> }) => {
       screen?: string
       userName?: string
       urlParam?: string
-      queryParam?: Record<string, string>
+      queryParam?: string[][]
     }) => `${baseUrl}${getScreenPathName(props)}`,
     [baseUrl, getScreenPathName],
   )
