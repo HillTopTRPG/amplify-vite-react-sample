@@ -68,7 +68,9 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
         ? (users.find((u) => u.userName === userName) ?? null)
         : me
       setCurrentUser(currentUser)
-      setCurrentIsMe(Boolean(user) && user?.username === userName)
+      setCurrentIsMe(
+        Boolean(currentUser) && currentUser?.userName === user?.username,
+      )
     }
     setLoading(loading)
   }, [userAttributeLoading, userLoading, usersLoading, users, user, userName])

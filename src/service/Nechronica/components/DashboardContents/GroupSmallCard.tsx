@@ -1,10 +1,13 @@
 import { useMemo } from 'react'
-import { SelectOutlined } from '@ant-design/icons'
-import { Badge, Card, Empty, Flex, theme, Typography } from 'antd'
+import { SelectOutlined, StarFilled, StarOutlined } from '@ant-design/icons'
+import { Button, Empty, Flex, theme, Typography } from 'antd'
+import { clone, omit } from 'lodash-es'
 import styles from '../Hoverable.module.css'
+import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
+import PublicCard from '@/components/PublicCard.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
-import DeleteGroupButton from '@/service/Nechronica/components/DashboardContents/DeleteGroupButton.tsx'
 import GroupShareButton from '@/service/Nechronica/components/DashboardContents/GroupShareButton.tsx'
+import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 export default function GroupSmallCard({
@@ -16,90 +19,88 @@ export default function GroupSmallCard({
 }) {
   const { token } = theme.useToken()
   const { setScreen } = useScreenContext()
+  const { updateCharacterGroup, deleteCharacterGroup } = useNechronicaContext()
+
+  const toggleStared = useMemo(
+    () => () => {
+      const newData = clone(group)
+      newData.additionalData.stared = !newData.additionalData.stared
+      updateCharacterGroup(omit(newData, 'characters'))
+    },
+    [group, updateCharacterGroup],
+  )
 
   const actions = useMemo(
     () =>
       scope === 'private'
         ? [
-            <DeleteGroupButton key={0} group={group} />,
-            <GroupShareButton key={1} group={group} />,
+            <DeleteConfirmButton
+              key={0}
+              name={group.name}
+              onConfirm={() => deleteCharacterGroup(group.id)}
+            />,
+            <Button
+              key={1}
+              type="text"
+              onClick={toggleStared}
+              icon={
+                group.additionalData.stared ? <StarFilled /> : <StarOutlined />
+              }
+            />,
+            <GroupShareButton key={2} group={group} />,
           ]
         : undefined,
-    [group, scope],
+    [deleteCharacterGroup, group, scope, toggleStared],
   )
 
   return (
-    <Badge.Ribbon
-      placement="start"
-      text={group.public ? '公開' : '非公開'}
-      color={group.public ? 'blue' : 'orange'}
-      style={{ display: 'flex' }}
-    >
-      <Card
-        styles={{
-          body: {
-            padding: '5px 0 0 0',
-            flexGrow: 1,
-          },
-        }}
-        bordered={false}
+    <PublicCard data={group} cardProps={{ actions }}>
+      <Typography.Link
+        ellipsis
+        className={styles.hoverable}
         style={{
-          width: 180,
+          display: 'block',
+          padding: '30px 16px 16px 16px',
+          width: '100%',
           height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow:
-            'rgba(127, 127, 127, 0.16) 0px 6px 16px 0px, rgba(127, 127, 127, 0.24) 0px 3px 6px -4px, rgba(127, 127, 127, 0.1) 0px 9px 28px 8px',
         }}
-        actions={actions}
+        onClick={() => setScreen({ screen: 'groups', urlParam: group.id })}
       >
-        <Typography.Link
-          ellipsis
-          className={styles.hoverable}
-          style={{
-            display: 'block',
-            padding: '30px 16px 16px 16px',
-            width: '100%',
-            height: '100%',
-          }}
-          onClick={() => setScreen('groups', { urlParam: group.id })}
-        >
-          <Flex vertical>
-            <Flex gap={6} align="baseline" style={{ marginBottom: 6 }}>
-              <Typography.Text
-                ellipsis
-                style={{ fontSize: 20, color: 'inherit' }}
-              >
-                {group.name}
-              </Typography.Text>
-              <SelectOutlined />
-            </Flex>
-            {group.characters
-              .filter((_, idx) => idx < 6)
-              .map((c) => (
-                <Typography.Text
-                  key={c.id}
-                  ellipsis
-                  style={{ color: token.colorTextDescription }}
-                >
-                  {c.name}
-                </Typography.Text>
-              ))}
-            {group.characters.length > 6 ? (
-              <Typography.Text
-                style={{ color: token.colorTextDescription }}
-              >{`+${group.characters.length - 6}人`}</Typography.Text>
-            ) : null}
-            {group.characters.length === 0 ? (
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                style={{ margin: 0 }}
-                description="Empty"
-              />
-            ) : null}
+        <Flex vertical>
+          <Flex gap={6} align="baseline" style={{ marginBottom: 6 }}>
+            <Typography.Text
+              ellipsis
+              style={{ fontSize: 20, color: 'inherit' }}
+            >
+              {group.name}
+            </Typography.Text>
+            <SelectOutlined />
           </Flex>
-        </Typography.Link>
-      </Card>
-    </Badge.Ribbon>
+          {group.characters
+            .filter((_, idx) => idx < 6)
+            .map((c) => (
+              <Typography.Text
+                key={c.id}
+                ellipsis
+                style={{ color: token.colorTextDescription }}
+              >
+                {c.name}
+              </Typography.Text>
+            ))}
+          {group.characters.length > 6 ? (
+            <Typography.Text
+              style={{ color: token.colorTextDescription }}
+            >{`+${group.characters.length - 6}人`}</Typography.Text>
+          ) : null}
+          {group.characters.length === 0 ? (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              style={{ margin: 0 }}
+              description="Empty"
+            />
+          ) : null}
+        </Flex>
+      </Typography.Link>
+    </PublicCard>
   )
 }

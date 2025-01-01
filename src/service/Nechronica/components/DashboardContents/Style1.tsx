@@ -20,7 +20,16 @@ export default function Style1({ label, height, children }: Style1Props) {
       }}
     >
       {loading ? (
-        <Spin size="large" />
+        <Spin
+          size="large"
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            width: 'auto',
+            transform: 'translate(-50%, -50%)',
+          }}
+        />
       ) : (
         <>
           <Typography.Text

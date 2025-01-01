@@ -1,6 +1,6 @@
 .hoverable {
   transition: 20ms;
-  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.8));
+  filter: drop-shadow(1px 2px 1px rgba(127, 127, 127, 0.3));
 
   &:active {
     transform: scale(1.02);

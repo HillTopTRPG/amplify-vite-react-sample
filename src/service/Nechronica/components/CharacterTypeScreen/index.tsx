@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { type InputRef, Layout, theme } from 'antd'
-import CharacterTypeScreenContainer from './CharacterTypeScreenContainer.tsx'
-import DetailSider from './DetailSider.tsx'
+import { RadarChartOutlined } from '@ant-design/icons'
+import { Flex, type InputRef, Spin } from 'antd'
+import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
+import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
+import AddCharacterInput from '@/service/Nechronica/components/CharacterTypeScreen/AddCharacterInput.tsx'
+import CharacterSmallCards from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
+import DetailSider from '@/service/Nechronica/components/CharacterTypeScreen/DetailSider.tsx'
+import DollFilterCollapse from '@/service/Nechronica/components/CharacterTypeScreen/DollFilterCollapse.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
+import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 import {
   type NechronicaCharacter,
   type NechronicaType,
@@ -17,7 +23,6 @@ export default function CharacterTypeScreen({
 }: CharacterTypeScreenProps) {
   const { loading, characters } = useNechronicaContext()
   const { currentUser } = useUserAttributes()
-  const { token } = theme.useToken()
 
   const makeUseCharacters = useCallback(
     () =>
@@ -40,8 +45,6 @@ export default function CharacterTypeScreen({
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
 
-  const affixContainerRef = useRef<HTMLDivElement>(null)
-
   useKeyBind({
     key: 'k',
     metaKey: true,
@@ -58,55 +61,82 @@ export default function CharacterTypeScreen({
     },
   })
 
+  const { screenSize } = useScreenContext()
+  const {
+    filter,
+    setFilter,
+    searchedCharacters,
+    selectedCharacters,
+    hoverCharacter,
+    setSelectedCharacters,
+    setHoverCharacter,
+  } = useSearchCharacter(useCharacters)
+
   const [detailList, setDetailList] = useState<string[]>([])
 
-  // const [searchParams] = useSearchParams()
-  //
-  // const outputParams = () => {
-  //   const filterPosition = searchParams.get('position')
-  //   const filterClass = searchParams.get('class')
-  //   console.log(
-  //     JSON.stringify(
-  //       {
-  //         filterPosition,
-  //         filterClass,
-  //       },
-  //       null,
-  //       2,
-  //     ),
-  //   )
-  // }
-  // outputParams()
+  useEffect(() => {
+    const list = [...selectedCharacters]
+    if (hoverCharacter) {
+      const index = list.indexOf(hoverCharacter)
+      if (index !== -1) list.splice(index, 1)
+      list.unshift(hoverCharacter)
+    }
+    setDetailList(list)
+  }, [hoverCharacter, selectedCharacters, setDetailList])
+
+  if (loading)
+    return (
+      <ScreenContainer label={label} icon={RadarChartOutlined}>
+        <Spin size="large" />
+        <div
+          style={{
+            position: 'fixed',
+            right: 0,
+            top: 48,
+            bottom: 0,
+            width: 420,
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      </ScreenContainer>
+    )
 
   return (
-    <Layout style={{ backgroundColor: 'transparent', height: '100%' }}>
-      <Layout>
-        <Layout.Content
-          ref={affixContainerRef}
-          style={{ overflow: 'hidden scroll', position: 'relative' }}
-        >
-          <CharacterTypeScreenContainer
-            label={label}
-            characterType={characterType}
-            searchInputRef={searchInputRef}
-            affixContainerRef={affixContainerRef}
-            useCharacters={useCharacters}
-            setDetailList={setDetailList}
-          />
-        </Layout.Content>
-      </Layout>
-      <Layout.Sider
-        breakpoint="md"
-        reverseArrow
-        width={420}
+    <ScreenContainer label={label} icon={RadarChartOutlined}>
+      <AddCharacterInput
+        label={label}
+        characterType={characterType}
+        sheetIdInputRef={searchInputRef}
+      />
+
+      <DollFilterCollapse
+        filter={filter}
+        setFilter={setFilter}
+        characterType={characterType}
+        useCharacters={useCharacters}
+      />
+
+      <Flex
+        align="flex-start"
+        justify={screenSize.isMobile ? 'space-evenly' : 'flex-start'}
         style={{
-          backgroundColor: token.colorBgElevated,
-          overflow: 'hidden scroll',
-          position: 'relative',
+          marginTop: 10,
+          height: 'calc(100vh - 122px)',
+          alignContent: 'flex-start',
         }}
+        wrap
+        gap={9}
       >
-        <DetailSider detailList={detailList} />
-      </Layout.Sider>
-    </Layout>
+        <CharacterSmallCards
+          searchedCharacters={searchedCharacters}
+          useCharacters={useCharacters}
+          selectedCharacters={selectedCharacters}
+          setSelectedCharacters={setSelectedCharacters}
+          setHoverCharacter={setHoverCharacter}
+        />
+      </Flex>
+      <DetailSider detailList={detailList} />
+    </ScreenContainer>
   )
 }

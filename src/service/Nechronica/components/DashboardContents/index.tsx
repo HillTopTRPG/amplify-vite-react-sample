@@ -1,5 +1,5 @@
-import { type ReactElement, useEffect, useMemo, useState } from 'react'
-import { Flex, type GetProps, Tabs } from 'antd'
+import { type ReactElement, useLayoutEffect, useMemo, useState } from 'react'
+import { Flex, type GetProps, Spin, Tabs } from 'antd'
 import { sum } from 'lodash-es'
 import CharacterTypeIcon from './CharacterTypeIcon.tsx'
 import CharacterTypeItemSet from './CharacterTypeItemSet.tsx'
@@ -42,12 +42,12 @@ export default function DashboardContents() {
   })
   const [groupsElm, setGroupsElm] = useState<ReactElement[]>([])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (loading) return
 
     const dataFilterFc = ({ owner }: { owner: string }): boolean => {
       if (scope === 'private') return owner === currentUser?.userName
-      return !currentUser || owner === currentUser.userName
+      return !currentUser || owner === currentUser?.userName
     }
 
     const useCharacters = characters.filter((c) => dataFilterFc(c))
@@ -98,7 +98,7 @@ export default function DashboardContents() {
       [p]: iconValue,
       num,
       onClick: () =>
-        setScreen('dolls', { queryParam: { [p]: num.toString() } }),
+        setScreen({ screen: 'dolls', queryParam: [[p, iconValue.toString()]] }),
     })
 
     const makeEnemiesProps = (
@@ -108,7 +108,7 @@ export default function DashboardContents() {
     ): GetProps<typeof CharacterTypeIcon> => ({
       type,
       num,
-      onClick: () => setScreen(`${enemies[idx]}s`),
+      onClick: () => setScreen({ screen: `${enemies[idx]}s` }),
     })
 
     return (
@@ -194,9 +194,9 @@ export default function DashboardContents() {
         />
         <AddGroupInput />
         <Flex gap={18} align="stretch" wrap>
-          {groupsElm}
+          {loading ? <Spin size="large" /> : groupsElm}
         </Flex>
       </Flex>
     )
-  }, [groupsElm, summaryData.doll, summaryData.enemies, setScreen])
+  }, [summaryData.enemies, summaryData.doll, groupsElm, loading, setScreen])
 }

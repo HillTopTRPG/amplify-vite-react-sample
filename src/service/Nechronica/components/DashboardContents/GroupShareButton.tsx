@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { SelectOutlined, ShareAltOutlined } from '@ant-design/icons'
 import { Button, Flex, Popover, QRCode, Switch, Typography } from 'antd'
 import { clone, omit } from 'lodash-es'
@@ -7,12 +7,14 @@ import { type CharacterGroup } from '@/service'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 export default function GroupShareButton({ group }: { group: CharacterGroup }) {
+  const [open, setOpen] = useState(false)
   const { updateCharacterGroup } = useNechronicaContext()
   const { getScreenUrl } = useScreenContext()
   const shareUrl = useMemo(
     () =>
-      getScreenUrl('groups', {
+      getScreenUrl({
         scope: 'public',
+        screen: 'groups',
         urlParam: group.id,
       }),
     [getScreenUrl, group.id],
@@ -22,14 +24,17 @@ export default function GroupShareButton({ group }: { group: CharacterGroup }) {
       const newValue = omit(clone(group), 'characters')
       newValue.public = nextPublic
       updateCharacterGroup(newValue)
+      setOpen(false)
     },
     [group, updateCharacterGroup],
   )
 
   return (
     <Popover
-      title="シェア"
+      title="共有"
       trigger="click"
+      open={open}
+      onOpenChange={(v) => setOpen(v)}
       content={
         <Flex vertical align="flex-start" gap={6}>
           <Switch
@@ -53,7 +58,7 @@ export default function GroupShareButton({ group }: { group: CharacterGroup }) {
         </Flex>
       }
     >
-      <Button key={1} type="text" icon={<ShareAltOutlined />} />
+      <Button type="text" icon={<ShareAltOutlined />} />
     </Popover>
   )
 }

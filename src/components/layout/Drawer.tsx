@@ -14,10 +14,11 @@ export default function Drawer() {
       onClose={() => setOpenStatus(false)}
       open={open}
       getContainer={false}
-      style={{
-        bottom: 0,
-      }}
       styles={{
+        content: {
+          marginTop: 48,
+          height: 'calc(100% - 48px)',
+        },
         body: {
           padding: 0,
         },

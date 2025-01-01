@@ -13,7 +13,7 @@ export default function ScreenSelectMenu({
   const { screens, screen, setScreen } = useScreenContext()
   const onSelectHandler = (key: string) => {
     if (!isIncludes(getKeys(screens), key)) return
-    setScreen(key)
+    setScreen({ screen: key })
     onSelect(key)
   }
   return (

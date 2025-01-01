@@ -1,5 +1,6 @@
-import { type FC, type ComponentType } from 'react'
+import { type FC, type ComponentType, type CSSProperties } from 'react'
 import { service as nechronica } from './Nechronica/index.ts'
+import { type ScreenSize } from '@/context/screenContext.ts'
 
 export type Scope = 'private' | 'public'
 
@@ -23,6 +24,9 @@ export type Screen = {
   label: string
   icon: FC
   param?: string
+  containerStyle?: (
+    screenSize: ScreenSize,
+  ) => CSSProperties | false | null | undefined
   contents: ComponentType
 }
 

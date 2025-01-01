@@ -1,9 +1,8 @@
 import { type RefObject } from 'react'
 import { SearchOutlined } from '@ant-design/icons'
-import { Flex, type InputRef, Spin } from 'antd'
+import { Flex, type InputRef } from 'antd'
 import BorderlessInput from './BorderlessInput.tsx'
 import AffixContentsOperation from '@/service/Nechronica/components/CharacterTypeScreen/AffixContentsOperation.tsx'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const SEARCH_INPUT_WIDTH = 370
@@ -26,9 +25,6 @@ export default function AffixContents({
   useCharacters,
   setSelectedCharacters,
 }: AffixContentsProps) {
-  const { loading } = useNechronicaContext()
-  if (loading) return <Spin size="large" />
-
   return (
     <Flex align="center" gap={10}>
       <BorderlessInput
