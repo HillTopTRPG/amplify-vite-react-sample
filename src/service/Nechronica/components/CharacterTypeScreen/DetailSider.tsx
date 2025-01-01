@@ -5,7 +5,13 @@ import SelectedCharacterElm from '@/service/Nechronica/components/CharacterTypeS
 export default function DetailSider({ detailList }: { detailList: string[] }) {
   const { screenSize } = useScreenContext()
 
-  if (screenSize.viewPortWidth < 789) return null
+  if (screenSize.viewPortWidth < 789) {
+    return (
+      <Flex vertical align="stretch" gap={8}>
+        <SelectedCharacterElm detailList={detailList} />
+      </Flex>
+    )
+  }
 
   return (
     <div
