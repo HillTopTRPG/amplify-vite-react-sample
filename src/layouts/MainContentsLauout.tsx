@@ -44,6 +44,9 @@ export default function MainContentsLayout({
             <MediaQuery {...MEDIA_QUERY.PC}>
               <Sider />
             </MediaQuery>
+            <MediaQuery {...MEDIA_QUERY.MOBILE}>
+              <Drawer />
+            </MediaQuery>
             <Layout.Content
               style={{
                 overflow: 'hidden scroll',
@@ -52,9 +55,6 @@ export default function MainContentsLayout({
               }}
               ref={scrollContainer}
             >
-              <MediaQuery {...MEDIA_QUERY.MOBILE}>
-                <Drawer />
-              </MediaQuery>
               {children}
             </Layout.Content>
           </Layout>
