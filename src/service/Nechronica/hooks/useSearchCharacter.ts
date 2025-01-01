@@ -6,7 +6,7 @@ import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaData
 import mapping from '@/service/Nechronica/ts/mapping.json'
 import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
 
-type Filter = {
+export type Filter = {
   text: string
   position: number[]
   class: number[]
