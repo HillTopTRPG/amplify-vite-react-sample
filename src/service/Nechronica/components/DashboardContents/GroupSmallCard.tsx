@@ -57,6 +57,33 @@ export default function GroupSmallCard({
 
   return (
     <PublicCard data={group} cardProps={{ actions }}>
+      <Flex
+        align="center"
+        justify="space-between"
+        style={{
+          position: 'absolute',
+          top: 8,
+          left: 35,
+          right: 10,
+          height: 22,
+          marginBottom: 8,
+          pointerEvents: 'none',
+        }}
+      >
+        {scope === 'private' && currentIsMe ? null : (
+          <Typography.Text
+            ellipsis
+            italic
+            style={{
+              padding: '0 4px',
+              fontSize: 11,
+              color: token.colorTextDescription,
+            }}
+          >
+            @{group.owner ?? ''}
+          </Typography.Text>
+        )}
+      </Flex>
       <Typography.Link
         ellipsis
         className={styles.hoverable}

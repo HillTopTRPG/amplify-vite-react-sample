@@ -7,7 +7,7 @@ export default function DetailSider({ detailList }: { detailList: string[] }) {
 
   if (screenSize.viewPortWidth < 789) {
     return (
-      <Flex vertical align="stretch" gap={8}>
+      <Flex vertical align="stretch" gap={8} style={{ minHeight: '100vh' }}>
         <SelectedCharacterElm detailList={detailList} />
       </Flex>
     )
@@ -27,7 +27,12 @@ export default function DetailSider({ detailList }: { detailList: string[] }) {
         e.stopPropagation()
       }}
     >
-      <Flex vertical align="stretch" gap={8}>
+      <Flex
+        vertical
+        align="stretch"
+        gap={8}
+        style={{ minHeight: 'calc(100vh - 48px)' }}
+      >
         <SelectedCharacterElm detailList={detailList} />
       </Flex>
     </div>

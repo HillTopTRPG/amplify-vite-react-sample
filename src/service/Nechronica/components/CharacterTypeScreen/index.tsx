@@ -23,15 +23,16 @@ export default function CharacterTypeScreen({
 }: CharacterTypeScreenProps) {
   const { loading, characters } = useNechronicaContext()
   const { currentUser } = useUserAttributes()
+  const { scope, screenSize } = useScreenContext()
 
   const makeUseCharacters = useCallback(
     () =>
       characters.filter((c) => {
         if (c.additionalData.type !== characterType) return false
-        if (!currentUser) return true
-        return c.owner === currentUser.userName
+        if (scope === 'public' && !currentUser) return true
+        return c.owner === currentUser?.userName
       }),
-    [characterType, characters, currentUser],
+    [characterType, characters, currentUser, scope],
   )
 
   const [useCharacters, setUseCharacters] =
@@ -61,7 +62,6 @@ export default function CharacterTypeScreen({
     },
   })
 
-  const { screenSize } = useScreenContext()
   const {
     filter,
     setFilter,

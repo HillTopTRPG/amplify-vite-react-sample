@@ -46,8 +46,8 @@ export default function DashboardContents() {
     if (loading) return
 
     const dataFilterFc = ({ owner }: { owner: string }): boolean => {
-      if (scope === 'private') return owner === currentUser?.userName
-      return !currentUser || owner === currentUser?.userName
+      if (scope === 'public' && !currentUser) return true
+      return owner === currentUser?.userName
     }
 
     const useCharacters = characters.filter((c) => dataFilterFc(c))

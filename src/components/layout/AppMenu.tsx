@@ -80,7 +80,10 @@ export default function AppMenu() {
         : [...users]
       ).map((user) => ({
         ...user,
-        viewName: user.userName === me?.userName ? 'あなた' : user.userName,
+        viewName:
+          user.userName === me?.userName && scope === 'private'
+            ? 'あなた'
+            : user.userName,
       }))
     : []
 

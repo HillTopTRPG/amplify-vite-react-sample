@@ -2,6 +2,7 @@ import React from 'react'
 import { Outlet, type RouteObject } from 'react-router-dom'
 import { service } from './index'
 import { ScreenProvider } from '@/context/screenContext.ts'
+import { UserAttributesProvider } from '@/context/userAttributesContext.ts'
 import MainContentsLayout from '@/layouts/MainContentsLauout.tsx'
 import { NechronicaProvider } from '@/service/Nechronica/context.ts'
 import { getKeys } from '@/utils/types.ts'
@@ -19,9 +20,11 @@ const screenRouteObj: RouteObject = {
   path: service.service,
   element: (
     <ScreenProvider {...service}>
-      <NechronicaProvider>
-        <Outlet />
-      </NechronicaProvider>
+      <UserAttributesProvider>
+        <NechronicaProvider>
+          <Outlet />
+        </NechronicaProvider>
+      </UserAttributesProvider>
     </ScreenProvider>
   ),
   children: getKeys(service.screens).map((screen) => ({

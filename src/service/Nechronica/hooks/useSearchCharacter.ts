@@ -48,6 +48,9 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
 
         const filterText = filter.text
         if (filterText) {
+          // オーナー名
+          if (character.owner.includes(filterText)) return true
+
           // キャラクター名
           if (character.sheetData.basic.characterName.includes(filterText))
             return true

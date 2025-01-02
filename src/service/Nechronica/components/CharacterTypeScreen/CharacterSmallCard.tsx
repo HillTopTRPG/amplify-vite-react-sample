@@ -1,6 +1,14 @@
 import { useMemo } from 'react'
 import { StarFilled, StarOutlined } from '@ant-design/icons'
-import { Button, type CardProps, Checkbox, Flex, Image, Typography } from 'antd'
+import {
+  Button,
+  type CardProps,
+  Checkbox,
+  Flex,
+  Image,
+  theme,
+  Typography,
+} from 'antd'
 import classNames from 'classnames'
 import { clone } from 'lodash-es'
 import styles from './CharacterSmallCard.module.css'
@@ -31,6 +39,7 @@ export default function CharacterSmallCard({
   const { updateCharacter, deleteCharacter } = useNechronicaContext()
   const { scope } = useScreenContext()
   const { currentIsMe } = useUserAttributes()
+  const { token } = theme.useToken()
 
   const toggleStared = useMemo(
     () => () => {
@@ -146,14 +155,27 @@ export default function CharacterSmallCard({
         style={{
           position: 'absolute',
           top: 8,
-          left: 50,
+          left: 40,
           right: 10,
           height: 22,
-          marginBottom: 8,
           pointerEvents: 'none',
         }}
       >
-        <Checkbox checked={selected} />
+        {scope === 'private' && currentIsMe ? null : (
+          <Typography.Text
+            ellipsis
+            italic
+            style={{
+              padding: '0 4px',
+              fontSize: 11,
+              color: token.colorTextDescription,
+              flexGrow: 1,
+            }}
+          >
+            @{character.owner ?? ''}
+          </Typography.Text>
+        )}
+        <Checkbox style={{ alignSelf: 'flex-end' }} checked={selected} />
       </Flex>
       <Flex
         vertical
@@ -165,6 +187,17 @@ export default function CharacterSmallCard({
         style={{ paddingTop: 35 }}
         onClick={() => onSelect(character.id, !selected)}
       >
+        <Flex style={{ padding: '0 14px' }}>
+          <Typography.Text
+            style={{
+              fontSize: 11,
+              lineHeight: '18px',
+              color: token.colorTextDescription,
+            }}
+          >
+            # {character.additionalData.sheetId}
+          </Typography.Text>
+        </Flex>
         <Flex
           vertical
           align="flex-start"
