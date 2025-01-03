@@ -1,5 +1,4 @@
-import { Flex, Typography } from 'antd'
-import AvatarNoBorder from './AvatarNoBorder.tsx'
+import { Avatar, Flex, Typography } from 'antd'
 import { useThemeContext } from '@/context/themeContext.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
 import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -26,16 +25,12 @@ const MAP = {
   },
 } as const
 
-type CharacterAvatarProps = {
+interface Props {
   type: NechronicaType
   position: number
   color?: boolean
 }
-export default function CharacterAvatar({
-  type,
-  position,
-  color,
-}: CharacterAvatarProps) {
+export default function CharacterAvatar({ type, position, color }: Props) {
   const { theme } = useThemeContext()
   const avatarBgColor = MAP[type].color[theme === 'dark' ? 0 : 1]
   const characterAvatarGradient = `radial-gradient(${avatarBgColor},${avatarBgColor} 60%,transparent 75%)`
@@ -45,10 +40,14 @@ export default function CharacterAvatar({
       <Typography.Text style={{ fontSize: 10 }}>
         {mapping['CHARACTER_POSITION'][position].text}
       </Typography.Text>
-      <AvatarNoBorder
+      <Avatar
         src={MAP[type].src(position)}
         size={AVATAR_SIZE}
+        draggable={false}
+        shape="circle"
         style={{
+          border: 'none',
+          userSelect: 'none',
           background: color ? characterAvatarGradient : '#efefef22',
           borderRadius: '50%',
           boxShadow: color

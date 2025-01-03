@@ -41,10 +41,10 @@ const components = {
   },
 } as const
 
-type AuthenticatorProps = {
+interface Props {
   children: ReactNode
 }
-export default function Authenticator({ children }: AuthenticatorProps) {
+export default function Authenticator({ children }: Props) {
   return (
     <AwsAuthenticator variation="default" components={components}>
       {children}

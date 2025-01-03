@@ -1,12 +1,13 @@
-import { Flex, Typography } from 'antd'
+import { Avatar, Flex, Typography } from 'antd'
 import { getClassSrc } from '@/service/Nechronica'
-import AvatarNoBorder from '@/service/Nechronica/components/CharacterCard/AvatarNoBorder.tsx'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const AVATAR_SIZE = 60
 
-type ClassAvatarProps = { value: number }
-export default function ClassAvatar({ value }: ClassAvatarProps) {
+interface Props {
+  value: number
+}
+export default function ClassAvatar({ value }: Props) {
   return (
     <Flex vertical align="center">
       <Typography.Text
@@ -15,10 +16,14 @@ export default function ClassAvatar({ value }: ClassAvatarProps) {
       >
         {mapping['CHARACTER_CLASS'][value].text}
       </Typography.Text>
-      <AvatarNoBorder
+      <Avatar
         src={getClassSrc(value)}
         size={AVATAR_SIZE}
+        draggable={false}
+        shape="circle"
         style={{
+          border: 'none',
+          userSelect: 'none',
           display: 'inline-block',
           background: '#efefef22',
           borderRadius: '50%',

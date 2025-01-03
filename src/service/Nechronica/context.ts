@@ -108,6 +108,7 @@ const useNechronica = () => {
       },
     })
     return () => {
+      // eslint-disable-next-line no-console
       console.log('unsub1')
       sub.unsubscribe()
     }
@@ -148,6 +149,7 @@ const useNechronica = () => {
       },
     })
     return () => {
+      // eslint-disable-next-line no-console
       console.log('unsub2')
       sub.unsubscribe()
     }
@@ -199,6 +201,7 @@ const useNechronica = () => {
       },
     })
     return () => {
+      // eslint-disable-next-line no-console
       console.log('unsub3')
       sub.unsubscribe()
     }
@@ -228,6 +231,7 @@ const useNechronica = () => {
       },
     })
     return () => {
+      // eslint-disable-next-line no-console
       console.log('unsub4')
       sub.unsubscribe()
     }

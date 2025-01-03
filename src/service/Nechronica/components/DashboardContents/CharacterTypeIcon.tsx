@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { SelectOutlined } from '@ant-design/icons'
 import { Badge, Flex, theme, Typography } from 'antd'
 import classNames from 'classnames'
@@ -9,21 +10,21 @@ import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const SIZE = 64
 
-export default function CharacterTypeIcon(
-  props:
-    | {
-        type: Exclude<NechronicaType, 'doll'>
-        num: number
-        onClick: () => void
-      }
-    | {
-        type: Extract<NechronicaType, 'doll'>
-        num: number
-        onClick: () => void
-        position?: 1 | 2 | 3 | 4 | 5 | 6
-        class?: 1 | 2 | 3 | 4 | 5 | 6 | 7
-      },
-) {
+interface DollsProps {
+  type: Extract<NechronicaType, 'doll'>
+  num: number
+  onClick: () => void
+  position?: 1 | 2 | 3 | 4 | 5 | 6
+  class?: 1 | 2 | 3 | 4 | 5 | 6 | 7
+}
+
+interface EnemiesProps {
+  type: Exclude<NechronicaType, 'doll'>
+  num: number
+  onClick: () => void
+}
+
+export default function CharacterTypeIcon(props: DollsProps | EnemiesProps) {
   const { t: i18nT } = useTranslation()
   const { token } = theme.useToken()
   let src: string
@@ -55,62 +56,68 @@ export default function CharacterTypeIcon(
     distance = '140px'
   }
 
-  return (
-    <div
-      className={styles.container}
-      style={{
-        ['--deg' as never]: deg,
-        ['--deg-neg' as never]: `-${deg}`,
-        ['--distance' as never]: distance,
-      }}
-      onClick={props.onClick}
-    >
-      <Flex
-        vertical
-        className={classNames(styles.contents, props.num === 0 && styles.empty)}
-        align="center"
-        gap={5}
+  return useMemo(
+    () => (
+      <div
+        className={styles.container}
+        style={{
+          ['--deg' as never]: deg,
+          ['--deg-neg' as never]: `-${deg}`,
+          ['--distance' as never]: distance,
+        }}
+        onClick={props.onClick}
       >
-        <Typography.Text
-          style={{
-            fontSize: 13,
-            height: 14,
-            marginTop: -14,
-            color: token.colorLink,
-          }}
+        <Flex
+          vertical
+          className={classNames(
+            styles.contents,
+            props.num === 0 && styles.empty,
+          )}
+          align="center"
+          gap={5}
         >
-          {text}
-          <SelectOutlined style={{ fontSize: 10 }} />
-        </Typography.Text>
-        <Badge
-          count={props.num}
-          offset={[0, 50]}
-          style={{ zIndex: 1 }}
-          overflowCount={99}
-          styles={{
-            indicator: {
-              fontSize: 16,
-              width: 30,
-              height: 30,
-              borderRadius: '50%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            },
-          }}
-          color="blue"
-        >
-          <div
-            className={styles.image}
+          <Typography.Text
             style={{
-              backgroundImage: `url(${src})`,
-              width: SIZE,
-              height: SIZE,
-              zIndex: 0,
+              fontSize: 13,
+              height: 14,
+              marginTop: -14,
+              color: token.colorLink,
             }}
-          />
-        </Badge>
-      </Flex>
-    </div>
+          >
+            {text}
+            <SelectOutlined style={{ fontSize: 10 }} />
+          </Typography.Text>
+          <Badge
+            count={props.num}
+            offset={[0, 50]}
+            style={{ zIndex: 1 }}
+            overflowCount={99}
+            styles={{
+              indicator: {
+                fontSize: 16,
+                width: 30,
+                height: 30,
+                borderRadius: '50%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              },
+            }}
+            color="blue"
+          >
+            <div
+              className={styles.image}
+              style={{
+                backgroundImage: `url(${src})`,
+                width: SIZE,
+                height: SIZE,
+                zIndex: 0,
+              }}
+            />
+          </Badge>
+        </Flex>
+      </div>
+    ),
+    [deg, distance, props.num, props.onClick, src, text, token.colorLink],
   )
 }

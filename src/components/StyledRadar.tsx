@@ -1,7 +1,7 @@
+import { useCallback, useMemo, useState } from 'react'
 import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
-import style from './StyledRadar.module.css'
 import { useThemeContext } from '@/context/themeContext.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
@@ -56,76 +56,83 @@ export function makeChartData(d: NechronicaCharacter) {
   return items
 }
 
-type StyledRadarProps = {
+interface Props {
   data: Datum
   type: 'large' | 'small'
   size: number
   cursor?: 'default' | 'pointer'
   onChangeItem?: (type: 'pointerup' | 'pointermove', item: string) => void
 }
-export default function StyledRadar({
-  data,
-  type,
-  size,
-  onChangeItem,
-}: StyledRadarProps) {
+export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
   const { theme } = useThemeContext()
-  let lastItem = ''
+  const [lastItem, setLastItem] = useState<string | null>(null)
 
-  const onEvent = (chart: Chart, event: PlotEvent) => {
-    if (!onChangeItem) return
+  /* 現在は使ってないがホバーされたチャートの項目をハンドリングできる */
+  const onEvent = useCallback(
+    (chart: Chart, event: PlotEvent) => {
+      if (!onChangeItem) return
 
-    const item: string = chart.container.tooltipElement?.attributes.title ?? ''
-    if (event.type === 'pointermove') {
-      if (lastItem === item) return
-      lastItem = item
-    }
+      const item: string =
+        chart.container.tooltipElement?.attributes.title ?? ''
+      if (event.type === 'pointermove') {
+        if (lastItem === item) return
+        setLastItem(item)
+      }
 
-    if (!['pointerup', 'pointermove'].includes(event.type)) return
+      if (!['pointerup', 'pointermove'].includes(event.type)) return
 
-    onChangeItem(event.type, item)
-  }
+      onChangeItem(event.type, item)
+    },
+    [lastItem, onChangeItem],
+  )
 
-  const config: GetProps<typeof Radar> = {
-    theme,
-    data,
-    width: size,
-    height: size,
-    autoFit: true,
-    xField: 'item',
-    yField: 'score',
-    colorField: 'type',
-    shapeField: 'smooth',
-    area: {
+  const config: GetProps<typeof Radar> = useMemo(
+    () => ({
+      theme,
+      data,
+      width: size,
+      height: size,
+      autoFit: true,
+      xField: 'item',
+      yField: 'score',
+      colorField: 'type',
+      shapeField: 'smooth',
+      area: {
+        style: {
+          fillOpacity: 0.5,
+        },
+      },
+      scale: {
+        x: { padding: 0.5, align: 0, label: false },
+        y: { label: false },
+      },
+      axis: {
+        x: {
+          gridLineWidth: type === 'small' ? 1.5 : 3,
+          title: true,
+          grid: true,
+        },
+        y: {
+          gridLineWidth: type === 'small' ? 1.5 : 3,
+          label: false,
+          title: false,
+          grid: true,
+        },
+      },
+      legend: false,
       style: {
-        fillOpacity: 0.5,
+        lineWidth: type === 'small' ? 2 : 4,
       },
-    },
-    scale: {
-      x: { padding: 0.5, align: 0, label: false },
-      y: { tickCount: 5, nice: true, label: false },
-    },
-    axis: {
-      x: {
-        gridLineWidth: type === 'small' ? 1.5 : 3,
-        title: true,
-        grid: true,
-      },
-      y: {
-        gridLineWidth: type === 'small' ? 1.5 : 3,
-        label: false,
-        title: false,
-        grid: true,
-      },
-    },
-    legend: false,
-    style: {
-      lineWidth: type === 'small' ? 2 : 4,
-    },
-    radiusAxis: false,
-    tooltip: type === 'small' ? false : undefined,
-  }
-  return (
-    <Radar {...config} className={style.radarContainer} onEvent={onEvent} />
+      radiusAxis: false,
+      tooltip: type === 'small' ? false : undefined,
+    }),
+    [data, size, theme, type],
+  )
+
+  return useMemo(
+    () => (
+      <Radar {...config} style={{ pointerEvents: 'none' }} onEvent={onEvent} />
+    ),
+    [config, onEvent],
   )
 }

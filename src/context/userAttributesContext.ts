@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { generateClient } from 'aws-amplify/api'
 import {
   fetchUserAttributes,
@@ -8,6 +8,7 @@ import {
 import { getCurrentUser, type GetCurrentUserOutput } from 'aws-amplify/auth'
 import constate from 'constate'
 import { type Schema } from '../../amplify/data/resource.ts'
+import { useScreenContext } from '@/context/screenContext.ts'
 
 type User = Schema['User']['type'] & {
   setting: {
@@ -19,6 +20,7 @@ const client = generateClient<Schema>()
 
 export const [UserAttributesProvider, useUserAttributes] = constate(() => {
   const [attr, setAttrResult] = useState<FetchUserAttributesOutput>()
+  const { scope } = useScreenContext()
   const [userAttributeLoading, setUserAttributeLoading] = useState(true)
   const reloadUserAttributes = useCallback(() => {
     fetchUserAttributes()
@@ -52,7 +54,8 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
     return void sub.unsubscribe
   }, [])
 
-  const { userName } = useParams<{ userName: string }>()
+  const [searchParams] = useSearchParams()
+  const userName = searchParams.get('userName')
 
   const [me, setMe] = useState<User | null>(null)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
@@ -66,14 +69,24 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
       setMe(me)
       const currentUser = userName
         ? (users.find((u) => u.userName === userName) ?? null)
-        : me
+        : scope === 'private'
+          ? me
+          : null
       setCurrentUser(currentUser)
       setCurrentIsMe(
         Boolean(currentUser) && currentUser?.userName === user?.username,
       )
     }
     setLoading(loading)
-  }, [userAttributeLoading, userLoading, usersLoading, users, user, userName])
+  }, [
+    userAttributeLoading,
+    userLoading,
+    usersLoading,
+    users,
+    user,
+    userName,
+    scope,
+  ])
 
   useEffect(() => {
     if (!loading && user && !me) {

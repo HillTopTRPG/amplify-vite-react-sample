@@ -3,13 +3,14 @@ import { useLocation } from 'react-router-dom'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useDebounce } from '@/hooks/useDebounce.tsx'
 
-export default function PageScrollDispatcher({
-  scrollContainer,
-  forceTop = false,
-}: {
+interface Props {
   scrollContainer: RefObject<HTMLElement>
   forceTop?: boolean
-}) {
+}
+export default function PageScrollDispatcher({
+  scrollContainer,
+  forceTop,
+}: Props) {
   const { scrollMap, setScrollMap } = useScreenContext()
   const debounce = useDebounce(100)
   const { pathname } = useLocation()

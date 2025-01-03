@@ -1,34 +1,52 @@
-import { useMemo } from 'react'
-import { StarFilled, StarOutlined } from '@ant-design/icons'
-import { Button, type CardProps, Checkbox, Flex, Image, Typography } from 'antd'
-import classNames from 'classnames'
+import { useCallback, useMemo } from 'react'
+import { Checkbox, Flex, List, Switch, theme, Typography } from 'antd'
 import { clone } from 'lodash-es'
-import styles from './CharacterSmallCard.module.css'
+import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
-import PublicCard from '@/components/PublicCard.tsx'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { getCharacterTypeSrc } from '@/service/Nechronica'
-import CharacterSettingButton from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSettingButton.tsx'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import CharacterSmallCardBackImg from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCardBackImg.tsx'
+import UnGroupConfirmButton from '@/service/Nechronica/components/GroupContents/UnGroupConfirmButton.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import {
+  type CharacterGroupRelation,
+  type NechronicaCharacter,
+} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
+import { typedOmit } from '@/utils/types.ts'
 
-type CharacterCardProps = {
+interface Props {
   selected: boolean
   character: NechronicaCharacter
   onSelect: (id: string, isSelect: boolean) => void
-  onHover: (id: string, isEnter: boolean) => void
-  viewType?: 'normal' | 'simple'
+  onHover?: (id: string, isEnter: boolean) => void
+  viewType?: 'normal' | 'group' | 'simple'
+  onUnGroup?: () => void
 }
 export default function CharacterSmallCard({
+  viewType = 'normal',
   selected,
   character,
   onSelect,
   onHover,
-}: CharacterCardProps) {
-  const { updateCharacter, deleteCharacter } = useNechronicaContext()
-  const { scope } = useScreenContext()
+  onUnGroup,
+}: Props) {
+  const { token } = theme.useToken()
+  const {
+    updateCharacter,
+    deleteCharacter,
+    characterGroupRelations,
+    updateCharacterGroup,
+  } = useNechronicaContext()
+  const { currentUser } = useUserAttributes()
+
+  const useCharacterGroupRelations = useMemo(
+    () =>
+      characterGroupRelations.filter(
+        (cgr) => cgr.owner === currentUser?.userName,
+      ),
+    [characterGroupRelations, currentUser?.userName],
+  )
 
   const toggleStared = useMemo(
     () => () => {
@@ -39,152 +57,182 @@ export default function CharacterSmallCard({
     [character, updateCharacter],
   )
 
-  const cardProps: CardProps = useMemo(
-    () => ({
-      hoverable: false,
-      onMouseOverCapture: () => onHover(character.id, true),
-      onMouseOutCapture: () => onHover(character.id, false),
-      onTouchStartCapture: () => {},
-      bordered: false,
-      styles: {
-        body: {
-          padding: 0,
-          width: 178,
-          position: 'relative',
-          overflow: 'hidden',
-        },
-      },
-      style: {
-        cursor: 'pointer',
-      },
-      actions:
-        scope === 'private'
-          ? [
-              <DeleteConfirmButton
-                key={0}
-                name={character.name}
-                onConfirm={() => deleteCharacter(character.id)}
-              />,
-              <Button
-                type="text"
-                onClick={toggleStared}
-                icon={
-                  character.additionalData.stared ? (
-                    <StarFilled />
-                  ) : (
-                    <StarOutlined />
-                  )
-                }
-              />,
-              <CharacterSettingButton character={character} />,
-            ]
-          : undefined,
-    }),
-    [scope, character, onHover, deleteCharacter, toggleStared],
-  )
+  const actions = useMemo(() => {
+    if (viewType === 'simple') return []
+    return [
+      viewType === 'normal' ? (
+        [
+          <DataSmallCard.FavoriteButton toggle={toggleStared} />,
+          // <DataSmallCard.ShareButton />,
+        ]
+      ) : (
+        <UnGroupConfirmButton name={character.name} onConfirm={onUnGroup} />
+      ),
+      <DataSmallCard.OperateButton operateType={viewType} />,
+    ].flat()
+  }, [character.name, onUnGroup, toggleStared, viewType])
 
-  const basic = character.sheetData.basic
+  const { characterName, position, mainClass, subClass } =
+    character.sheetData.basic
 
   const constBlocks = useMemo(
     () => (
       <>
-        <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
+        <Flex align="center" gap={5}>
           <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
-            {mapping.CHARACTER_POSITION[basic.position].text}
+            {mapping.CHARACTER_POSITION[position].text}
           </Typography.Text>
         </Flex>
-        <Flex align="center" style={{ padding: '0 4px' }} gap={5}>
+        <Flex align="center" gap={5}>
           <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
-            {mapping.CHARACTER_CLASS[basic.mainClass].text}
+            {mapping.CHARACTER_CLASS[mainClass].text}
           </Typography.Text>
           <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
             /
           </Typography.Text>
           <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
-            {mapping.CHARACTER_CLASS[basic.subClass].text}
+            {mapping.CHARACTER_CLASS[subClass].text}
           </Typography.Text>
         </Flex>
       </>
     ),
-    [basic.mainClass, basic.position, basic.subClass],
+    [position, mainClass, subClass],
   )
 
-  const radarData = makeChartData(character)
+  const radarData = useMemo(() => makeChartData(character), [character])
 
-  return (
-    <PublicCard key={character.id} data={character} cardProps={cardProps}>
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: '-20%',
-          right: 0,
-          bottom: 0,
-          overflow: 'hidden',
-          pointerEvents: 'none',
+  const onChangeCharacterPublic = useCallback(
+    (nextPublic: boolean) => {
+      const newValue = clone(character)
+      newValue.public = nextPublic
+      updateCharacter(newValue)
+    },
+    [character, updateCharacter],
+  )
+
+  const onChangeGroup = useCallback(
+    (cgr: CharacterGroupRelation, checked: boolean) => {
+      const newValue = clone(cgr)
+      newValue.characterIds = checked
+        ? [...newValue.characterIds, character.id]
+        : newValue.characterIds.filter((id) => id !== character.id)
+      updateCharacterGroup(typedOmit(newValue, 'characters'))
+    },
+    [character.id, updateCharacterGroup],
+  )
+
+  return useMemo(
+    () => (
+      <DataSmallCard
+        data={character}
+        cardProps={{ actions }}
+        selected={selected}
+        contentsContainerProps={{
+          onClick: () => onSelect(character.id, !selected),
+          onMouseOverCapture: onHover
+            ? () => onHover(character.id, true)
+            : undefined,
+          onMouseOutCapture: onHover
+            ? () => onHover(character.id, false)
+            : undefined,
         }}
+        backgroundElm={<CharacterSmallCardBackImg character={character} />}
+        shareDrawerContents={<></>}
+        operationDrawerContents={(operateOpen) =>
+          operateOpen === 'normal' ? (
+            <Flex
+              vertical
+              gap={6}
+              style={{ overflow: 'hidden', height: '100%' }}
+            >
+              <Flex align="center">
+                <Typography.Text style={{ fontSize: 12 }}>公開</Typography.Text>
+                <Switch
+                  checkedChildren="有効"
+                  unCheckedChildren="無効"
+                  onChange={(v) => onChangeCharacterPublic(v)}
+                  defaultValue={character.public}
+                />
+              </Flex>
+              <Flex vertical style={{ flexGrow: 1, overflow: 'hidden' }}>
+                <Typography.Text style={{ fontSize: 12 }}>
+                  所属グループ
+                </Typography.Text>
+                <div
+                  style={{
+                    overflow: 'scroll',
+                    flexGrow: 1,
+                    borderStyle: 'dashed',
+                    borderWidth: 1,
+                    borderColor: token.colorBorderSecondary,
+                  }}
+                  onScrollCapture={(e) => e.stopPropagation()}
+                >
+                  <List
+                    dataSource={useCharacterGroupRelations}
+                    renderItem={(cgr) => (
+                      <List.Item style={{ padding: 0 }}>
+                        <Checkbox
+                          checked={cgr.characterIds.includes(character.id)}
+                          style={{
+                            width: '100%',
+                            padding: 5,
+                            overflow: 'hidden',
+                          }}
+                          onChange={(e) => onChangeGroup(cgr, e.target.checked)}
+                        >
+                          <Typography.Text ellipsis style={{ padding: 0 }}>
+                            {cgr.name}
+                          </Typography.Text>
+                        </Checkbox>
+                      </List.Item>
+                    )}
+                  />
+                </div>
+              </Flex>
+              <DeleteConfirmButton
+                name={character.name}
+                onConfirm={() => deleteCharacter(character.id)}
+                style={{
+                  alignSelf: 'flex-start',
+                }}
+              />
+            </Flex>
+          ) : null
+        }
       >
-        <Image
-          src={getCharacterTypeSrc(
-            character.additionalData.type,
-            basic.position,
-          )}
-          preview={false}
-          style={{
-            opacity: 0.1,
-            width: '140%',
-            height: '140%',
-            filter: 'blur(2px)',
-          }}
-        />
-      </div>
-      <Flex
-        align="center"
-        justify="flex-end"
-        style={{
-          position: 'absolute',
-          top: 8,
-          left: 50,
-          right: 10,
-          height: 22,
-          marginBottom: 8,
-          pointerEvents: 'none',
-        }}
-      >
-        <Checkbox checked={selected} />
-      </Flex>
-      <Flex
-        vertical
-        gap={3}
-        className={classNames(
-          styles.hoverable,
-          selected ? styles.active : null,
-        )}
-        style={{ paddingTop: 35 }}
-        onClick={() => onSelect(character.id, !selected)}
-      >
-        <Flex
-          vertical
-          align="flex-start"
-          style={{ flexGrow: 1, padding: '0 10px' }}
-        >
-          <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
-            {basic.characterName}
-          </Typography.Text>
-          {character.additionalData.type === 'doll' ? constBlocks : null}
-        </Flex>
+        <Typography.Text type="secondary" style={{ fontSize: 11 }}>
+          # {character.additionalData.sheetId}
+        </Typography.Text>
+        <Typography.Text strong ellipsis>
+          {characterName}
+        </Typography.Text>
+        {character.additionalData.type === 'doll' ? constBlocks : null}
         <div
           style={{
-            width: 180,
             height: 170,
-            marginTop: -10,
+            margin: '-10px -14px -14px -14px',
             pointerEvents: 'none',
-            overflow: 'hidden',
           }}
         >
           <StyledRadar data={radarData} type="small" size={180} />
         </div>
-      </Flex>
-    </PublicCard>
+      </DataSmallCard>
+    ),
+    [
+      actions,
+      character,
+      characterName,
+      constBlocks,
+      deleteCharacter,
+      onChangeCharacterPublic,
+      onChangeGroup,
+      onHover,
+      onSelect,
+      radarData,
+      selected,
+      token.colorBorderSecondary,
+      useCharacterGroupRelations,
+    ],
   )
 }

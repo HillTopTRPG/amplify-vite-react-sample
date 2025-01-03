@@ -1,4 +1,4 @@
-import { type RefObject, useState } from 'react'
+import { type RefObject, useCallback, useMemo, useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Input, type InputRef, Space } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
@@ -9,15 +9,16 @@ import {
   type NechronicaType,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
+interface Props {
+  label: string
+  characterType: NechronicaType
+  sheetIdInputRef: RefObject<InputRef>
+}
 export default function AddCharacterInput({
   label,
   characterType,
   sheetIdInputRef,
-}: {
-  label: string
-  characterType: NechronicaType
-  sheetIdInputRef: RefObject<InputRef>
-}) {
+}: Props) {
   const { scope } = useScreenContext()
   const { createCharacter } = useNechronicaContext()
   const { currentIsMe } = useUserAttributes()
@@ -25,7 +26,7 @@ export default function AddCharacterInput({
   const [composition, setComposition] = useState(false)
   const [sheetId, setSheetId] = useState('')
 
-  const onCreateCharacter = async () => {
+  const onCreateCharacter = useCallback(async () => {
     if (composition) return
     if (!sheetId.trim()) return
     if (!currentIsMe) return
@@ -39,25 +40,36 @@ export default function AddCharacterInput({
     sheetIdInputRef?.current?.blur()
     sheetIdInputRef?.current?.focus()
     createCharacter(sheetData)
-  }
+  }, [
+    characterType,
+    composition,
+    createCharacter,
+    currentIsMe,
+    sheetId,
+    sheetIdInputRef,
+  ])
 
-  if (scope === 'public' || !currentIsMe) return null
-  return (
-    <Space.Compact size="large" style={{ alignSelf: 'flex-start' }}>
-      <Input
-        prefix={<PlusOutlined />}
-        value={sheetId}
-        placeholder={`追加する${label}のシートID`}
-        onPressEnter={onCreateCharacter}
-        onCompositionStart={() => setComposition(true)}
-        onCompositionEnd={() => setComposition(false)}
-        onChange={(e) => setSheetId(e.target.value)}
-        style={{ width: 300 }}
-        ref={sheetIdInputRef}
-      />
-      <Button type="default" onClick={onCreateCharacter}>
-        追加
-      </Button>
-    </Space.Compact>
+  const elm = useMemo(
+    () => (
+      <Space.Compact size="large" style={{ alignSelf: 'flex-start' }}>
+        <Input
+          prefix={<PlusOutlined />}
+          value={sheetId}
+          placeholder={`追加する${label}のシートID`}
+          onPressEnter={onCreateCharacter}
+          onCompositionStart={() => setComposition(true)}
+          onCompositionEnd={() => setComposition(false)}
+          onChange={(e) => setSheetId(e.target.value)}
+          style={{ width: 300 }}
+          ref={sheetIdInputRef}
+        />
+        <Button type="default" onClick={onCreateCharacter}>
+          追加
+        </Button>
+      </Space.Compact>
+    ),
+    [label, onCreateCharacter, sheetId, sheetIdInputRef],
   )
+
+  return scope === 'public' || !currentIsMe ? null : elm
 }

@@ -24,7 +24,7 @@ const dollConst = [
 export default function DashboardContents() {
   const { loading, characters, characterGroupRelations } =
     useNechronicaContext()
-  const { scope, setScreen } = useScreenContext()
+  const { scope, setScreen, screenSize } = useScreenContext()
   const { currentUser } = useUserAttributes()
 
   const [summaryData, setSummaryData] = useState<{
@@ -46,11 +46,12 @@ export default function DashboardContents() {
     if (loading) return
 
     const dataFilterFc = ({ owner }: { owner: string }): boolean => {
-      if (scope === 'private') return owner === currentUser?.userName
-      return !currentUser || owner === currentUser?.userName
+      if (scope === 'public' && !currentUser) return true
+      return owner === currentUser?.userName
     }
 
     const useCharacters = characters.filter((c) => dataFilterFc(c))
+    // eslint-disable-next-line no-console
     console.log('re-make summaryData.', characters.length)
     setSummaryData({
       doll: {
@@ -64,10 +65,10 @@ export default function DashboardContents() {
         ),
         class: [1, 2, 3, 4, 5, 6, 7].map(
           (cls) =>
-            useCharacters.flatMap((c) => {
-              if (c.additionalData.type !== 'doll') return []
+            useCharacters.filter((c) => {
+              if (c.additionalData.type !== 'doll') return false
               const { mainClass, subClass } = c.sheetData.basic
-              return [mainClass === cls, subClass === cls].filter(Boolean)
+              return [mainClass, subClass].includes(cls)
             }).length,
         ),
       },
@@ -81,12 +82,13 @@ export default function DashboardContents() {
       characterGroupRelations
         .filter((cgr) => dataFilterFc(cgr))
         .map((g) => {
-          return <GroupSmallCard key={g.id} group={g} scope={scope} />
+          return <GroupSmallCard key={g.id} group={g} />
         }),
     )
   }, [loading, currentUser, scope, characters, characterGroupRelations])
 
   return useMemo(() => {
+    // eslint-disable-next-line no-console
     console.log('re-rendering dashboard(memo).')
 
     const makeDollProps = (
@@ -98,7 +100,11 @@ export default function DashboardContents() {
       [p]: iconValue,
       num,
       onClick: () =>
-        setScreen({ screen: 'dolls', queryParam: [[p, iconValue.toString()]] }),
+        setScreen((v) => ({
+          ...v,
+          screen: 'dolls',
+          queryParam: [...v.queryParam, [p, iconValue.toString()]],
+        })),
     })
 
     const makeEnemiesProps = (
@@ -108,8 +114,22 @@ export default function DashboardContents() {
     ): GetProps<typeof CharacterTypeIcon> => ({
       type,
       num,
-      onClick: () => setScreen({ screen: `${enemies[idx]}s` }),
+      onClick: () => setScreen((v) => ({ ...v, screen: `${enemies[idx]}s` })),
     })
+
+    const dollStyle2Cols = (property: 'position' | 'class') => {
+      if (screenSize.viewPortWidth < 612) return 2
+      if (screenSize.viewPortWidth < 828) return 3
+      if (property === 'position') return 2
+      if (screenSize.viewPortWidth < 1034) return 2
+      return 3
+    }
+
+    const enemiesStyle2Cols = () => {
+      if (screenSize.viewPortWidth < 612) return 2
+      if (screenSize.viewPortWidth < 1250) return 3
+      return 1
+    }
 
     return (
       <Flex vertical align="flex-start" gap={16}>
@@ -161,7 +181,7 @@ export default function DashboardContents() {
                     <Style2
                       key={idx}
                       label={label}
-                      columns={property === 'position' ? 2 : 3}
+                      columns={dollStyle2Cols(property)}
                     >
                       {summaryData.doll[property].map((num, index) => (
                         <CharacterTypeItemSet
@@ -172,7 +192,7 @@ export default function DashboardContents() {
                     </Style2>
                   ))}
                   enemiesElm={
-                    <Style2 label="手駒" columns={1}>
+                    <Style2 label="手駒" columns={enemiesStyle2Cols()}>
                       {summaryData.enemies.map((num, idx) => (
                         <CharacterTypeItemSet
                           key={idx}
@@ -198,5 +218,12 @@ export default function DashboardContents() {
         </Flex>
       </Flex>
     )
-  }, [summaryData.enemies, summaryData.doll, groupsElm, loading, setScreen])
+  }, [
+    summaryData.enemies,
+    summaryData.doll,
+    groupsElm,
+    loading,
+    setScreen,
+    screenSize.viewPortWidth,
+  ])
 }

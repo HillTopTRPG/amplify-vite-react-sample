@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
@@ -14,20 +14,21 @@ export type Filter = {
 
 export function useSearchCharacter(characters: NechronicaCharacter[]) {
   const [searchParams] = useSearchParams()
-  const { setScreen } = useScreenContext()
 
-  const filterText = searchParams.get('text')
-  const filterPosition = searchParams.getAll('position')
-  const filterClass = searchParams.getAll('class')
-  const [filter, setFilter] = useState<Filter>({
-    text: decodeURIComponent(filterText ?? ''),
-    position: filterPosition
-      .map(parseIntOrNull)
-      .filter((p): p is number => p !== null),
-    class: filterClass
-      .map(parseIntOrNull)
-      .filter((c): c is number => c !== null),
-  })
+  const filter = useMemo(() => {
+    const getNumberArrayValue = (param: string) =>
+      searchParams
+        .getAll(param)
+        .map(parseIntOrNull)
+        .filter((v): v is number => v !== null)
+    return {
+      text: decodeURIComponent(searchParams.get('text') ?? ''),
+      position: getNumberArrayValue('position'),
+      class: getNumberArrayValue('class'),
+    }
+  }, [searchParams])
+
+  const { setScreen } = useScreenContext()
   const [selectedCharacters, setSelectedCharacters] = useSelectIds()
   const [hoverCharacter, setHoverCharacter] = useState<string | null>(null)
 
@@ -45,6 +46,9 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
 
         const filterText = filter.text
         if (filterText) {
+          // オーナー名
+          if (character.owner.includes(filterText)) return true
+
           // キャラクター名
           if (character.sheetData.basic.characterName.includes(filterText))
             return true
@@ -82,35 +86,50 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
     [characters, filter],
   )
 
+  const [detailList, setDetailList] = useState<string[]>([])
+
+  useEffect(() => {
+    const list = [...selectedCharacters]
+    if (hoverCharacter) {
+      const index = list.indexOf(hoverCharacter)
+      if (index !== -1) list.splice(index, 1)
+      list.unshift(hoverCharacter)
+    }
+    setDetailList(list)
+  }, [hoverCharacter, selectedCharacters, setDetailList])
+
   return {
     filter,
+    searchedCharacters,
+    selectedCharacters,
+    setSelectedCharacters,
+    setHoverCharacter,
+    detailList,
     setFilter: useCallback(
       (fc: (filter: Filter) => Filter) => {
         const newFilter = fc(filter)
-        setFilter(newFilter)
-        const queryParam: string[][] = []
+        const queryParam: [string, string][] = []
         if (newFilter.text) {
           queryParam.push(['text', encodeURIComponent(newFilter.text)])
         }
         if (newFilter.position.length) {
           queryParam.push(
-            ...newFilter.position.map((p) => ['position', p.toString()]),
+            ...newFilter.position.map(
+              (p) => ['position', p.toString()] as [string, string],
+            ),
           )
         }
         if (newFilter.class.length) {
           queryParam.push(
-            ...newFilter.class.map((p) => ['class', p.toString()]),
+            ...newFilter.class.map(
+              (p) => ['class', p.toString()] as [string, string],
+            ),
           )
         }
-        setScreen({ queryParam })
+        setScreen((v) => ({ ...v, queryParam }), { replace: true })
         setSelectedCharacters([])
       },
       [filter, setScreen, setSelectedCharacters],
     ),
-    searchedCharacters,
-    selectedCharacters,
-    setSelectedCharacters,
-    hoverCharacter,
-    setHoverCharacter,
   }
 }

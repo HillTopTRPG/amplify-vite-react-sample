@@ -1,6 +1,6 @@
 import { type RefObject, useEffect, useRef } from 'react'
 
-type KeybindProps = {
+interface Props {
   altKey?: boolean
   ctrlKey?: boolean
   metaKey?: boolean
@@ -24,7 +24,7 @@ export default function useKeyBind({
   key,
   onKeyDown,
   targetRef,
-}: KeybindProps) {
+}: Props) {
   const onKeyDownLatest = useLatest(onKeyDown)
 
   useEffect(() => {

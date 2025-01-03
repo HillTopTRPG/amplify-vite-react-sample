@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { SelectOutlined } from '@ant-design/icons'
 import { Typography, Flex, theme } from 'antd'
 import classNames from 'classnames'
@@ -7,21 +8,21 @@ import { getCharacterTypeSrc, getClassSrc } from '@/service/Nechronica'
 import type { NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
-export default function CharacterTypeItemSet(
-  props:
-    | {
-        type: Exclude<NechronicaType, 'doll'>
-        num: number
-        onClick: () => void
-      }
-    | {
-        type: Extract<NechronicaType, 'doll'>
-        num: number
-        onClick: () => void
-        position?: 1 | 2 | 3 | 4 | 5 | 6
-        class?: 1 | 2 | 3 | 4 | 5 | 6 | 7
-      },
-) {
+interface DollsProps {
+  type: Extract<NechronicaType, 'doll'>
+  num: number
+  onClick: () => void
+  position?: 1 | 2 | 3 | 4 | 5 | 6
+  class?: 1 | 2 | 3 | 4 | 5 | 6 | 7
+}
+
+interface EnemiesProps {
+  type: Exclude<NechronicaType, 'doll'>
+  num: number
+  onClick: () => void
+}
+
+export default function CharacterTypeItemSet(props: DollsProps | EnemiesProps) {
   const { t: i18nT } = useTranslation()
   const { token } = theme.useToken()
 
@@ -52,36 +53,39 @@ export default function CharacterTypeItemSet(
         ? `${props.num}体`
         : '-'
 
-  return (
-    <Typography.Link style={{ overflow: 'visible' }}>
-      <Flex
-        align="stretch"
-        gap={20}
-        className={classNames(
-          styles.container,
-          props.num === 0 && styles.empty,
-        )}
-        onClick={props.onClick}
-      >
-        <div
-          className={styles.image}
-          style={{ backgroundImage: `url(${src})` }}
-        />
-        <Flex vertical align="flex-start" justify="space-evenly">
-          <Typography.Text style={{ fontSize: 12 }}>{text}</Typography.Text>
-          <Flex
-            gap={10}
-            align="baseline"
-            style={{
-              userSelect: 'none',
-              color: valueText === '-' ? token.colorTextDisabled : undefined,
-            }}
-          >
-            <span style={{ fontSize: 24 }}>{valueText}</span>
-            <SelectOutlined />
+  return useMemo(
+    () => (
+      <Typography.Link style={{ overflow: 'visible' }}>
+        <Flex
+          align="stretch"
+          gap={20}
+          className={classNames(
+            styles.container,
+            props.num === 0 && styles.empty,
+          )}
+          onClick={props.onClick}
+        >
+          <div
+            className={styles.image}
+            style={{ backgroundImage: `url(${src})` }}
+          />
+          <Flex vertical align="flex-start" justify="space-evenly">
+            <Typography.Text style={{ fontSize: 12 }}>{text}</Typography.Text>
+            <Flex
+              gap={10}
+              align="baseline"
+              style={{
+                userSelect: 'none',
+                color: valueText === '-' ? token.colorTextDisabled : undefined,
+              }}
+            >
+              <span style={{ fontSize: 24 }}>{valueText}</span>
+              <SelectOutlined />
+            </Flex>
           </Flex>
         </Flex>
-      </Flex>
-    </Typography.Link>
+      </Typography.Link>
+    ),
+    [props.num, props.onClick, src, text, token.colorTextDisabled, valueText],
   )
 }

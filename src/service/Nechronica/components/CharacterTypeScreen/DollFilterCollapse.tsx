@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { FilterOutlined } from '@ant-design/icons'
 import {
   Button,
   Collapse,
@@ -20,24 +21,30 @@ import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const SEARCH_INPUT_WIDTH = 370
 
+interface Props {
+  filter: Filter
+  characterType: NechronicaType
+  setFilter: (fc: (filter: Filter) => Filter) => void
+  useCharacters: NechronicaCharacter[]
+}
 export default function DollFilterCollapse({
   filter,
   characterType,
   setFilter,
   useCharacters,
-}: {
-  filter: Filter
-  characterType: NechronicaType
-  setFilter: (fc: (filter: Filter) => Filter) => void
-  useCharacters: NechronicaCharacter[]
-}) {
+}: Props) {
   const { token } = theme.useToken()
 
+  const isEmptyFilter =
+    filter.text === '' &&
+    filter.position.length === 0 &&
+    filter.class.length === 0
+
+  const [collapseValue, setCollapseValue] = useState<string[]>(
+    isEmptyFilter ? [] : ['1'],
+  )
+
   const elm = useMemo(() => {
-    const isEmptyFilter =
-      filter.text === '' &&
-      filter.position.length === 0 &&
-      filter.class.length === 0
     const items: CollapseProps['items'] = [
       {
         key: '1',
@@ -46,8 +53,10 @@ export default function DollFilterCollapse({
           <Button
             type="text"
             size="small"
-            onClick={() => {
+            onClick={(e) => {
               setFilter(() => ({ text: '', position: [], class: [] }))
+              setCollapseValue([])
+              e.stopPropagation()
             }}
             disabled={isEmptyFilter}
             style={{ pointerEvents: isEmptyFilter ? 'none' : undefined }}
@@ -56,14 +65,14 @@ export default function DollFilterCollapse({
           </Button>
         ),
         label: (
-          <Flex style={{ width: '100%' }} align="baseline">
+          <Flex style={{ width: '100%' }} align="baseline" gap={10}>
             <Typography.Text style={{ whiteSpace: 'nowrap' }}>
+              <FilterOutlined style={{ marginRight: 4 }} />
               フィルター
             </Typography.Text>
             <Typography.Text
               ellipsis
               style={{
-                marginLeft: 10,
                 fontSize: 12,
                 color: token.colorPrimary,
               }}
@@ -134,16 +143,15 @@ export default function DollFilterCollapse({
     return (
       <Collapse
         items={items}
-        defaultActiveKey={
-          filter.text || filter.position.length || filter.class.length
-            ? ['1']
-            : []
-        }
+        activeKey={collapseValue}
+        onChange={setCollapseValue}
         size="small"
         style={{ marginTop: 10 }}
       />
     )
   }, [
+    collapseValue,
+    isEmptyFilter,
     filter.class,
     filter.position,
     filter.text,
