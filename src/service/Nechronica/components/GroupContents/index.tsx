@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Flex, Modal, Result, Spin } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
@@ -9,10 +9,7 @@ import CharacterSmallCards from '@/service/Nechronica/components/CharacterTypeSc
 import DetailSider from '@/service/Nechronica/components/CharacterTypeScreen/DetailSider.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
-import type {
-  CharacterGroupRelation,
-  NechronicaCharacter,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import type { CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { typedOmit } from '@/utils/types.ts'
 
 export default function GroupContents() {
@@ -24,24 +21,15 @@ export default function GroupContents() {
   const { currentUser } = useUserAttributes()
   const { screenSize } = useScreenContext()
 
-  const [characterGroupRelation, setCharacterGroupRelation] =
-    useState<CharacterGroupRelation | null>(null)
-
-  const [useCharacters, setUseCharacters] = useState<NechronicaCharacter[]>([])
-
-  useEffect(() => {
-    if (loading) return
-    setCharacterGroupRelation(
-      characterGroupRelations.find((cg) => cg.id === groupId) ?? null,
-    )
+  const characterGroupRelation = useMemo(() => {
+    if (loading) return null
+    return characterGroupRelations.find((cg) => cg.id === groupId) ?? null
   }, [characterGroupRelations, groupId, loading])
 
-  useEffect(() => {
-    if (loading) return
-    setUseCharacters(
-      characters.filter((c) => c.owner === currentUser?.userName),
-    )
-  }, [characters, currentUser?.userName, loading])
+  const useCharacters = useMemo(
+    () => characters.filter((c) => c.owner === currentUser?.userName),
+    [characters, currentUser?.userName],
+  )
 
   const {
     searchedCharacters,
