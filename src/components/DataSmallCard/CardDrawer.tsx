@@ -1,14 +1,15 @@
 import { type ReactNode } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Drawer, Flex, theme, Typography } from 'antd'
+import { type SmallCardData } from '@/components/DataSmallCard/index.tsx'
 
 export default function CardDrawer({
-  name,
+  data,
   open,
   onClose,
   children,
 }: {
-  name: string
+  data: SmallCardData
   open: boolean | string
   onClose: () => void
   children: ReactNode
@@ -22,14 +23,33 @@ export default function CardDrawer({
       closable={false}
       onClick={(e) => e.stopPropagation()}
       styles={{
+        wrapper: {
+          height: '100%',
+        },
         body: {
           padding: 8,
           cursor: 'default',
+          display: 'flex',
+          flexDirection: 'column',
           backgroundColor: token.colorBgBase,
+        },
+        content: {
+          height: '100%',
         },
       }}
     >
-      <Flex align="center" justify="flex-end" style={{ marginLeft: 35 }}>
+      <Flex
+        align="center"
+        justify="flex-end"
+        style={{ marginLeft: data.public ? 35 : 50, marginBottom: 6 }}
+      >
+        <Typography.Text
+          ellipsis
+          type="success"
+          style={{ flexGrow: 1, fontSize: 12 }}
+        >
+          {data.name}
+        </Typography.Text>
         <Button
           type="text"
           size="small"
@@ -38,9 +58,6 @@ export default function CardDrawer({
           onClick={onClose}
         />
       </Flex>
-      <Typography.Text ellipsis style={{ flexGrow: 1, fontSize: 10 }}>
-        {name}
-      </Typography.Text>
       {children}
     </Drawer>
   )

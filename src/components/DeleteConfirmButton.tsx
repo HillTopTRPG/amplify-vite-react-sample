@@ -1,12 +1,13 @@
-import { useMemo } from 'react'
+import { type CSSProperties, useMemo } from 'react'
 import { DeleteOutlined } from '@ant-design/icons'
 import { Button, Popconfirm } from 'antd'
 
 interface Props {
   name: string
   onConfirm: () => void
+  style?: CSSProperties
 }
-export default function DeleteConfirmButton({ name, onConfirm }: Props) {
+export default function DeleteConfirmButton({ name, onConfirm, style }: Props) {
   return useMemo(
     () => (
       <Popconfirm
@@ -15,9 +16,17 @@ export default function DeleteConfirmButton({ name, onConfirm }: Props) {
         onConfirm={onConfirm}
         trigger="click"
       >
-        <Button key={0} type="text" danger icon={<DeleteOutlined />} />
+        <Button
+          key={0}
+          type="text"
+          danger
+          icon={<DeleteOutlined />}
+          style={{ fontSize: 'inherit', ...style }}
+        >
+          削除
+        </Button>
       </Popconfirm>
     ),
-    [name, onConfirm],
+    [name, onConfirm, style],
   )
 }

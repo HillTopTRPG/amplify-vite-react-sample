@@ -1,4 +1,9 @@
-import { type HTMLAttributes, type ReactNode, useState } from 'react'
+import {
+  type CSSProperties,
+  type HTMLAttributes,
+  type ReactNode,
+  useState,
+} from 'react'
 import {
   CloseOutlined,
   MenuOutlined,
@@ -25,6 +30,46 @@ import {
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import styles from '@/service/Nechronica/components/Hoverable.module.css'
+
+const cardStyle: CSSProperties = {
+  width: 180,
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  position: 'relative',
+  overflow: 'hidden',
+  boxShadow:
+    'rgba(127, 127, 127, 0.16) 0px 6px 16px 0px, rgba(127, 127, 127, 0.24) 0px 3px 6px -4px, rgba(127, 127, 127, 0.1) 0px 9px 28px 8px',
+}
+
+const cardHeaderStyle: CSSProperties = {
+  position: 'absolute',
+  top: 8,
+  left: 44,
+  right: 11,
+  height: 22,
+  marginBottom: 8,
+  pointerEvents: 'none',
+}
+
+const cardBodyStyle: CSSProperties = {
+  width: '100%',
+  height: '100%',
+  position: 'relative',
+  overflow: 'hidden',
+  zIndex: 0,
+}
+
+const contentsContainerStyle: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+  padding: '35px 14px 14px',
+  overflow: 'hidden',
+  width: '100%',
+  height: '100%',
+}
 
 export type SmallCardData = {
   public: boolean
@@ -80,14 +125,7 @@ export default function DataSmallCard({
             scope === 'private' && currentIsMe ? cardProps.actions : undefined
           }
           style={{
-            width: 180,
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'relative',
-            overflow: 'hidden',
-            boxShadow:
-              'rgba(127, 127, 127, 0.16) 0px 6px 16px 0px, rgba(127, 127, 127, 0.24) 0px 3px 6px -4px, rgba(127, 127, 127, 0.1) 0px 9px 28px 8px',
+            ...cardStyle,
             ...cardProps.style,
           }}
           styles={{
@@ -99,19 +137,7 @@ export default function DataSmallCard({
             },
           }}
         >
-          <Flex
-            align="center"
-            justify="flex-end"
-            style={{
-              position: 'absolute',
-              top: 8,
-              left: 44,
-              right: 11,
-              height: 22,
-              marginBottom: 8,
-              pointerEvents: 'none',
-            }}
-          >
+          <Flex align="center" justify="flex-end" style={cardHeaderStyle}>
             {scope === 'private' && currentIsMe ? null : (
               <Typography.Text
                 ellipsis
@@ -129,24 +155,16 @@ export default function DataSmallCard({
               <Checkbox style={{ alignSelf: 'flex-end' }} checked={selected} />
             ) : null}
           </Flex>
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              position: 'relative',
-              overflow: 'hidden',
-              zIndex: 0,
-            }}
-          >
+          <div style={cardBodyStyle}>
             <CardDrawer
-              name={data.name}
+              data={data}
               open={shareOpen}
               onClose={() => setShareOpen(false)}
             >
               {shareDrawerContents}
             </CardDrawer>
             <CardDrawer
-              name={data.name}
+              data={data}
               open={operateOpen}
               onClose={() => setOperateOpen('')}
             >
@@ -159,16 +177,7 @@ export default function DataSmallCard({
                 styles.hoverable,
                 selected ? styles.active : null,
               )}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                justifyContent: 'flex-start',
-                padding: '35px 14px 14px',
-                overflow: 'hidden',
-                width: '100%',
-                height: '100%',
-              }}
+              style={contentsContainerStyle}
             >
               {children}
             </Typography.Link>

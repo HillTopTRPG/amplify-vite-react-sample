@@ -50,7 +50,6 @@ export default function GroupSmallCard({ group }: Props) {
       const newValue = omit(clone(group), 'characters')
       newValue.public = nextPublic
       updateCharacterGroup(newValue)
-      // TODO operateドロワーを閉じたい
     },
     [group, updateCharacterGroup],
   )
@@ -80,9 +79,15 @@ export default function GroupSmallCard({ group }: Props) {
         </>
       }
       operationDrawerContents={() => (
-        <>
-          <Flex>
-            <Typography.Text>公開設定</Typography.Text>
+        <Flex
+          vertical
+          gap={6}
+          align="flex-start"
+          justify="space-between"
+          style={{ height: '100%' }}
+        >
+          <Flex align="center">
+            <Typography.Text style={{ fontSize: 12 }}>公開</Typography.Text>
             <Switch
               checkedChildren="有効"
               unCheckedChildren="無効"
@@ -93,12 +98,13 @@ export default function GroupSmallCard({ group }: Props) {
           <DeleteConfirmButton
             name={group.name}
             onConfirm={() => deleteCharacterGroup(group.id)}
+            style={{ alignSelf: 'flex-start' }}
           />
-        </>
+        </Flex>
       )}
     >
-      <Flex gap={6} align="baseline" style={{ marginBottom: 6 }}>
-        <Typography.Text ellipsis style={{ fontSize: 20, color: 'inherit' }}>
+      <Flex gap={6} align="baseline" style={{ marginBottom: 6, width: '100%' }}>
+        <Typography.Text ellipsis style={{ fontSize: 16, color: 'inherit' }}>
           {group.name}
         </Typography.Text>
         <SelectOutlined />
@@ -108,8 +114,9 @@ export default function GroupSmallCard({ group }: Props) {
         .map((c) => (
           <Typography.Text
             key={c.id}
+            type="secondary"
             ellipsis
-            style={{ color: token.colorTextDescription }}
+            style={{ fontSize: 12 }}
           >
             {c.name}
           </Typography.Text>
@@ -122,7 +129,7 @@ export default function GroupSmallCard({ group }: Props) {
       {group.characters.length === 0 ? (
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}
-          style={{ margin: 0 }}
+          style={{ margin: 0, alignSelf: 'center' }}
           description="Empty"
         />
       ) : null}

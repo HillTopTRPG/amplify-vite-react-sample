@@ -1,14 +1,19 @@
 import { useCallback, useMemo } from 'react'
-import { Flex, Switch, Typography } from 'antd'
+import { Checkbox, Flex, List, Switch, theme, Typography } from 'antd'
 import { clone } from 'lodash-es'
 import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import CharacterSmallCardBackImg from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCardBackImg.tsx'
 import UnGroupConfirmButton from '@/service/Nechronica/components/GroupContents/UnGroupConfirmButton.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import {
+  type CharacterGroupRelation,
+  type NechronicaCharacter,
+} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
+import { typedOmit } from '@/utils/types.ts'
 
 interface Props {
   selected: boolean
@@ -26,7 +31,22 @@ export default function CharacterSmallCard({
   onHover,
   onUnGroup,
 }: Props) {
-  const { updateCharacter, deleteCharacter } = useNechronicaContext()
+  const { token } = theme.useToken()
+  const {
+    updateCharacter,
+    deleteCharacter,
+    characterGroupRelations,
+    updateCharacterGroup,
+  } = useNechronicaContext()
+  const { currentUser } = useUserAttributes()
+
+  const useCharacterGroupRelations = useMemo(
+    () =>
+      characterGroupRelations.filter(
+        (cgr) => cgr.owner === currentUser?.userName,
+      ),
+    [characterGroupRelations, currentUser?.userName],
+  )
 
   const toggleStared = useMemo(
     () => () => {
@@ -86,9 +106,19 @@ export default function CharacterSmallCard({
       const newValue = clone(character)
       newValue.public = nextPublic
       updateCharacter(newValue)
-      // TODO operateドロワーを閉じたい
     },
     [character, updateCharacter],
+  )
+
+  const onChangeGroup = useCallback(
+    (cgr: CharacterGroupRelation, checked: boolean) => {
+      const newValue = clone(cgr)
+      newValue.characterIds = checked
+        ? [...newValue.characterIds, character.id]
+        : newValue.characterIds.filter((id) => id !== character.id)
+      updateCharacterGroup(typedOmit(newValue, 'characters'))
+    },
+    [character.id, updateCharacterGroup],
   )
 
   return useMemo(
@@ -110,9 +140,13 @@ export default function CharacterSmallCard({
         shareDrawerContents={<></>}
         operationDrawerContents={(operateOpen) =>
           operateOpen === 'normal' ? (
-            <Flex vertical>
-              <Flex>
-                <Typography.Text>公開設定</Typography.Text>
+            <Flex
+              vertical
+              gap={6}
+              style={{ overflow: 'hidden', height: '100%' }}
+            >
+              <Flex align="center">
+                <Typography.Text style={{ fontSize: 12 }}>公開</Typography.Text>
                 <Switch
                   checkedChildren="有効"
                   unCheckedChildren="無効"
@@ -120,9 +154,48 @@ export default function CharacterSmallCard({
                   defaultValue={character.public}
                 />
               </Flex>
+              <Flex vertical style={{ flexGrow: 1, overflow: 'hidden' }}>
+                <Typography.Text style={{ fontSize: 12 }}>
+                  所属グループ
+                </Typography.Text>
+                <div
+                  style={{
+                    overflow: 'scroll',
+                    flexGrow: 1,
+                    borderStyle: 'dashed',
+                    borderWidth: 1,
+                    borderColor: token.colorBorderSecondary,
+                  }}
+                  onScrollCapture={(e) => e.stopPropagation()}
+                >
+                  <List
+                    dataSource={useCharacterGroupRelations}
+                    renderItem={(cgr) => (
+                      <List.Item style={{ padding: 0 }}>
+                        <Checkbox
+                          checked={cgr.characterIds.includes(character.id)}
+                          style={{
+                            width: '100%',
+                            padding: 5,
+                            overflow: 'hidden',
+                          }}
+                          onChange={(e) => onChangeGroup(cgr, e.target.checked)}
+                        >
+                          <Typography.Text ellipsis style={{ padding: 0 }}>
+                            {cgr.name}
+                          </Typography.Text>
+                        </Checkbox>
+                      </List.Item>
+                    )}
+                  />
+                </div>
+              </Flex>
               <DeleteConfirmButton
                 name={character.name}
                 onConfirm={() => deleteCharacter(character.id)}
+                style={{
+                  alignSelf: 'flex-start',
+                }}
               />
             </Flex>
           ) : null
@@ -153,10 +226,13 @@ export default function CharacterSmallCard({
       constBlocks,
       deleteCharacter,
       onChangeCharacterPublic,
+      onChangeGroup,
       onHover,
       onSelect,
       radarData,
       selected,
+      token.colorBorderSecondary,
+      useCharacterGroupRelations,
     ],
   )
 }
