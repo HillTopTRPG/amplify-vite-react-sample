@@ -36,7 +36,13 @@ export function CharacterFilterItem({ d, values, onChange, getCount }: Props) {
           checked={values.includes(d.value)}
           style={{ pointerEvents: 'none' }}
         />
-        <Avatar src={d.src} size={40} style={{ margin: '0 5px' }} />
+        <Avatar
+          src={d.src}
+          size={40}
+          draggable={false}
+          shape="square"
+          style={{ margin: '0 5px', userSelect: 'none' }}
+        />
         <Typography.Text
           style={{
             fontSize: 10,

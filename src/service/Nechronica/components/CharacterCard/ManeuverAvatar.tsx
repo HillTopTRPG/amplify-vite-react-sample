@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import AvatarNoBorder from '@/service/Nechronica/components/CharacterCard/AvatarNoBorder.tsx'
+import { Avatar } from 'antd'
 const BUTTON_SIZE = 53
 
 interface Props {
@@ -9,11 +9,17 @@ interface Props {
 export default function ManeuverAvatar({ src, className }: Props) {
   return useMemo(
     () => (
-      <AvatarNoBorder
+      <Avatar
         src={src}
         size={BUTTON_SIZE}
+        draggable={false}
+        shape="square"
         className={className}
-        style={{ position: 'absolute' }}
+        style={{
+          border: 'none',
+          userSelect: 'none',
+          position: 'absolute',
+        }}
       />
     ),
     [className, src],

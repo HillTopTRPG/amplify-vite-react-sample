@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
-import { Flex, type FlexProps, List } from 'antd'
-import AvatarNoBorder from './AvatarNoBorder.tsx'
+import { Avatar, Flex, type FlexProps, List } from 'antd'
 import ManeuverButton from './ManeuverButton.tsx'
 import unknownImg from '@/service/Nechronica/images/unknown.png'
 import {
@@ -53,10 +52,16 @@ export default function PartsListItem({
     () => (
       <List.Item style={{ padding: '6px 0' }}>
         <Flex align="flex-start" justify="flex-start" gap={7}>
-          <AvatarNoBorder
+          <Avatar
             src={isSavantSkill ? unknownImg : src}
             size={64}
-            style={{ minWidth: 64 }}
+            draggable={false}
+            shape="square"
+            style={{
+              border: 'none',
+              userSelect: 'none',
+              minWidth: 64,
+            }}
           />
           <Flex {...containerFlexProps}>{maneuverButtons}</Flex>
         </Flex>
