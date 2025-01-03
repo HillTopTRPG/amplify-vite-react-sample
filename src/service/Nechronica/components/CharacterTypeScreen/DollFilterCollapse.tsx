@@ -21,17 +21,18 @@ import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const SEARCH_INPUT_WIDTH = 370
 
+interface Props {
+  filter: Filter
+  characterType: NechronicaType
+  setFilter: (fc: (filter: Filter) => Filter) => void
+  useCharacters: NechronicaCharacter[]
+}
 export default function DollFilterCollapse({
   filter,
   characterType,
   setFilter,
   useCharacters,
-}: {
-  filter: Filter
-  characterType: NechronicaType
-  setFilter: (fc: (filter: Filter) => Filter) => void
-  useCharacters: NechronicaCharacter[]
-}) {
+}: Props) {
   const { token } = theme.useToken()
 
   const isEmptyFilter =

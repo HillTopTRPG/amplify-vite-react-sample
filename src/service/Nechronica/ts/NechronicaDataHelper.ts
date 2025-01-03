@@ -1,6 +1,7 @@
-import { clone, convertNumberZero } from '../../common/PrimaryDataUtility.ts'
-import { getJsonByGet, getJsonByJsonp } from '../../common/fetch-util.ts'
+import { clone } from 'lodash-es'
 import { type CharacterGroup } from '@/service'
+import { convertNumberZero } from '@/service/common/PrimaryDataUtility.ts'
+import { getJsonByGet, getJsonByJsonp } from '@/service/common/fetch-util.ts'
 
 export type NechronicaViewOption = {
   roicePosition: 'before' | 'after' | 'none'

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
@@ -15,20 +15,18 @@ export type Filter = {
 export function useSearchCharacter(characters: NechronicaCharacter[]) {
   const [searchParams] = useSearchParams()
 
-  const filter = useMemo(
-    () => ({
+  const filter = useMemo(() => {
+    const getNumberArrayValue = (param: string) =>
+      searchParams
+        .getAll(param)
+        .map(parseIntOrNull)
+        .filter((v): v is number => v !== null)
+    return {
       text: decodeURIComponent(searchParams.get('text') ?? ''),
-      position: searchParams
-        .getAll('position')
-        .map(parseIntOrNull)
-        .filter((p): p is number => p !== null),
-      class: searchParams
-        .getAll('class')
-        .map(parseIntOrNull)
-        .filter((c): c is number => c !== null),
-    }),
-    [searchParams],
-  )
+      position: getNumberArrayValue('position'),
+      class: getNumberArrayValue('class'),
+    }
+  }, [searchParams])
 
   const { setScreen } = useScreenContext()
   const [selectedCharacters, setSelectedCharacters] = useSelectIds()
@@ -88,8 +86,25 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
     [characters, filter],
   )
 
+  const [detailList, setDetailList] = useState<string[]>([])
+
+  useEffect(() => {
+    const list = [...selectedCharacters]
+    if (hoverCharacter) {
+      const index = list.indexOf(hoverCharacter)
+      if (index !== -1) list.splice(index, 1)
+      list.unshift(hoverCharacter)
+    }
+    setDetailList(list)
+  }, [hoverCharacter, selectedCharacters, setDetailList])
+
   return {
     filter,
+    searchedCharacters,
+    selectedCharacters,
+    setSelectedCharacters,
+    setHoverCharacter,
+    detailList,
     setFilter: useCallback(
       (fc: (filter: Filter) => Filter) => {
         const newFilter = fc(filter)
@@ -116,10 +131,5 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
       },
       [filter, setScreen, setSelectedCharacters],
     ),
-    searchedCharacters,
-    selectedCharacters,
-    setSelectedCharacters,
-    hoverCharacter,
-    setHoverCharacter,
   }
 }

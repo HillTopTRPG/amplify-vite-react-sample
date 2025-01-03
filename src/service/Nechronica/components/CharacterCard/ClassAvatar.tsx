@@ -5,8 +5,10 @@ import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const AVATAR_SIZE = 60
 
-type ClassAvatarProps = { value: number }
-export default function ClassAvatar({ value }: ClassAvatarProps) {
+interface Props {
+  value: number
+}
+export default function ClassAvatar({ value }: Props) {
   return (
     <Flex vertical align="center">
       <Typography.Text

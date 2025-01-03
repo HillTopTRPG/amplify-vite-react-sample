@@ -6,7 +6,7 @@ import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaData
 
 const SEARCH_INPUT_WIDTH = 370
 
-type CharacterSmallCardsProps = {
+interface Props {
   viewType: 'normal' | 'group'
   searchedCharacters: NechronicaCharacter[]
   useCharacters: NechronicaCharacter[]
@@ -23,7 +23,7 @@ export default function CharacterSmallCards({
   setSelectedCharacters,
   setHoverCharacter,
   onUnGroup,
-}: CharacterSmallCardsProps) {
+}: Props) {
   const { loading } = useNechronicaContext()
   const { token } = theme.useToken()
 

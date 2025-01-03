@@ -2,17 +2,16 @@ import { useCallback, useMemo } from 'react'
 import { SelectOutlined } from '@ant-design/icons'
 import { Empty, Flex, QRCode, Switch, theme, Typography } from 'antd'
 import { clone, omit } from 'lodash-es'
-import DataSmallCard from '@/components/DataSmallCard.tsx'
+import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
-export default function GroupSmallCard({
-  group,
-}: {
+interface Props {
   group: CharacterGroupRelation
-}) {
+}
+export default function GroupSmallCard({ group }: Props) {
   const { token } = theme.useToken()
   const { setScreen, getScreenUrl } = useScreenContext()
   const { updateCharacterGroup, deleteCharacterGroup } = useNechronicaContext()
@@ -40,7 +39,7 @@ export default function GroupSmallCard({
       getScreenUrl((v) => ({
         ...v,
         scope: 'public',
-        screen: 'groups',
+        screen: 'group',
         urlParam: group.id,
       })),
     [getScreenUrl, group.id],

@@ -1,5 +1,5 @@
 import { DashboardOutlined } from '@ant-design/icons'
-import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
+import ScreenContainer from '@/components/ScreenContainer.tsx'
 import type { Screen } from '@/service'
 import DashboardContents from '@/service/Nechronica/components/DashboardContents'
 

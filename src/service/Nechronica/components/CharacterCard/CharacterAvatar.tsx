@@ -26,16 +26,12 @@ const MAP = {
   },
 } as const
 
-type CharacterAvatarProps = {
+interface Props {
   type: NechronicaType
   position: number
   color?: boolean
 }
-export default function CharacterAvatar({
-  type,
-  position,
-  color,
-}: CharacterAvatarProps) {
+export default function CharacterAvatar({ type, position, color }: Props) {
   const { theme } = useThemeContext()
   const avatarBgColor = MAP[type].color[theme === 'dark' ? 0 : 1]
   const characterAvatarGradient = `radial-gradient(${avatarBgColor},${avatarBgColor} 60%,transparent 75%)`

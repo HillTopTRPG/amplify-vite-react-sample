@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
-import styles from './StyledRadar.module.css'
 import { useThemeContext } from '@/context/themeContext.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
@@ -57,19 +56,14 @@ export function makeChartData(d: NechronicaCharacter) {
   return items
 }
 
-type StyledRadarProps = {
+interface Props {
   data: Datum
   type: 'large' | 'small'
   size: number
   cursor?: 'default' | 'pointer'
   onChangeItem?: (type: 'pointerup' | 'pointermove', item: string) => void
 }
-export default function StyledRadar({
-  data,
-  type,
-  size,
-  onChangeItem,
-}: StyledRadarProps) {
+export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
   const { theme } = useThemeContext()
   const [lastItem, setLastItem] = useState<string | null>(null)
 
@@ -137,7 +131,7 @@ export default function StyledRadar({
 
   return useMemo(
     () => (
-      <Radar {...config} className={styles.radarContainer} onEvent={onEvent} />
+      <Radar {...config} style={{ pointerEvents: 'none' }} onEvent={onEvent} />
     ),
     [config, onEvent],
   )

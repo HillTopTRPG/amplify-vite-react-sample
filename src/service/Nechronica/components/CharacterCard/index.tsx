@@ -23,10 +23,10 @@ import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaData
 //       : lineManeuverMax
 // }
 
-type CharacterCardProps = {
+interface Props {
   character: NechronicaCharacter
 }
-export default function CharacterCard({ character }: CharacterCardProps) {
+export default function CharacterCard({ character }: Props) {
   const basic = character.sheetData.basic
   const characterType = character.additionalData.type
 

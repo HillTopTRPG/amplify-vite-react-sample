@@ -1,11 +1,4 @@
-import {
-  type Dispatch,
-  type HTMLAttributes,
-  type ReactNode,
-  type SetStateAction,
-  useCallback,
-  useState,
-} from 'react'
+import { type HTMLAttributes, type ReactNode, useState } from 'react'
 import {
   CloseOutlined,
   MenuOutlined,
@@ -24,56 +17,24 @@ import {
   Typography,
 } from 'antd'
 import classNames from 'classnames'
-import constate from 'constate'
-import CardDrawer from '@/components/CardDrawer.tsx'
+import CardDrawer from './CardDrawer.tsx'
+import {
+  SmallCardDataProvider,
+  useSmallCardDataContext,
+} from '@/components/DataSmallCard/context.ts'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import styles from '@/service/Nechronica/components/Hoverable.module.css'
 
-type Data = {
+export type SmallCardData = {
   public: boolean
   owner: string
   name: string
   additionalData: { stared: boolean }
 }
 
-const [SmallCardDataProvider, useSmallCardDataContext] = constate(
-  ({
-    data,
-    shareOpen,
-    setShareOpen,
-    operateOpen,
-    setOperateOpen,
-  }: {
-    data: Data
-    shareOpen: boolean
-    setShareOpen: Dispatch<SetStateAction<boolean>>
-    operateOpen: string
-    setOperateOpen: Dispatch<SetStateAction<string>>
-  }) => {
-    const toggleShare = useCallback(() => {
-      setShareOpen((v) => !v)
-      setOperateOpen('')
-    }, [setOperateOpen, setShareOpen])
-    const toggleOperate = useCallback(
-      (operateType: string) => {
-        setOperateOpen((v) => (v ? '' : operateType))
-        setShareOpen(false)
-      },
-      [setOperateOpen, setShareOpen],
-    )
-    return {
-      data,
-      shareOpen,
-      toggleShare,
-      operateOpen,
-      toggleOperate,
-    }
-  },
-)
-
-type DataSmallCardProps = {
-  data: Data
+interface Props {
+  data: SmallCardData
   cardProps: CardProps
   selected?: boolean
   shareDrawerContents: ReactNode
@@ -91,7 +52,7 @@ export default function DataSmallCard({
   backgroundElm,
   contentsContainerProps,
   children,
-}: DataSmallCardProps) {
+}: Props) {
   const { token } = theme.useToken()
   const { currentIsMe } = useUserAttributes()
   const { scope } = useScreenContext()

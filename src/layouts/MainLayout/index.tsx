@@ -1,10 +1,10 @@
 import { type CSSProperties, type ReactNode, useRef } from 'react'
 import { ConfigProvider, Layout, theme } from 'antd'
 import MediaQuery from 'react-responsive'
-import PageScrollDispatcher from '@/components/PageScrollDispatcher.tsx'
-import AppMenu from '@/components/layout/AppMenu.tsx'
-import Drawer from '@/components/layout/Drawer.tsx'
-import Sider from '@/components/layout/Sider.tsx'
+import AppMenu from './AppMenu.tsx'
+import Drawer from './Drawer.tsx'
+import PageScrollDispatcher from './PageScrollDispatcher.tsx'
+import Sider from './Sider.tsx'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { type ScreenSize, useScreenContext } from '@/context/screenContext.ts'
 import { ScrollContainerProvider } from '@/context/scrollContainer.ts'
@@ -12,15 +12,13 @@ import { useThemeContext } from '@/context/themeContext.ts'
 
 const { defaultAlgorithm, darkAlgorithm } = theme
 
-export default function MainContentsLayout({
-  containerStyle,
-  children,
-}: {
+interface Props {
   containerStyle:
     | ((screenSize: ScreenSize) => CSSProperties | false | null | undefined)
     | undefined
   children: ReactNode
-}) {
+}
+export default function MainLayout({ containerStyle, children }: Props) {
   const { theme } = useThemeContext()
   const algorithm = theme === 'dark' ? darkAlgorithm : defaultAlgorithm
   const scrollContainerRef = useRef<HTMLElement>(null)

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { RadarChartOutlined } from '@ant-design/icons'
 import { Flex, FloatButton, type InputRef, Spin } from 'antd'
-import ScreenContainer from '@/components/layout/ScreenContainer.tsx'
+import ScreenContainer from '@/components/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useScrollContainerContext } from '@/context/scrollContainer.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
@@ -17,11 +17,11 @@ import {
   type NechronicaType,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
-type CharacterTypeScreenProps = { characterType: NechronicaType; label: string }
-export default function CharacterTypeScreen({
-  characterType,
-  label,
-}: CharacterTypeScreenProps) {
+interface Props {
+  characterType: NechronicaType
+  label: string
+}
+export default function CharacterTypeScreen({ characterType, label }: Props) {
   const { loading, characters } = useNechronicaContext()
   const { currentUser } = useUserAttributes()
   const { scope, screenSize } = useScreenContext()
@@ -68,22 +68,10 @@ export default function CharacterTypeScreen({
     setFilter,
     searchedCharacters,
     selectedCharacters,
-    hoverCharacter,
     setSelectedCharacters,
     setHoverCharacter,
+    detailList,
   } = useSearchCharacter(useCharacters)
-
-  const [detailList, setDetailList] = useState<string[]>([])
-
-  useEffect(() => {
-    const list = [...selectedCharacters]
-    if (hoverCharacter) {
-      const index = list.indexOf(hoverCharacter)
-      if (index !== -1) list.splice(index, 1)
-      list.unshift(hoverCharacter)
-    }
-    setDetailList(list)
-  }, [hoverCharacter, selectedCharacters, setDetailList])
 
   const loadingElm = useMemo(
     () => (

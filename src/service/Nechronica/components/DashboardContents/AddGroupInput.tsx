@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Input, Space } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
@@ -13,7 +13,7 @@ export default function AddGroupInput() {
   const [composition, setComposition] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
 
-  const onCreateCharacterGroup = () => {
+  const onCreateCharacterGroup = useCallback(() => {
     if (composition) return
     if (!newGroupName.trim()) return
     createCharacterGroup({
@@ -21,23 +21,27 @@ export default function AddGroupInput() {
       characterIds: [],
     })
     setNewGroupName('')
-  }
+  }, [composition, createCharacterGroup, newGroupName])
 
-  if (scope === 'public' || !currentIsMe) return null
-  return (
-    <Space.Compact size="large">
-      <Input
-        prefix={<PlusOutlined />}
-        value={newGroupName}
-        placeholder="追加するグループの名前"
-        onPressEnter={onCreateCharacterGroup}
-        onCompositionStart={() => setComposition(true)}
-        onCompositionEnd={() => setComposition(false)}
-        onChange={(e) => setNewGroupName(e.target.value)}
-      />
-      <Button type="default" onClick={onCreateCharacterGroup}>
-        追加
-      </Button>
-    </Space.Compact>
+  const elm = useMemo(
+    () => (
+      <Space.Compact size="large">
+        <Input
+          prefix={<PlusOutlined />}
+          value={newGroupName}
+          placeholder="追加するグループの名前"
+          onPressEnter={onCreateCharacterGroup}
+          onCompositionStart={() => setComposition(true)}
+          onCompositionEnd={() => setComposition(false)}
+          onChange={(e) => setNewGroupName(e.target.value)}
+        />
+        <Button type="default" onClick={onCreateCharacterGroup}>
+          追加
+        </Button>
+      </Space.Compact>
+    ),
+    [newGroupName, onCreateCharacterGroup],
   )
+
+  return scope === 'public' || !currentIsMe ? null : elm
 }

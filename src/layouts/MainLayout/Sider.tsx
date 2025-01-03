@@ -1,11 +1,12 @@
 import { Layout } from 'antd'
-import ScreenSelectMenu from '@/components/layout/ScreenSelectMenu.tsx'
+import ScreenSelectMenu from './ScreenSelectMenu.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useThemeContext } from '@/context/themeContext.ts'
 
 export default function Sider() {
   const { theme } = useThemeContext()
   const { open } = useScreenContext()
+
   return (
     <Layout.Sider
       breakpoint="xl"

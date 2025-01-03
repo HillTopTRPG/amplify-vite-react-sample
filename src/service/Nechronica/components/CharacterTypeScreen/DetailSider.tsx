@@ -2,7 +2,10 @@ import { Flex } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
 import SelectedCharacterElm from '@/service/Nechronica/components/CharacterTypeScreen/SelectedCharacterElm.tsx'
 
-export default function DetailSider({ detailList }: { detailList: string[] }) {
+interface Props {
+  detailList: string[]
+}
+export default function DetailSider({ detailList }: Props) {
   const { screenSize } = useScreenContext()
 
   if (screenSize.viewPortWidth < 789) {

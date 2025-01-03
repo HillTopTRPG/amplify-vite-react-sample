@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { Flex, Switch, Typography } from 'antd'
 import { clone } from 'lodash-es'
-import DataSmallCard from '@/components/DataSmallCard.tsx'
+import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
 import CharacterSmallCardBackImg from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCardBackImg.tsx'
@@ -10,7 +10,7 @@ import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
-type CharacterCardProps = {
+interface Props {
   selected: boolean
   character: NechronicaCharacter
   onSelect: (id: string, isSelect: boolean) => void
@@ -25,7 +25,7 @@ export default function CharacterSmallCard({
   onSelect,
   onHover,
   onUnGroup,
-}: CharacterCardProps) {
+}: Props) {
   const { updateCharacter, deleteCharacter } = useNechronicaContext()
 
   const toggleStared = useMemo(
@@ -43,7 +43,7 @@ export default function CharacterSmallCard({
       viewType === 'normal' ? (
         [
           <DataSmallCard.FavoriteButton toggle={toggleStared} />,
-          <DataSmallCard.ShareButton />,
+          // <DataSmallCard.ShareButton />,
         ]
       ) : (
         <UnGroupConfirmButton name={character.name} onConfirm={onUnGroup} />

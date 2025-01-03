@@ -7,28 +7,31 @@ import { MEDIA_QUERY } from '@/const/style.ts'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 
-type ComponentProps = {
+interface Props {
   label: string
   icon: React.FC
   children?: ReactNode
 }
-/* eslint-disable react-hooks/rules-of-hooks */
-function component(
-  { label, icon, children }: ComponentProps,
+const ScreenContainer = forwardRef<HTMLElement, Props>(function Component(
+  { label, icon, children }: Props,
   ref: Ref<HTMLElement>,
 ) {
   const isMobile = useMediaQuery(MEDIA_QUERY.MOBILE)
   const { token } = theme.useToken()
   const { scope, getScreenUrl } = useScreenContext()
   const { me, currentUser } = useUserAttributes()
-  const shareUrl = getScreenUrl((v) => ({
-    ...v,
-    scope: 'public',
-    queryParam: [
-      ['userName', currentUser?.userName ?? me?.userName ?? ''],
-      ...v.queryParam.filter(([p]) => p !== 'userName'),
-    ],
-  }))
+  const shareUrl = useMemo(
+    () =>
+      getScreenUrl((v) => ({
+        ...v,
+        scope: 'public',
+        queryParam: [
+          ['userName', currentUser?.userName ?? me?.userName ?? ''],
+          ...v.queryParam.filter(([p]) => p !== 'userName'),
+        ],
+      })),
+    [currentUser?.userName, getScreenUrl, me?.userName],
+  )
 
   return useMemo(
     () => (
@@ -91,7 +94,6 @@ function component(
       token.colorBgContainer,
     ],
   )
-}
-/* eslint-enable react-hooks/rules-of-hooks */
-const ScreenContainer = forwardRef<HTMLElement, ComponentProps>(component)
+})
+
 export default ScreenContainer
