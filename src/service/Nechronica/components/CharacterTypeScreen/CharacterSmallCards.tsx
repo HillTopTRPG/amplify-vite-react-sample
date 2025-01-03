@@ -7,18 +7,22 @@ import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaData
 const SEARCH_INPUT_WIDTH = 370
 
 type CharacterSmallCardsProps = {
+  viewType: 'normal' | 'group'
   searchedCharacters: NechronicaCharacter[]
   useCharacters: NechronicaCharacter[]
   selectedCharacters: string[]
   setSelectedCharacters: (characters: string[]) => void
   setHoverCharacter: (id: string | null) => void
+  onUnGroup?: (id: string) => void
 }
 export default function CharacterSmallCards({
+  viewType,
   searchedCharacters,
   useCharacters,
   selectedCharacters,
   setSelectedCharacters,
   setHoverCharacter,
+  onUnGroup,
 }: CharacterSmallCardsProps) {
   const { loading } = useNechronicaContext()
   const { token } = theme.useToken()
@@ -72,11 +76,13 @@ export default function CharacterSmallCards({
 
   return searchedCharacters.map((character) => (
     <CharacterSmallCard
+      viewType={viewType}
       key={character.id}
       character={character}
       selected={selectedCharacters.includes(character.id)}
       onSelect={onSelectCharacter}
       onHover={onHoverCharacter}
+      onUnGroup={() => onUnGroup?.call(null, character.id)}
     />
   ))
 }

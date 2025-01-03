@@ -82,7 +82,7 @@ export default function DashboardContents() {
       characterGroupRelations
         .filter((cgr) => dataFilterFc(cgr))
         .map((g) => {
-          return <GroupSmallCard key={g.id} group={g} scope={scope} />
+          return <GroupSmallCard key={g.id} group={g} />
         }),
     )
   }, [loading, currentUser, scope, characters, characterGroupRelations])

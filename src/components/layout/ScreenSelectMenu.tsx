@@ -7,7 +7,7 @@ import { getKeys, isIncludes } from '@/utils/types.ts'
 export default function ScreenSelectMenu({
   onSelect,
 }: {
-  onSelect: (key: string) => void
+  onSelect?: (key: string) => void
 }) {
   const { theme } = useThemeContext()
   const { screens, screen, setScreen } = useScreenContext()
@@ -18,7 +18,7 @@ export default function ScreenSelectMenu({
       screen: key,
       queryParam: v.queryParam.filter(([p]) => p === 'userName'),
     }))
-    onSelect(key)
+    if (onSelect) onSelect(key)
   }
   return (
     <Menu

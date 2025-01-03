@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { FilterOutlined } from '@ant-design/icons'
 import {
   Button,
   Collapse,
@@ -63,14 +64,14 @@ export default function DollFilterCollapse({
           </Button>
         ),
         label: (
-          <Flex style={{ width: '100%' }} align="baseline">
+          <Flex style={{ width: '100%' }} align="baseline" gap={10}>
             <Typography.Text style={{ whiteSpace: 'nowrap' }}>
+              <FilterOutlined style={{ marginRight: 4 }} />
               フィルター
             </Typography.Text>
             <Typography.Text
               ellipsis
               style={{
-                marginLeft: 10,
                 fontSize: 12,
                 color: token.colorPrimary,
               }}

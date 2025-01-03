@@ -1,6 +1,7 @@
 import React, { forwardRef, type ReactNode, type Ref, useMemo } from 'react'
 import { SelectOutlined, ShareAltOutlined } from '@ant-design/icons'
 import { Button, Flex, Popover, QRCode, Space, theme, Typography } from 'antd'
+import { Helmet } from 'react-helmet-async'
 import { useMediaQuery } from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useScreenContext } from '@/context/screenContext.ts'
@@ -14,7 +15,7 @@ type ComponentProps = {
 /* eslint-disable react-hooks/rules-of-hooks */
 function component(
   { label, icon, children }: ComponentProps,
-  ref: Ref<HTMLDivElement>,
+  ref: Ref<HTMLElement>,
 ) {
   const isMobile = useMediaQuery(MEDIA_QUERY.MOBILE)
   const { token } = theme.useToken()
@@ -39,9 +40,13 @@ function component(
           boxSizing: 'border-box',
           backgroundColor: token.colorBgContainer,
           minHeight: '100vh',
+          position: 'relative',
         }}
         ref={ref}
       >
+        <Helmet>
+          <title>{label}</title>
+        </Helmet>
         <Typography.Title level={3} style={{ marginTop: -12 }}>
           <Space>
             {isMobile ? React.createElement(icon) : null}
@@ -88,5 +93,5 @@ function component(
   )
 }
 /* eslint-enable react-hooks/rules-of-hooks */
-const ScreenContainer = forwardRef<HTMLDivElement, ComponentProps>(component)
+const ScreenContainer = forwardRef<HTMLElement, ComponentProps>(component)
 export default ScreenContainer

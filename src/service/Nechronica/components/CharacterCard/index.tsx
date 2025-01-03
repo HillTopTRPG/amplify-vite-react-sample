@@ -141,12 +141,13 @@ export default function CharacterCard({ character }: CharacterCardProps) {
             }}
           />
         </div>
-        <Flex align="flex-end">
+        <Flex align={isDollSavant ? 'flex-end' : 'flex-start'}>
           <Flex vertical align="flex-start" style={{ flexGrow: 1 }} gap={5}>
             <Typography.Text strong ellipsis style={{ padding: '0 4px' }}>
               {basic.characterName}
             </Typography.Text>
             {isDoll ? constBlocks : null}
+            {isDollSavant ? null : maneuverButtons}
           </Flex>
           <div
             style={{
@@ -159,7 +160,7 @@ export default function CharacterCard({ character }: CharacterCardProps) {
           </div>
         </Flex>
         {isDoll ? roiceButtons : null}
-        {isDollSavant ? partsLineItems : maneuverButtons}
+        {isDollSavant ? partsLineItems : null}
       </Flex>
     )
   }, [

@@ -1,27 +1,21 @@
-import { useMemo } from 'react'
-import { SelectOutlined, StarFilled, StarOutlined } from '@ant-design/icons'
-import { Button, Empty, Flex, theme, Typography } from 'antd'
+import { useCallback, useMemo } from 'react'
+import { SelectOutlined } from '@ant-design/icons'
+import { Empty, Flex, QRCode, Switch, theme, Typography } from 'antd'
 import { clone, omit } from 'lodash-es'
-import styles from '../Hoverable.module.css'
+import DataSmallCard from '@/components/DataSmallCard.tsx'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
-import PublicCard from '@/components/PublicCard.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
-import GroupShareButton from '@/service/Nechronica/components/DashboardContents/GroupShareButton.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 export default function GroupSmallCard({
   group,
-  scope,
 }: {
   group: CharacterGroupRelation
-  scope: string
 }) {
   const { token } = theme.useToken()
-  const { setScreen } = useScreenContext()
+  const { setScreen, getScreenUrl } = useScreenContext()
   const { updateCharacterGroup, deleteCharacterGroup } = useNechronicaContext()
-  const { currentIsMe } = useUserAttributes()
 
   const toggleStared = useMemo(
     () => () => {
@@ -33,105 +27,106 @@ export default function GroupSmallCard({
   )
 
   const actions = useMemo(
+    () => [
+      <DataSmallCard.FavoriteButton toggle={toggleStared} />,
+      <DataSmallCard.ShareButton />,
+      <DataSmallCard.OperateButton operateType="normal" />,
+    ],
+    [toggleStared],
+  )
+
+  const shareUrl = useMemo(
     () =>
-      scope === 'private' && currentIsMe
-        ? [
-            <DeleteConfirmButton
-              key={0}
-              name={group.name}
-              onConfirm={() => deleteCharacterGroup(group.id)}
-            />,
-            <Button
-              key={1}
-              type="text"
-              onClick={toggleStared}
-              icon={
-                group.additionalData.stared ? <StarFilled /> : <StarOutlined />
-              }
-            />,
-            <GroupShareButton key={2} group={group} />,
-          ]
-        : undefined,
-    [currentIsMe, deleteCharacterGroup, group, scope, toggleStared],
+      getScreenUrl((v) => ({
+        ...v,
+        scope: 'public',
+        screen: 'groups',
+        urlParam: group.id,
+      })),
+    [getScreenUrl, group.id],
+  )
+
+  const onChangeGroupPublic = useCallback(
+    (nextPublic: boolean) => {
+      const newValue = omit(clone(group), 'characters')
+      newValue.public = nextPublic
+      updateCharacterGroup(newValue)
+      // TODO operateドロワーを閉じたい
+    },
+    [group, updateCharacterGroup],
   )
 
   return (
-    <PublicCard data={group} cardProps={{ actions }}>
-      <Flex
-        align="center"
-        justify="space-between"
-        style={{
-          position: 'absolute',
-          top: 8,
-          left: 35,
-          right: 10,
-          height: 22,
-          marginBottom: 8,
-          pointerEvents: 'none',
-        }}
-      >
-        {scope === 'private' && currentIsMe ? null : (
-          <Typography.Text
-            ellipsis
-            italic
-            style={{
-              padding: '0 4px',
-              fontSize: 11,
-              color: token.colorTextDescription,
-            }}
-          >
-            @{group.owner ?? ''}
-          </Typography.Text>
-        )}
-      </Flex>
-      <Typography.Link
-        ellipsis
-        className={styles.hoverable}
-        style={{
-          display: 'block',
-          padding: '30px 16px 16px 16px',
-          width: '100%',
-          height: '100%',
-        }}
-        onClick={() =>
-          setScreen((v) => ({ ...v, screen: 'group', urlParam: group.id }))
-        }
-      >
-        <Flex vertical>
-          <Flex gap={6} align="baseline" style={{ marginBottom: 6 }}>
-            <Typography.Text
-              ellipsis
-              style={{ fontSize: 20, color: 'inherit' }}
-            >
-              {group.name}
+    <DataSmallCard
+      data={group}
+      cardProps={{ actions }}
+      contentsContainerProps={{
+        onClick: () =>
+          setScreen((v) => ({ ...v, screen: 'group', urlParam: group.id })),
+      }}
+      shareDrawerContents={
+        <>
+          <Flex align="center" gap={6}>
+            <Typography.Text style={{ color: 'inherit' }}>
+              <Typography.Link href={shareUrl} target="_blank">
+                共有ページのリンク
+                <SelectOutlined />
+              </Typography.Link>
             </Typography.Text>
-            <SelectOutlined />
-          </Flex>
-          {group.characters
-            .filter((_, idx) => idx < 6)
-            .map((c) => (
-              <Typography.Text
-                key={c.id}
-                ellipsis
-                style={{ color: token.colorTextDescription }}
-              >
-                {c.name}
-              </Typography.Text>
-            ))}
-          {group.characters.length > 6 ? (
             <Typography.Text
-              style={{ color: token.colorTextDescription }}
-            >{`+${group.characters.length - 6}人`}</Typography.Text>
-          ) : null}
-          {group.characters.length === 0 ? (
-            <Empty
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              style={{ margin: 0 }}
-              description="Empty"
+              copyable={{ format: 'text/plain', text: shareUrl }}
             />
-          ) : null}
-        </Flex>
-      </Typography.Link>
-    </PublicCard>
+          </Flex>
+          <QRCode value={shareUrl} size={100} />
+        </>
+      }
+      operationDrawerContents={() => (
+        <>
+          <Flex>
+            <Typography.Text>公開設定</Typography.Text>
+            <Switch
+              checkedChildren="有効"
+              unCheckedChildren="無効"
+              onChange={(v) => onChangeGroupPublic(v)}
+              defaultValue={group.public}
+            />
+          </Flex>
+          <DeleteConfirmButton
+            name={group.name}
+            onConfirm={() => deleteCharacterGroup(group.id)}
+          />
+        </>
+      )}
+    >
+      <Flex gap={6} align="baseline" style={{ marginBottom: 6 }}>
+        <Typography.Text ellipsis style={{ fontSize: 20, color: 'inherit' }}>
+          {group.name}
+        </Typography.Text>
+        <SelectOutlined />
+      </Flex>
+      {group.characters
+        .filter((_, idx) => idx < 6)
+        .map((c) => (
+          <Typography.Text
+            key={c.id}
+            ellipsis
+            style={{ color: token.colorTextDescription }}
+          >
+            {c.name}
+          </Typography.Text>
+        ))}
+      {group.characters.length > 6 ? (
+        <Typography.Text
+          style={{ color: token.colorTextDescription }}
+        >{`+${group.characters.length - 6}人`}</Typography.Text>
+      ) : null}
+      {group.characters.length === 0 ? (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          style={{ margin: 0 }}
+          description="Empty"
+        />
+      ) : null}
+    </DataSmallCard>
   )
 }
