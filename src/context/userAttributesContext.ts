@@ -28,7 +28,7 @@ export const [UserAttributesProvider, useUserAttributes] = constate(() => {
       .then(() => setTimeout(() => setUserAttributeLoading(false), 10))
       .catch(() => setTimeout(() => setUserAttributeLoading(false), 10))
   }, [])
-  useEffect(() => reloadUserAttributes, [reloadUserAttributes])
+  useEffect(reloadUserAttributes, [reloadUserAttributes])
 
   const [user, setUser] = useState<GetCurrentUserOutput | null>(null)
   const [userLoading, setUserLoading] = useState(true)
