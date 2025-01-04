@@ -90,7 +90,7 @@ export default function GroupContents() {
             alignContent: 'flex-start',
           }}
           wrap
-          gap={9}
+          gap={11}
         >
           <CharacterSmallCards
             viewType="group"

@@ -121,7 +121,7 @@ export const [ScreenProvider, useScreenContext] = constate(
     )
     const siderWidth = useMemo(() => (open ? 200 : 50), [open])
     const viewPortWidth = useMemo(
-      () => (isPC ? width - siderWidth : width) - 16 * 2,
+      () => (isPC ? width - siderWidth : width) - 12 * 2,
       [isPC, siderWidth, width],
     )
 

@@ -151,12 +151,13 @@ export default function CharacterCard({ character }: Props) {
           </Flex>
           <div
             style={{
-              width: 180,
+              width: '100%',
               height: 160,
               marginTop: -10,
+              pointerEvents: 'none',
             }}
           >
-            <StyledRadar data={radarData} type="small" size={180} />
+            <StyledRadar data={radarData} type="small" size={170} />
           </div>
         </Flex>
         {isDoll ? roiceButtons : null}

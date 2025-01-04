@@ -75,6 +75,8 @@ export default function CharacterSmallCard({
   const { characterName, position, mainClass, subClass } =
     character.sheetData.basic
 
+  const sameClass = mainClass === subClass
+
   const constBlocks = useMemo(
     () => (
       <>
@@ -84,19 +86,30 @@ export default function CharacterSmallCard({
           </Typography.Text>
         </Flex>
         <Flex align="center" gap={5}>
-          <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
+          <Typography.Text
+            ellipsis
+            style={{ fontSize: 10, lineHeight: '18px' }}
+          >
             {mapping.CHARACTER_CLASS[mainClass].text}
+            {sameClass ? ' × 2' : ''}
           </Typography.Text>
-          <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
-            /
-          </Typography.Text>
-          <Typography.Text style={{ fontSize: 11, lineHeight: '18px' }}>
-            {mapping.CHARACTER_CLASS[subClass].text}
-          </Typography.Text>
+          {!sameClass ? (
+            <>
+              <Typography.Text style={{ fontSize: 10, lineHeight: '18px' }}>
+                /
+              </Typography.Text>
+              <Typography.Text
+                ellipsis
+                style={{ fontSize: 10, lineHeight: '18px' }}
+              >
+                {mapping.CHARACTER_CLASS[subClass].text}
+              </Typography.Text>
+            </>
+          ) : null}
         </Flex>
       </>
     ),
-    [position, mainClass, subClass],
+    [mainClass, position, sameClass, subClass],
   )
 
   const radarData = useMemo(() => makeChartData(character), [character])
@@ -211,11 +224,11 @@ export default function CharacterSmallCard({
         <div
           style={{
             height: 170,
-            margin: '-10px -14px -14px -14px',
+            margin: '-10px -14px -20px -14px',
             pointerEvents: 'none',
           }}
         >
-          <StyledRadar data={radarData} type="small" size={180} />
+          <StyledRadar data={radarData} type="small" size={170} />
         </div>
       </DataSmallCard>
     ),
