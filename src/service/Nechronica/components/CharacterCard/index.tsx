@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Flex, List, Typography, Image } from 'antd'
 import CharacterAvatar from './CharacterAvatar.tsx'
 import ClassAvatar from './ClassAvatar.tsx'
@@ -50,8 +50,6 @@ export default function CharacterCard({ character }: Props) {
     )
   }, [character.sheetData.roiceList])
 
-  const [editPopoverOpen, setEditPopoverOpen] = useState('')
-
   const partsLineItems = useMemo(() => {
     return (
       <List>
@@ -63,8 +61,6 @@ export default function CharacterCard({ character }: Props) {
             parts={parts}
             basic={character.sheetData.basic}
             isSavantSkill={characterType === 'savant' ? index === 0 : false}
-            editPopoverOpen={editPopoverOpen}
-            setEditPopoverOpen={setEditPopoverOpen}
           />
         ))}
       </List>
@@ -73,7 +69,6 @@ export default function CharacterCard({ character }: Props) {
     character.sheetData.maneuverList,
     character.sheetData.basic,
     characterType,
-    editPopoverOpen,
   ])
 
   const maneuverButtons = useMemo(
@@ -86,8 +81,6 @@ export default function CharacterCard({ character }: Props) {
             position={basic.position}
             mainClass={basic.mainClass}
             subClass={basic.subClass}
-            editPopoverOpen={editPopoverOpen}
-            setEditPopoverOpen={setEditPopoverOpen}
           />
         ))}
       </Flex>
@@ -97,7 +90,6 @@ export default function CharacterCard({ character }: Props) {
       basic.position,
       basic.mainClass,
       basic.subClass,
-      editPopoverOpen,
     ],
   )
 

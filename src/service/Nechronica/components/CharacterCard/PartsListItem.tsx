@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Avatar, Flex, type FlexProps, List } from 'antd'
 import ManeuverButton from './ManeuverButton.tsx'
 import unknownImg from '@/service/Nechronica/images/unknown.png'
@@ -21,8 +21,6 @@ interface Props {
   parts: number[]
   basic: NechronicaBasic
   isSavantSkill: boolean
-  editPopoverOpen: string
-  setEditPopoverOpen: Dispatch<SetStateAction<string>>
 }
 
 export default function PartsListItem({
@@ -31,8 +29,6 @@ export default function PartsListItem({
   parts,
   basic,
   isSavantSkill,
-  editPopoverOpen,
-  setEditPopoverOpen,
 }: Props) {
   const filteredManeuver = useMemo(
     () => maneuverList.filter((maneuver) => parts.includes(maneuver.parts)),
@@ -48,18 +44,9 @@ export default function PartsListItem({
           position={basic.position}
           mainClass={basic.mainClass}
           subClass={basic.subClass}
-          editPopoverOpen={editPopoverOpen}
-          setEditPopoverOpen={setEditPopoverOpen}
         />
       )),
-    [
-      filteredManeuver,
-      basic.position,
-      basic.mainClass,
-      basic.subClass,
-      editPopoverOpen,
-      setEditPopoverOpen,
-    ],
+    [filteredManeuver, basic.position, basic.mainClass, basic.subClass],
   )
 
   const elm = useMemo(

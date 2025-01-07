@@ -1,12 +1,4 @@
-import {
-  type Dispatch,
-  type HTMLProps,
-  type SetStateAction,
-  useCallback,
-  useId,
-  useMemo,
-  useState,
-} from 'react'
+import { type HTMLProps, useCallback, useId, useMemo } from 'react'
 import { Flex, Popover, Typography } from 'antd'
 import { type TextProps } from 'antd/es/typography/Text'
 import classNames from 'classnames'
@@ -14,6 +6,7 @@ import styles from './ManeuverButton.module.css'
 import { getBackImg, getManeuverSrc } from '@/service/Nechronica'
 import ManeuverAvatar from '@/service/Nechronica/components/CharacterCard/ManeuverAvatar.tsx'
 import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/ManeuverPopoverContents.tsx'
+import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const FONT_SIZE = 11
@@ -42,33 +35,34 @@ interface Props {
   position: number
   mainClass: number
   subClass: number
-  editPopoverOpen: string
-  setEditPopoverOpen: Dispatch<SetStateAction<string>>
 }
 export default function ManeuverButton({
   maneuver,
   position,
   mainClass,
   subClass,
-  editPopoverOpen,
-  setEditPopoverOpen,
 }: Props) {
   const maneuverId = useId()
-  const [viewPopoverOpen, setViewPopoverOpen] = useState(false)
+  const {
+    viewPopoverManeuver,
+    setViewPopoverManeuver,
+    editPopoverManeuver,
+    setEditPopoverManeuver,
+  } = useNechronicaContext()
 
   const onEditOpenChange = useCallback(
     (open: boolean) => {
-      setEditPopoverOpen(open ? maneuverId : '')
+      setEditPopoverManeuver(open ? maneuverId : '')
     },
-    [maneuverId, setEditPopoverOpen],
+    [maneuverId, setEditPopoverManeuver],
   )
 
   const onViewOpenChange = useCallback(
     (open: boolean) => {
-      if (open && editPopoverOpen) return
-      setViewPopoverOpen(open)
+      if (open && editPopoverManeuver) return
+      setViewPopoverManeuver(open ? maneuverId : '')
     },
-    [editPopoverOpen],
+    [editPopoverManeuver, maneuverId, setViewPopoverManeuver],
   )
 
   const stackedAvatar = useMemo(
@@ -77,7 +71,8 @@ export default function ManeuverButton({
         {...avatarStackDivProps}
         className={classNames(
           styles.hoverable,
-          (editPopoverOpen === maneuverId || viewPopoverOpen) && styles.active,
+          [editPopoverManeuver, viewPopoverManeuver].includes(maneuverId) &&
+            styles.active,
         )}
       >
         <ManeuverAvatar src={getBackImg(maneuver.type)} />
@@ -87,13 +82,13 @@ export default function ManeuverButton({
       </div>
     ),
     [
-      editPopoverOpen,
+      editPopoverManeuver,
       mainClass,
       maneuver,
       maneuverId,
       position,
       subClass,
-      viewPopoverOpen,
+      viewPopoverManeuver,
     ],
   )
 
@@ -106,19 +101,19 @@ export default function ManeuverButton({
           content={
             <ManeuverPopoverContents
               maneuver={maneuver}
-              onMouseEnter={() => setViewPopoverOpen(false)}
+              onMouseEnter={() => setViewPopoverManeuver('')}
             />
           }
           overlayInnerStyle={{ padding: 0 }}
           trigger="hover"
-          open={viewPopoverOpen}
+          open={viewPopoverManeuver === maneuverId}
           onOpenChange={onViewOpenChange}
         >
           <Popover
             content={<ManeuverPopoverContents maneuver={maneuver} />}
             overlayInnerStyle={{ padding: 0 }}
             trigger={['click', 'contextMenu']}
-            open={editPopoverOpen === maneuverId}
+            open={editPopoverManeuver === maneuverId}
             onOpenChange={onEditOpenChange}
           >
             {stackedAvatar}
@@ -127,13 +122,14 @@ export default function ManeuverButton({
       </Flex>
     ),
     [
-      editPopoverOpen,
+      editPopoverManeuver,
       maneuver,
       maneuverId,
       onEditOpenChange,
       onViewOpenChange,
+      setViewPopoverManeuver,
       stackedAvatar,
-      viewPopoverOpen,
+      viewPopoverManeuver,
     ],
   )
 }

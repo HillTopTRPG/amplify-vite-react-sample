@@ -271,6 +271,9 @@ const useNechronica = () => {
     [characterGroups, characters],
   )
 
+  const [viewPopoverManeuver, setViewPopoverManeuver] = useState('')
+  const [editPopoverManeuver, setEditPopoverManeuver] = useState('')
+
   return {
     loading: characterLoading || characterGroupLoading,
     characters,
@@ -282,6 +285,10 @@ const useNechronica = () => {
     createCharacterGroup,
     updateCharacterGroup,
     deleteCharacterGroup,
+    viewPopoverManeuver,
+    setViewPopoverManeuver,
+    editPopoverManeuver,
+    setEditPopoverManeuver,
   }
 }
 
