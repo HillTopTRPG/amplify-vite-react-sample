@@ -1,11 +1,19 @@
-import React, { useMemo, useState } from 'react'
-import { Flex, Typography } from 'antd'
+import {
+  type Dispatch,
+  type HTMLProps,
+  type SetStateAction,
+  useCallback,
+  useId,
+  useMemo,
+  useState,
+} from 'react'
+import { Flex, Popover, Typography } from 'antd'
 import { type TextProps } from 'antd/es/typography/Text'
 import classNames from 'classnames'
 import styles from './ManeuverButton.module.css'
-import ManeuverPopover from './ManeuverPopover.tsx'
 import { getBackImg, getManeuverSrc } from '@/service/Nechronica'
 import ManeuverAvatar from '@/service/Nechronica/components/CharacterCard/ManeuverAvatar.tsx'
+import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/ManeuverPopoverContents.tsx'
 import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const FONT_SIZE = 11
@@ -20,7 +28,7 @@ const textProps: TextProps = {
     whiteSpace: 'nowrap',
   },
 }
-const avatarStackDivProps: React.HTMLProps<HTMLDivElement> = {
+const avatarStackDivProps: HTMLProps<HTMLDivElement> = {
   style: {
     position: 'relative',
     width: BUTTON_SIZE,
@@ -34,20 +42,43 @@ interface Props {
   position: number
   mainClass: number
   subClass: number
+  editPopoverOpen: string
+  setEditPopoverOpen: Dispatch<SetStateAction<string>>
 }
 export default function ManeuverButton({
   maneuver,
   position,
   mainClass,
   subClass,
+  editPopoverOpen,
+  setEditPopoverOpen,
 }: Props) {
-  const [popoverOpen, setPopoverOpen] = useState(false)
+  const maneuverId = useId()
+  const [viewPopoverOpen, setViewPopoverOpen] = useState(false)
+
+  const onEditOpenChange = useCallback(
+    (open: boolean) => {
+      setEditPopoverOpen(open ? maneuverId : '')
+    },
+    [maneuverId, setEditPopoverOpen],
+  )
+
+  const onViewOpenChange = useCallback(
+    (open: boolean) => {
+      if (open && editPopoverOpen) return
+      setViewPopoverOpen(open)
+    },
+    [editPopoverOpen],
+  )
 
   const stackedAvatar = useMemo(
     () => (
       <div
         {...avatarStackDivProps}
-        className={classNames(styles.hoverable, popoverOpen && styles.active)}
+        className={classNames(
+          styles.hoverable,
+          (editPopoverOpen === maneuverId || viewPopoverOpen) && styles.active,
+        )}
       >
         <ManeuverAvatar src={getBackImg(maneuver.type)} />
         <ManeuverAvatar
@@ -55,18 +86,54 @@ export default function ManeuverButton({
         />
       </div>
     ),
-    [mainClass, maneuver, popoverOpen, position, subClass],
+    [
+      editPopoverOpen,
+      mainClass,
+      maneuver,
+      maneuverId,
+      position,
+      subClass,
+      viewPopoverOpen,
+    ],
   )
 
   return useMemo(
     () => (
       <Flex vertical onClick={(e) => e.stopPropagation()}>
         <Typography.Text {...textProps}>{maneuver.name}</Typography.Text>
-        <ManeuverPopover maneuver={maneuver} onChangeOpen={setPopoverOpen}>
-          {stackedAvatar}
-        </ManeuverPopover>
+
+        <Popover
+          content={
+            <ManeuverPopoverContents
+              maneuver={maneuver}
+              onMouseEnter={() => setViewPopoverOpen(false)}
+            />
+          }
+          overlayInnerStyle={{ padding: 0 }}
+          trigger="hover"
+          open={viewPopoverOpen}
+          onOpenChange={onViewOpenChange}
+        >
+          <Popover
+            content={<ManeuverPopoverContents maneuver={maneuver} />}
+            overlayInnerStyle={{ padding: 0 }}
+            trigger={['click', 'contextMenu']}
+            open={editPopoverOpen === maneuverId}
+            onOpenChange={onEditOpenChange}
+          >
+            {stackedAvatar}
+          </Popover>
+        </Popover>
       </Flex>
     ),
-    [maneuver, stackedAvatar],
+    [
+      editPopoverOpen,
+      maneuver,
+      maneuverId,
+      onEditOpenChange,
+      onViewOpenChange,
+      stackedAvatar,
+      viewPopoverOpen,
+    ],
   )
 }

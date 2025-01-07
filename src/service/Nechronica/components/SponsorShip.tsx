@@ -24,7 +24,7 @@ export default function SponsorShip() {
           <Typography.Text style={{ fontSize: 12 }}>
             【Waddlefy専用アイコンの作成】
           </Typography.Text>
-          <Image src={bannerImg} width={195} />
+          <Image src={bannerImg} preview={false} width={195} />
           <Typography.Text style={{ fontSize: 12 }}>
             自由気ままに素材作成 - BOOTH
           </Typography.Text>
