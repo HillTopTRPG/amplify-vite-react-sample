@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <Flex style={{ padding: 24 }}>
       <Flex vertical style={{ flexGrow: 1 }}>
-        <Typography.Title level={1}>未定のタイトル</Typography.Title>
+        <Typography.Title level={1}>Memento Nexus</Typography.Title>
         <Typography.Title level={2}>永い後日談のネクロニカ</Typography.Title>
         <Space direction="vertical" size="middle">
           <Link to="/private/nechronica">Nechronica（ログイン）へ</Link>

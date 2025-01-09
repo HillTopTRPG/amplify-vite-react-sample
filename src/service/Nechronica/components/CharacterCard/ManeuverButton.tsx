@@ -35,12 +35,16 @@ interface Props {
   position: number
   mainClass: number
   subClass: number
+  selected?: boolean
+  onClick?: () => void
 }
 export default function ManeuverButton({
   maneuver,
   position,
   mainClass,
   subClass,
+  selected,
+  onClick,
 }: Props) {
   const maneuverId = useId()
   const {
@@ -65,31 +69,27 @@ export default function ManeuverButton({
     [editPopoverManeuver, maneuverId, setViewPopoverManeuver],
   )
 
+  const isActive = useMemo(
+    () =>
+      [editPopoverManeuver, viewPopoverManeuver].includes(maneuverId) ||
+      selected,
+    [editPopoverManeuver, maneuverId, selected, viewPopoverManeuver],
+  )
+
   const stackedAvatar = useMemo(
     () => (
       <div
         {...avatarStackDivProps}
-        className={classNames(
-          styles.hoverable,
-          [editPopoverManeuver, viewPopoverManeuver].includes(maneuverId) &&
-            styles.active,
-        )}
+        onClick={onClick}
+        className={classNames(styles.hoverable, isActive && styles.active)}
       >
-        <ManeuverAvatar src={getBackImg(maneuver.type)} />
+        <ManeuverAvatar src={getBackImg(maneuver)} />
         <ManeuverAvatar
           src={getManeuverSrc(maneuver, position, mainClass, subClass)}
         />
       </div>
     ),
-    [
-      editPopoverManeuver,
-      mainClass,
-      maneuver,
-      maneuverId,
-      position,
-      subClass,
-      viewPopoverManeuver,
-    ],
+    [isActive, mainClass, maneuver, onClick, position, subClass],
   )
 
   return useMemo(
@@ -105,6 +105,7 @@ export default function ManeuverButton({
             />
           }
           overlayInnerStyle={{ padding: 0 }}
+          mouseEnterDelay={0.05}
           trigger="hover"
           open={viewPopoverManeuver === maneuverId}
           onOpenChange={onViewOpenChange}
@@ -112,7 +113,8 @@ export default function ManeuverButton({
           <Popover
             content={<ManeuverPopoverContents maneuver={maneuver} />}
             overlayInnerStyle={{ padding: 0 }}
-            trigger={['click', 'contextMenu']}
+            mouseEnterDelay={0.05}
+            trigger={onClick ? [] : ['click', 'contextMenu']}
             open={editPopoverManeuver === maneuverId}
             onOpenChange={onEditOpenChange}
           >
@@ -125,6 +127,7 @@ export default function ManeuverButton({
       editPopoverManeuver,
       maneuver,
       maneuverId,
+      onClick,
       onEditOpenChange,
       onViewOpenChange,
       setViewPopoverManeuver,

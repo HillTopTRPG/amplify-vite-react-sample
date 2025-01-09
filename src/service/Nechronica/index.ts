@@ -99,13 +99,14 @@ export const getClassSrc = (value: number) => {
   return unknownImg
 }
 
-export const getManeuverSrc = (
+export function getIconClass(
   maneuver: NechronicaManeuver,
   position: number,
   mainClass: number,
   subClass: number,
-) => {
-  const iconClass =
+) {
+  if (maneuver.isUnknown) return 'unknown'
+  return (
     mapping.BASIC_PARTS_ICON_CLASS_MAP.find(({ name }) => {
       return name === maneuver.name
     })?.class ??
@@ -124,6 +125,16 @@ export const getManeuverSrc = (
       'parts-leg',
     ].at(maneuver.parts) ??
     ''
+  )
+}
+
+export function getManeuverSrc(
+  maneuver: NechronicaManeuver,
+  position: number,
+  mainClass: number,
+  subClass: number,
+) {
+  const iconClass = getIconClass(maneuver, position, mainClass, subClass)
   switch (iconClass) {
     case 'maneuver-treasure':
       return treasureImg
@@ -187,20 +198,23 @@ export const getManeuverSrc = (
       return bodyImg
     case 'parts-leg':
       return legImg
+    case 'unknown':
+      return unknownImg
     default:
   }
   return skillImg
 }
 
-export const getBackImg = (maneuverType: number) => {
-  if (maneuverType === 0) return maneuverBack0Img
-  if (maneuverType === 1) return maneuverBack1Img
-  if (maneuverType === 2) return maneuverBack2Img
-  if (maneuverType === 3) return maneuverBack3Img
-  if (maneuverType === 4) return maneuverBack4Img
-  if (maneuverType === 5) return maneuverBack5Img
-  if (maneuverType === 6) return maneuverBack6Img
-  if (maneuverType === 7) return maneuverBack7Img
+export const getBackImg = (maneuver: NechronicaManeuver) => {
+  if (maneuver.isUnknown) return maneuverBack0Img
+  if (maneuver.type === 0) return maneuverBack0Img
+  if (maneuver.type === 1) return maneuverBack1Img
+  if (maneuver.type === 2) return maneuverBack2Img
+  if (maneuver.type === 3) return maneuverBack3Img
+  if (maneuver.type === 4) return maneuverBack4Img
+  if (maneuver.type === 5) return maneuverBack5Img
+  if (maneuver.type === 6) return maneuverBack6Img
+  if (maneuver.type === 7) return maneuverBack7Img
   return ''
 }
 

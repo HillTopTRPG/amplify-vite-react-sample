@@ -15,5 +15,7 @@
   &:not(:active)&.active {
     transform: scale(1.1);
     filter: drop-shadow(3px 4px 2px rgba(0, 0, 0, 0.8));
+    outline: 2px solid red;
+    outline-offset: -4px;
   }
 }
