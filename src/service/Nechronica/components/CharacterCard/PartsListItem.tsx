@@ -22,6 +22,7 @@ interface Props {
   basic: NechronicaBasic
   isSavantSkill: boolean
 }
+
 export default function PartsListItem({
   maneuverList,
   src,
@@ -45,7 +46,7 @@ export default function PartsListItem({
           subClass={basic.subClass}
         />
       )),
-    [basic.position, basic.mainClass, basic.subClass, filteredManeuver],
+    [filteredManeuver, basic.position, basic.mainClass, basic.subClass],
   )
 
   const elm = useMemo(

@@ -10,6 +10,7 @@ import AddCharacterInput from '@/service/Nechronica/components/CharacterTypeScre
 import CharacterSmallCards from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
 import DetailSider from '@/service/Nechronica/components/CharacterTypeScreen/DetailSider.tsx'
 import DollFilterCollapse from '@/service/Nechronica/components/CharacterTypeScreen/DollFilterCollapse.tsx'
+import SponsorShip from '@/service/Nechronica/components/SponsorShip.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 import {
@@ -117,7 +118,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
             alignContent: 'flex-start',
           }}
           wrap
-          gap={9}
+          gap={11}
         >
           <CharacterSmallCards
             viewType="normal"
@@ -141,6 +142,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
             }}
           />
         ) : null}
+        <SponsorShip />
       </ScreenContainer>
     ),
     [

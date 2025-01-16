@@ -32,7 +32,7 @@ import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import styles from '@/service/Nechronica/components/Hoverable.module.css'
 
 const cardStyle: CSSProperties = {
-  width: 180,
+  width: 170,
   height: '100%',
   display: 'flex',
   flexDirection: 'column',

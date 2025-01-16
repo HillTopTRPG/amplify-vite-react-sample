@@ -1,5 +1,5 @@
-import { type ReactNode, useMemo } from 'react'
-import { Col, Popover, Row, Typography } from 'antd'
+import { useMemo } from 'react'
+import { Col, Row, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import ColSetTCR from '@/service/Nechronica/components/CharacterCard/ColSetTCR.tsx'
 import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -7,20 +7,17 @@ import mapping from '@/service/Nechronica/ts/mapping.json'
 
 interface Props {
   maneuver: NechronicaManeuver
-  onChangeOpen: (open: boolean) => void
-  children: ReactNode
+  onMouseEnter?: () => void
 }
-export default function ManeuverPopover({
+export default function ManeuverPopoverContents({
   maneuver,
-  onChangeOpen,
-  children,
+  onMouseEnter,
 }: Props) {
   const { t: i18nT } = useTranslation()
-
-  const popoverContent = useMemo(() => {
-    const timing = i18nT(mapping.MANEUVER_TIMING[maneuver.timing].text)
-    return (
-      <Row style={{ maxWidth: 336, padding: 8 }}>
+  const timing = i18nT(mapping.MANEUVER_TIMING[maneuver.timing].text)
+  return useMemo(
+    () => (
+      <Row onMouseEnter={onMouseEnter} style={{ maxWidth: 336, padding: 8 }}>
         <Col span={24}>
           <Typography.Text>
             {i18nT(mapping.MANEUVER_TYPE[maneuver.type].text)}
@@ -58,28 +55,16 @@ export default function ManeuverPopover({
           <Typography.Text>{maneuver.memo}</Typography.Text>
         </Col>
       </Row>
-    )
-  }, [
-    i18nT,
-    maneuver.cost,
-    maneuver.memo,
-    maneuver.name,
-    maneuver.range,
-    maneuver.timing,
-    maneuver.type,
-  ])
-
-  return useMemo(
-    () => (
-      <Popover
-        content={popoverContent}
-        trigger={['click', 'contextMenu']}
-        overlayInnerStyle={{ padding: 0 }}
-        onOpenChange={onChangeOpen}
-      >
-        {children}
-      </Popover>
     ),
-    [children, onChangeOpen, popoverContent],
+    [
+      i18nT,
+      maneuver.cost,
+      maneuver.memo,
+      maneuver.name,
+      maneuver.range,
+      maneuver.type,
+      onMouseEnter,
+      timing,
+    ],
   )
 }

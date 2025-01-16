@@ -39,7 +39,7 @@ const ScreenContainer = forwardRef<HTMLElement, Props>(function Component(
         vertical
         className="screen-container"
         style={{
-          padding: '24px 16px',
+          padding: '24px 12px',
           boxSizing: 'border-box',
           backgroundColor: token.colorBgContainer,
           minHeight: '100vh',

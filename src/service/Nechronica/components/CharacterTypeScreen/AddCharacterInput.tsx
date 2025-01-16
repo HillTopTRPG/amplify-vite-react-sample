@@ -1,5 +1,5 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react'
-import { PlusOutlined } from '@ant-design/icons'
+import { ImportOutlined } from '@ant-design/icons'
 import { Button, Input, type InputRef, Space } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
@@ -53,14 +53,14 @@ export default function AddCharacterInput({
     () => (
       <Space.Compact size="large" style={{ alignSelf: 'flex-start' }}>
         <Input
-          prefix={<PlusOutlined />}
+          prefix={<ImportOutlined />}
           value={sheetId}
           placeholder={`追加する${label}のシートID`}
           onPressEnter={onCreateCharacter}
           onCompositionStart={() => setComposition(true)}
           onCompositionEnd={() => setComposition(false)}
           onChange={(e) => setSheetId(e.target.value)}
-          style={{ width: 300 }}
+          style={{ width: 250 }}
           ref={sheetIdInputRef}
         />
         <Button type="default" onClick={onCreateCharacter}>

@@ -130,9 +130,7 @@ export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
   )
 
   return useMemo(
-    () => (
-      <Radar {...config} style={{ pointerEvents: 'none' }} onEvent={onEvent} />
-    ),
+    () => <Radar {...config} onEvent={onEvent} />,
     [config, onEvent],
   )
 }

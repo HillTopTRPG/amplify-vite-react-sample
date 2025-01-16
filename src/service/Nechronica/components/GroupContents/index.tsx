@@ -19,7 +19,7 @@ export default function GroupContents() {
     useNechronicaContext()
 
   const { currentUser } = useUserAttributes()
-  const { screenSize } = useScreenContext()
+  const { screenSize, scope } = useScreenContext()
 
   const characterGroupRelation = useMemo(() => {
     if (loading) return null
@@ -27,8 +27,12 @@ export default function GroupContents() {
   }, [characterGroupRelations, groupId, loading])
 
   const useCharacters = useMemo(
-    () => characters.filter((c) => c.owner === currentUser?.userName),
-    [characters, currentUser?.userName],
+    () =>
+      characters.filter((c) => {
+        if (scope === 'public' && !currentUser) return true
+        return c.owner === currentUser?.userName
+      }),
+    [characters, currentUser, scope],
   )
 
   const {
@@ -90,7 +94,7 @@ export default function GroupContents() {
             alignContent: 'flex-start',
           }}
           wrap
-          gap={9}
+          gap={11}
         >
           <CharacterSmallCards
             viewType="group"

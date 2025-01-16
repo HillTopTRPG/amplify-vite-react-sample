@@ -66,9 +66,9 @@ export default function CharacterCard({ character }: Props) {
       </List>
     )
   }, [
-    characterType,
-    character.sheetData.basic,
     character.sheetData.maneuverList,
+    character.sheetData.basic,
+    characterType,
   ])
 
   const maneuverButtons = useMemo(
@@ -151,12 +151,13 @@ export default function CharacterCard({ character }: Props) {
           </Flex>
           <div
             style={{
-              width: 180,
+              width: '100%',
               height: 160,
               marginTop: -10,
+              pointerEvents: 'none',
             }}
           >
-            <StyledRadar data={radarData} type="small" size={180} />
+            <StyledRadar data={radarData} type="small" size={170} />
           </div>
         </Flex>
         {isDoll ? roiceButtons : null}

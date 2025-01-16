@@ -1,10 +1,11 @@
 import { Flex } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
-import SelectedCharacterElm from '@/service/Nechronica/components/CharacterTypeScreen/SelectedCharacterElm.tsx'
+import SelectedManeuversElm from '@/service/Nechronica/components/ManeuverContents/SelectedManeuversElm.tsx'
+import { type ManeuverInfo } from '@/service/Nechronica/components/ManeuverContents/index.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 interface Props {
-  detailList: string[]
+  detailList: ManeuverInfo[]
 }
 export default function DetailSider({ detailList }: Props) {
   const { screenSize } = useScreenContext()
@@ -13,8 +14,14 @@ export default function DetailSider({ detailList }: Props) {
 
   if (screenSize.viewPortWidth < 789) {
     return (
-      <Flex vertical align="stretch" gap={8} style={{ minHeight: '100vh' }}>
-        <SelectedCharacterElm detailList={detailList} />
+      <Flex
+        gap={8}
+        justify="space-evenly"
+        align="flex-start"
+        wrap
+        style={{ minHeight: '100vh', alignContent: 'flex-start' }}
+      >
+        <SelectedManeuversElm detailList={detailList} />
       </Flex>
     )
   }
@@ -26,7 +33,7 @@ export default function DetailSider({ detailList }: Props) {
         right: 0,
         top: 48,
         bottom: 0,
-        width: 420,
+        width: 336,
         overflow: 'auto',
       }}
       onScrollCapture={(e) => {
@@ -37,11 +44,11 @@ export default function DetailSider({ detailList }: Props) {
     >
       <Flex
         vertical
-        align="stretch"
+        align="flex-start"
         gap={8}
         style={{ minHeight: 'calc(100vh - 48px)' }}
       >
-        <SelectedCharacterElm detailList={detailList} />
+        <SelectedManeuversElm detailList={detailList} />
       </Flex>
     </div>
   )
