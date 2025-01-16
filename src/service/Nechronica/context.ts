@@ -8,12 +8,12 @@ import {
   type CharacterGroup,
   type CharacterGroupAdditionalData,
 } from '@/service'
+import { nechronicaTypes } from '@/service/Nechronica/index.ts'
 import {
   type Nechronica,
   type NechronicaAdditionalData,
   type NechronicaCharacter,
   type NechronicaDataHelper,
-  type NechronicaType,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { type PromiseType, typedOmit, typedPick } from '@/utils/types.ts'
 
@@ -60,7 +60,7 @@ const deleteCharacterGroup = (id: string) => {
   client.models.CharacterGroup.delete({ id })
 }
 
-const useNechronica = () => {
+export const [NechronicaProvider, useNechronicaContext] = constate(() => {
   const { loading: loadingUserAttributes, me } = useUserAttributes()
   const { scope } = useScreenContext()
 
@@ -123,7 +123,6 @@ const useNechronica = () => {
     }).subscribe({
       // const sub = client.models.NechronicaCharacter.observeQuery().subscribe({
       next: ({ items }) => {
-        const types: NechronicaType[] = ['doll', 'savant', 'horror', 'legion']
         setCharacters(
           items
             .map((item) => ({
@@ -137,8 +136,8 @@ const useNechronica = () => {
             }))
             .sort((a, b) => {
               const typeDiff =
-                types.findIndex((t) => t === a.additionalData.type) -
-                types.findIndex((t) => t === b.additionalData.type)
+                nechronicaTypes.findIndex((t) => t === a.additionalData.type) -
+                nechronicaTypes.findIndex((t) => t === b.additionalData.type)
               if (typeDiff) return typeDiff
               if (a.additionalData.stared && !b.additionalData.stared) return -1
               if (b.additionalData.stared && !a.additionalData.stared) return 1
@@ -290,7 +289,4 @@ const useNechronica = () => {
     editPopoverManeuver,
     setEditPopoverManeuver,
   }
-}
-
-export const [NechronicaProvider, useNechronicaContext] =
-  constate(useNechronica)
+})

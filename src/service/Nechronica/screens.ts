@@ -1,3 +1,4 @@
+import build from './screens/build.tsx'
 import dolls from './screens/dolls.tsx'
 import group from './screens/group.tsx'
 import horrors from './screens/horrors.tsx'
@@ -15,4 +16,5 @@ export const screens: Record<string, Screen> = {
   legions,
   group,
   maneuvers,
+  build,
 }

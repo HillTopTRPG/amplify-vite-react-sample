@@ -32,7 +32,7 @@ export default function GroupContents() {
         if (scope === 'public' && !currentUser) return true
         return c.owner === currentUser?.userName
       }),
-    [characters, currentUser?.userName],
+    [characters, currentUser, scope],
   )
 
   const {

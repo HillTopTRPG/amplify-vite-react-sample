@@ -45,6 +45,8 @@ export const posSelections = new Array(31).fill(null).map((_, idx) => ({
   value: idx,
   text: `Nechronica.ROICE.${idx}.pos`,
   subTitle: `Nechronica.ROICE.${idx}.target`,
+  neg: `Nechronica.ROICE.${idx}.neg`,
+  breakEffect: `Nechronica.ROICE.${idx}.breakEffect`,
   color: 'black',
 }))
 
@@ -55,6 +57,8 @@ export type NechronicaBasic = {
   position: number
   mainClass: number // MCLS
   subClass: number // SCLS
+  bonusStatus: 'armed' | 'mutation' | 'modification'
+  affection: { armed: string; mutation: string; modification: string }
   basePosition: number // 0: 煉獄, 1: 花園, 2: 楽園
   hairColor: string
   eyeColor: string
@@ -247,13 +251,12 @@ export class NechronicaDataHelper {
       const value = obj[prop] as string | undefined
       return convertNumberZero(value)
     }
+    const textFilter = (text: string | null | undefined) => {
+      return text?.trim().replace(/\r?\n/g, '\n') ?? ''
+    }
     const digText = (obj: never, prop: string) => {
       const value = obj[prop] as string | undefined
       return textFilter(value)
-    }
-    const textFilter = (text: string | null | undefined) => {
-      if (!text) return ''
-      return text.trim().replace(/\r?\n/g, '\n')
     }
     const transpose = (a: never[][]): never[][] => {
       return a[0].map((_, c) => a.map((r) => r[c]))
@@ -332,6 +335,14 @@ export class NechronicaDataHelper {
           position: digNum(json, 'position'),
           mainClass: convertNumberZero(json['MCLS']),
           subClass: convertNumberZero(json['SCLS']),
+          bonusStatus: (['armed', 'mutation', 'modification'] as const)[
+            convertNumberZero(json['ST_Bonus'])
+          ],
+          affection: {
+            armed: digText(json, 'TM1'),
+            mutation: digText(json, 'TM2'),
+            modification: digText(json, 'TM3'),
+          },
           basePosition: parseInt(json['SL_sex'], 10),
           hairColor: digText(json, 'color_hair'),
           eyeColor: digText(json, 'color_eye'),

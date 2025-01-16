@@ -158,7 +158,7 @@ export default function CharacterSmallCard({
               gap={6}
               style={{ overflow: 'hidden', height: '100%' }}
             >
-              <Flex align="center">
+              <Flex align="center" gap={6}>
                 <Typography.Text style={{ fontSize: 12 }}>公開</Typography.Text>
                 <Switch
                   checkedChildren="有効"

@@ -125,14 +125,56 @@
     { "val": "position-sorority", "text": "ソロリティ" }
   ],
   "CHARACTER_CLASS": [
-    { "val": "", "text": "" },
-    { "val": "class-stacy", "text": "ステーシー" },
-    { "val": "class-thanatos", "text": "タナトス" },
-    { "val": "class-gothic", "text": "ゴシック" },
-    { "val": "class-requiem", "text": "レクイエム" },
-    { "val": "class-baroque", "text": "バロック" },
-    { "val": "class-romanesque", "text": "ロマネスク" },
-    { "val": "class-psychedelic", "text": "サイケデリック" }
+    { "val": "", "text": "", "armed": 0, "mutation": 0, "modification": 0 },
+    {
+      "val": "class-stacy",
+      "text": "ステーシー",
+      "armed": 1,
+      "mutation": 1,
+      "modification": 0
+    },
+    {
+      "val": "class-thanatos",
+      "text": "タナトス",
+      "armed": 1,
+      "mutation": 0,
+      "modification": 1
+    },
+    {
+      "val": "class-gothic",
+      "text": "ゴシック",
+      "armed": 0,
+      "mutation": 1,
+      "modification": 1
+    },
+    {
+      "val": "class-requiem",
+      "text": "レクイエム",
+      "armed": 2,
+      "mutation": 0,
+      "modification": 0
+    },
+    {
+      "val": "class-baroque",
+      "text": "バロック",
+      "armed": 0,
+      "mutation": 2,
+      "modification": 0
+    },
+    {
+      "val": "class-romanesque",
+      "text": "ロマネスク",
+      "armed": 0,
+      "mutation": 0,
+      "modification": 2
+    },
+    {
+      "val": "class-psychedelic",
+      "text": "サイケデリック",
+      "armed": 0,
+      "mutation": 0,
+      "modification": 1
+    }
   ],
   "BASIC_PARTS_ICON_CLASS_MAP": [
     { "name": "のうみそ", "shozoku": "基本のうみそ", "class": "basic-brain" },

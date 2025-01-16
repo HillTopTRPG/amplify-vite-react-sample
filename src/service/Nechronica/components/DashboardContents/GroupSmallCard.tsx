@@ -86,7 +86,7 @@ export default function GroupSmallCard({ group }: Props) {
           justify="space-between"
           style={{ height: '100%' }}
         >
-          <Flex align="center">
+          <Flex align="center" gap={6}>
             <Typography.Text style={{ fontSize: 12 }}>公開</Typography.Text>
             <Switch
               checkedChildren="有効"

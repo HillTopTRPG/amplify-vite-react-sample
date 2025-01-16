@@ -55,6 +55,13 @@ import {
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
+export const nechronicaTypes: NechronicaType[] = [
+  'doll',
+  'savant',
+  'horror',
+  'legion',
+]
+
 export const PARTS_TUPLE: [string, number[]][] = [
   [partsSkillImg, [0, 1, 2, 3]],
   [partsHeadImg, [4]],
