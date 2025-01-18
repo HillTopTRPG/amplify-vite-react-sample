@@ -31,31 +31,41 @@ export default function ManeuverPopoverContents({
 
   return useMemo(
     () => (
-      <Row
-        gutter={mode === 'view' ? undefined : [4, 4]}
-        onMouseEnter={onMouseEnter}
-        style={{ maxWidth: 336, minWidth: 336, padding: 8 }}
+      <div
+        style={{
+          maxWidth: 336,
+          minWidth: 336,
+          padding: 8,
+          outline: `2px solid ${mapping.MANEUVER_TYPE[maneuver.type].color}`,
+          outlineOffset: -2,
+          margin: 0,
+        }}
       >
-        <Col span={24}>
-          <Flex align="center">
-            <Typography.Text style={{ flexGrow: 1 }}>
-              {mode === 'view'
-                ? i18nT(mapping.MANEUVER_TYPE[maneuver.type].text)
-                : 'マニューバ編集'}
-            </Typography.Text>
-            <Button
-              type="text"
-              icon={mode === 'view' ? <EditOutlined /> : <EyeOutlined />}
-              onClick={() => setMode((v) => (v === 'view' ? 'edit' : 'view'))}
-            />
-          </Flex>
-        </Col>
-        {mode === 'view' ? (
-          <ViewContents maneuver={maneuver} />
-        ) : (
-          <EditContents maneuver={maneuver} updateManeuver={updateManeuver} />
-        )}
-      </Row>
+        <Row
+          gutter={mode === 'view' ? undefined : [6, 6]}
+          onMouseEnter={onMouseEnter}
+        >
+          <Col span={24}>
+            <Flex align="center">
+              <Typography.Text style={{ flexGrow: 1 }}>
+                {mode === 'view'
+                  ? i18nT(mapping.MANEUVER_TYPE[maneuver.type].text)
+                  : 'マニューバ編集'}
+              </Typography.Text>
+              <Button
+                type="text"
+                icon={mode === 'view' ? <EditOutlined /> : <EyeOutlined />}
+                onClick={() => setMode((v) => (v === 'view' ? 'edit' : 'view'))}
+              />
+            </Flex>
+          </Col>
+          {mode === 'view' ? (
+            <ViewContents maneuver={maneuver} />
+          ) : (
+            <EditContents maneuver={maneuver} updateManeuver={updateManeuver} />
+          )}
+        </Row>
+      </div>
     ),
     [i18nT, maneuver, mode, onMouseEnter, updateManeuver],
   )

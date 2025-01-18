@@ -1,4 +1,10 @@
-import { type ReactElement, useCallback, useMemo, useState } from 'react'
+import {
+  type ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import {
   Collapse,
   type CollapseProps,
@@ -9,7 +15,7 @@ import {
   Spin,
 } from 'antd'
 import { type CheckboxGroupProps } from 'antd/es/checkbox/Group'
-import { v7 as uuidv7 } from 'uuid'
+import { clone } from 'lodash-es'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { getIconClass } from '@/service/Nechronica'
@@ -43,8 +49,8 @@ const maneuverContainerProps: Omit<FlexProps, 'children'> = {
 } as const
 
 export type ManeuverInfo = {
-  tempId: string
   maneuver: NechronicaManeuver
+  maneuverIndex: number
   character: NechronicaCharacter
   iconClass: string
 }
@@ -81,8 +87,20 @@ export default function ManeuverContents() {
 
   const onClickManeuver = useCallback(
     (info: ManeuverInfo) => {
-      if (detailList.find((d) => d.tempId === info.tempId)) {
-        setDetailList((prev) => prev.filter((d) => d.tempId !== info.tempId))
+      if (
+        detailList.find(
+          (d) =>
+            `${d.character.id}-${d.maneuverIndex}` ===
+            `${info.character.id}-${info.maneuverIndex}`,
+        )
+      ) {
+        setDetailList((prev) =>
+          prev.filter(
+            (d) =>
+              `${d.character.id}-${d.maneuverIndex}` !==
+              `${info.character.id}-${info.maneuverIndex}`,
+          ),
+        )
       } else {
         setDetailList((prev) => [info, ...prev])
       }
@@ -90,17 +108,45 @@ export default function ManeuverContents() {
     [detailList],
   )
 
+  const getSourceManeuver = useCallback(
+    (info: ManeuverInfo) => {
+      return characters.find((c) => c.id === info.character.id)?.sheetData
+        .maneuverList[info.maneuverIndex]
+    },
+    [characters],
+  )
+
+  useEffect(() => {
+    if (
+      JSON.stringify(detailList.map((info) => info.maneuver)) ===
+      JSON.stringify(detailList.map(getSourceManeuver))
+    ) {
+      return
+    }
+    setDetailList(
+      detailList.map((info) => {
+        const character = characters.find((c) => c.id === info.character.id)
+        const newInfo = clone(info)
+        if (!character) return newInfo
+        newInfo.maneuver = character.sheetData.maneuverList[info.maneuverIndex]
+        return newInfo
+      }),
+    )
+  }, [characters, detailList, getSourceManeuver])
+
   const maneuvers: ManeuverInfo[] = useMemo(
     () =>
       useCharacters
         .flatMap((character) => {
           const { position, mainClass, subClass } = character.sheetData.basic
-          return character.sheetData.maneuverList.map((maneuver) => ({
-            tempId: uuidv7(),
-            maneuver,
-            character,
-            iconClass: getIconClass(maneuver, position, mainClass, subClass),
-          }))
+          return character.sheetData.maneuverList.map(
+            (maneuver, index): ManeuverInfo => ({
+              maneuver,
+              maneuverIndex: index,
+              character,
+              iconClass: getIconClass(maneuver, position, mainClass, subClass),
+            }),
+          )
         })
         .filter((data) => {
           return !(
@@ -123,7 +169,11 @@ export default function ManeuverContents() {
     (info: ManeuverInfo) => ({
       maneuver: info.maneuver,
       character: info.character,
-      selected: detailList.some((d) => d.tempId === info.tempId),
+      selected: detailList.some(
+        (d) =>
+          `${d.character.id}-${d.maneuverIndex}` ===
+          `${info.character.id}-${info.maneuverIndex}`,
+      ),
       onClick: () => onClickManeuver(info),
     }),
     [detailList, onClickManeuver],
@@ -132,7 +182,10 @@ export default function ManeuverContents() {
   const allManeuvers = useMemo(
     () =>
       maneuvers.map((m) => (
-        <ListManeuverButton key={m.tempId} {...makeManeuverButtonProps(m)} />
+        <ListManeuverButton
+          key={`${m.character.id}-${m.maneuverIndex}`}
+          {...makeManeuverButtonProps(m)}
+        />
       )),
     [makeManeuverButtonProps, maneuvers],
   )
@@ -143,7 +196,10 @@ export default function ManeuverContents() {
         .filter((m) => m.iconClass.startsWith('position-'))
         .sort((a, b) => getPosition(a) - getPosition(b))
         .map((m) => (
-          <ListManeuverButton key={m.tempId} {...makeManeuverButtonProps(m)} />
+          <ListManeuverButton
+            key={`${m.character.id}-${m.maneuverIndex}`}
+            {...makeManeuverButtonProps(m)}
+          />
         )),
     [makeManeuverButtonProps, maneuvers],
   )
@@ -154,7 +210,10 @@ export default function ManeuverContents() {
         .filter((m) => m.iconClass.startsWith('class-'))
         .sort((a, b) => getClass(a) - getClass(b))
         .map((m) => (
-          <ListManeuverButton key={m.tempId} {...makeManeuverButtonProps(m)} />
+          <ListManeuverButton
+            key={`${m.character.id}-${m.maneuverIndex}`}
+            {...makeManeuverButtonProps(m)}
+          />
         )),
     [makeManeuverButtonProps, maneuvers],
   )
@@ -164,7 +223,10 @@ export default function ManeuverContents() {
       maneuvers
         .filter((m) => m.iconClass === 'maneuver-modification')
         .map((m) => (
-          <ListManeuverButton key={m.tempId} {...makeManeuverButtonProps(m)} />
+          <ListManeuverButton
+            key={`${m.character.id}-${m.maneuverIndex}`}
+            {...makeManeuverButtonProps(m)}
+          />
         )),
     [makeManeuverButtonProps, maneuvers],
   )
@@ -174,7 +236,10 @@ export default function ManeuverContents() {
       maneuvers
         .filter((m) => m.iconClass === 'maneuver-mutation')
         .map((m) => (
-          <ListManeuverButton key={m.tempId} {...makeManeuverButtonProps(m)} />
+          <ListManeuverButton
+            key={`${m.character.id}-${m.maneuverIndex}`}
+            {...makeManeuverButtonProps(m)}
+          />
         )),
     [makeManeuverButtonProps, maneuvers],
   )
@@ -184,7 +249,10 @@ export default function ManeuverContents() {
       maneuvers
         .filter((m) => m.iconClass === 'maneuver-armed')
         .map((m) => (
-          <ListManeuverButton key={m.tempId} {...makeManeuverButtonProps(m)} />
+          <ListManeuverButton
+            key={`${m.character.id}-${m.maneuverIndex}`}
+            {...makeManeuverButtonProps(m)}
+          />
         )),
     [makeManeuverButtonProps, maneuvers],
   )
@@ -194,7 +262,10 @@ export default function ManeuverContents() {
       maneuvers
         .filter((m) => m.iconClass === 'maneuver-treasure')
         .map((m) => (
-          <ListManeuverButton key={m.tempId} {...makeManeuverButtonProps(m)} />
+          <ListManeuverButton
+            key={`${m.character.id}-${m.maneuverIndex}`}
+            {...makeManeuverButtonProps(m)}
+          />
         )),
     [makeManeuverButtonProps, maneuvers],
   )
@@ -204,7 +275,10 @@ export default function ManeuverContents() {
       maneuvers
         .filter((m) => m.iconClass.startsWith('basic-'))
         .map((m) => (
-          <ListManeuverButton key={m.tempId} {...makeManeuverButtonProps(m)} />
+          <ListManeuverButton
+            key={`${m.character.id}-${m.maneuverIndex}`}
+            {...makeManeuverButtonProps(m)}
+          />
         )),
     [makeManeuverButtonProps, maneuvers],
   )
@@ -218,14 +292,21 @@ export default function ManeuverContents() {
             ['', 'unknown'].includes(m.iconClass),
         )
         .map((m) => (
-          <ListManeuverButton key={m.tempId} {...makeManeuverButtonProps(m)} />
+          <ListManeuverButton
+            key={`${m.character.id}-${m.maneuverIndex}`}
+            {...makeManeuverButtonProps(m)}
+          />
         )),
     [makeManeuverButtonProps, maneuvers],
   )
 
   const getCountDetail = useCallback(
     (elms: ReactElement[]) =>
-      elms.filter((elm) => detailList.some((d) => d.tempId === elm.key)).length,
+      elms.filter((elm) =>
+        detailList.some(
+          (m) => `${m.character.id}-${m.maneuverIndex}` === elm.key,
+        ),
+      ).length,
     [detailList],
   )
 

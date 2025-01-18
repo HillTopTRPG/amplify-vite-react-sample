@@ -1,5 +1,7 @@
-import { type CSSProperties, useId } from 'react'
-import { Input, Space, Typography } from 'antd'
+import { type CSSProperties, useEffect, useId, useState } from 'react'
+import { SaveOutlined } from '@ant-design/icons'
+import { Button, Input, Space, Typography } from 'antd'
+import InputWrap from '@/components/InputWrap.tsx'
 
 const CONTAINER_STYLE: CSSProperties = {
   alignItems: 'stretch',
@@ -27,12 +29,16 @@ export default function ManeuverTextItemInput({
   multiLine,
 }: Props) {
   const id = useId()
+  const [inputValue, setInputValue] = useState('')
 
-  const inputProps = {
-    id: id,
-    value: value,
-    onChange: (e: { target: { value: string } }) => onChange(e.target.value),
-  } as const
+  useEffect(() => {
+    setInputValue(value)
+  }, [value])
+
+  const onSave = () => {
+    if (inputValue === value) return
+    onChange(inputValue)
+  }
 
   return (
     <Space.Compact direction="vertical" style={CONTAINER_STYLE}>
@@ -43,12 +49,21 @@ export default function ManeuverTextItemInput({
       </label>
       {multiLine ? (
         <Input.TextArea
-          {...inputProps}
+          id={id}
+          value={value}
           autoSize={{ minRows: 3 }}
           placeholder="改行可能"
         />
       ) : (
-        <Input {...inputProps} />
+        <Space.Compact>
+          <InputWrap
+            id={id}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onPressEnter={onSave}
+          />
+          <Button icon={<SaveOutlined />} onClick={onSave} />
+        </Space.Compact>
       )}
     </Space.Compact>
   )

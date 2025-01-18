@@ -1,6 +1,7 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react'
 import { ImportOutlined } from '@ant-design/icons'
-import { Button, Input, type InputRef, Space } from 'antd'
+import { Button, type InputRef, Space } from 'antd'
+import InputWrap from '@/components/InputWrap.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
@@ -22,12 +23,9 @@ export default function AddCharacterInput({
   const { scope } = useScreenContext()
   const { createCharacter } = useNechronicaContext()
   const { currentIsMe } = useUserAttributes()
-  // 入力の変換モードの管理
-  const [composition, setComposition] = useState(false)
   const [sheetId, setSheetId] = useState('')
 
   const onCreateCharacter = useCallback(async () => {
-    if (composition) return
     if (!sheetId.trim()) return
     if (!currentIsMe) return
     const sheetData = await NechronicaDataHelper.fetch({
@@ -40,25 +38,16 @@ export default function AddCharacterInput({
     sheetIdInputRef?.current?.blur()
     sheetIdInputRef?.current?.focus()
     createCharacter(sheetData)
-  }, [
-    characterType,
-    composition,
-    createCharacter,
-    currentIsMe,
-    sheetId,
-    sheetIdInputRef,
-  ])
+  }, [characterType, createCharacter, currentIsMe, sheetId, sheetIdInputRef])
 
   const elm = useMemo(
     () => (
       <Space.Compact size="large" style={{ alignSelf: 'flex-start' }}>
-        <Input
+        <InputWrap
           prefix={<ImportOutlined />}
           value={sheetId}
           placeholder={`追加する${label}のシートID`}
           onPressEnter={onCreateCharacter}
-          onCompositionStart={() => setComposition(true)}
-          onCompositionEnd={() => setComposition(false)}
           onChange={(e) => setSheetId(e.target.value)}
           style={{ width: 250 }}
           ref={sheetIdInputRef}

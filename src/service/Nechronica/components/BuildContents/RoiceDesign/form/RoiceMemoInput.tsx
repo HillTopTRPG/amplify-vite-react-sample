@@ -1,5 +1,6 @@
 import { useId } from 'react'
-import { ConfigProvider, Input, Space, theme, Typography } from 'antd'
+import { ConfigProvider, Space, theme, Typography } from 'antd'
+import InputWrap from '@/components/InputWrap.tsx'
 
 interface Props {
   value: string
@@ -40,7 +41,7 @@ export default function RoiceMemoInput({ value, onChange }: Props) {
           },
         }}
       >
-        <Input
+        <InputWrap
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}

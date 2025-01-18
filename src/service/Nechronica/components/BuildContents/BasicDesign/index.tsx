@@ -4,7 +4,8 @@ import {
   useCallback,
   useMemo,
 } from 'react'
-import { Col, Input, type InputProps, Radio, Row } from 'antd'
+import { Col, type InputProps, Radio, Row } from 'antd'
+import InputWrap from '@/components/InputWrap.tsx'
 import DollTypeSelectItemSet from '@/service/Nechronica/components/BuildContents/BasicDesign/DollTypeSelectItemSet.tsx'
 import { useCharacterMakeContext } from '@/service/Nechronica/components/BuildContents/context.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
@@ -155,13 +156,13 @@ export default function BasicDesign() {
         寵愛による修正
       </Col>
       <Col span={statusSpan} style={flexCenterStyle}>
-        <Input {...makeAffectionInputProps('armed')} />
+        <InputWrap {...makeAffectionInputProps('armed')} />
       </Col>
       <Col span={statusSpan} style={flexCenterStyle}>
-        <Input {...makeAffectionInputProps('mutation')} />
+        <InputWrap {...makeAffectionInputProps('mutation')} />
       </Col>
       <Col span={statusSpan} style={flexCenterStyle}>
-        <Input {...makeAffectionInputProps('modification')} />
+        <InputWrap {...makeAffectionInputProps('modification')} />
       </Col>
       <Col
         span={24 - statusSpan * 3}

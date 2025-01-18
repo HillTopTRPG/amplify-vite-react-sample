@@ -1,5 +1,6 @@
 import { type CSSProperties, useId } from 'react'
-import { Col, Input } from 'antd'
+import { Col } from 'antd'
+import InputWrap from '@/components/InputWrap.tsx'
 
 const flexCenterStyle: CSSProperties = {
   display: 'flex',
@@ -36,7 +37,7 @@ export default function TextItemSet({
         </label>
       </Col>
       <Col span={tdSpan} style={flexCenterStyle}>
-        <Input
+        <InputWrap
           id={id}
           value={value}
           addonAfter={required ? '必須' : undefined}

@@ -1,5 +1,6 @@
 import { useId } from 'react'
-import { Flex, Input, Space, theme, Typography } from 'antd'
+import { Flex, Space, theme, Typography } from 'antd'
+import InputWrap from '@/components/InputWrap.tsx'
 
 interface Props {
   value: string
@@ -30,7 +31,7 @@ export default function RoiceTargetInput({ value, onChange }: Props) {
             対象
           </Typography.Text>
         </label>
-        <Input
+        <InputWrap
           id={id}
           value={value}
           suffix="への"
