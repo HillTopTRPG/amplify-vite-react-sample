@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { RadarChartOutlined } from '@ant-design/icons'
 import { Flex, FloatButton, type InputRef, Spin } from 'antd'
+import DollFilterCollapse from './filter/DollFilterCollapse.tsx'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useScrollContainerContext } from '@/context/scrollContainer.ts'
@@ -8,8 +9,7 @@ import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
 import AddCharacterInput from '@/service/Nechronica/components/CharacterTypeScreen/AddCharacterInput.tsx'
 import CharacterSmallCards from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
-import DetailSider from '@/service/Nechronica/components/CharacterTypeScreen/DetailSider.tsx'
-import DollFilterCollapse from '@/service/Nechronica/components/CharacterTypeScreen/DollFilterCollapse.tsx'
+import CharacterDetailSider from '@/service/Nechronica/components/DetailSider/CharacterDetailSider'
 import SponsorShip from '@/service/Nechronica/components/SponsorShip.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
@@ -129,7 +129,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
             setHoverCharacter={setHoverCharacter}
           />
         </Flex>
-        <DetailSider detailList={detailList} />
+        <CharacterDetailSider detailList={detailList} />
         {scrollContainerRef.current ? (
           <FloatButton.BackTop
             duration={100}

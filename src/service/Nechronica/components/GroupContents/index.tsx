@@ -1,12 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Flex, Modal, Result, Spin } from 'antd'
+import CharacterSmallCard from '../CharacterTypeScreen/CharacterSmallCard.tsx'
+import CharacterSmallCards from '../CharacterTypeScreen/CharacterSmallCards.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
-import CharacterSmallCard from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCard.tsx'
-import CharacterSmallCards from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
-import DetailSider from '@/service/Nechronica/components/CharacterTypeScreen/DetailSider.tsx'
+import CharacterDetailSider from '@/service/Nechronica/components/DetailSider/CharacterDetailSider'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 import type { CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -106,7 +106,7 @@ export default function GroupContents() {
             setHoverCharacter={setHoverCharacter}
           />
         </Flex>
-        <DetailSider detailList={detailList} />
+        <CharacterDetailSider detailList={detailList} />
         <Modal
           title="追加するキャラを選択してください。"
           open={Boolean(targetCharacterGroup)}

@@ -16,11 +16,11 @@ import {
 } from 'antd'
 import { type CheckboxGroupProps } from 'antd/es/checkbox/Group'
 import { clone } from 'lodash-es'
+import ManeuverDetailSider from '../DetailSider/ManeuverDetailSider'
+import ListManeuverButton from './ListManeuverButton.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { getIconClass } from '@/service/Nechronica'
-import DetailSider from '@/service/Nechronica/components/ManeuverContents/DetailSider.tsx'
-import ListManeuverButton from '@/service/Nechronica/components/ManeuverContents/ListManeuverButton.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import {
   type NechronicaCharacter,
@@ -421,7 +421,7 @@ export default function ManeuverContents() {
             style={{ width: '100%' }}
           />
         </Flex>
-        <DetailSider detailList={detailList} />
+        <ManeuverDetailSider detailList={detailList} />
       </>
     ),
     [detailList, items, target],

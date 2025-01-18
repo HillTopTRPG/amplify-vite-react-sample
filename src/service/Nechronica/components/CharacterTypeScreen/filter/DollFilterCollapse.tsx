@@ -9,9 +9,9 @@ import {
   theme,
   Typography,
 } from 'antd'
+import CharacterFilterCheck from './CharacterFilterCheck.tsx'
+import styles from './DollFilterCollapse.module.css'
 import { getCharacterTypeSrc, getClassSrc } from '@/service/Nechronica'
-import CharacterFilterCheck from '@/service/Nechronica/components/CharacterTypeScreen/CharacterFilterCheck.tsx'
-import styles from '@/service/Nechronica/components/CharacterTypeScreen/index.module.css'
 import { type Filter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
 import {
   type NechronicaCharacter,

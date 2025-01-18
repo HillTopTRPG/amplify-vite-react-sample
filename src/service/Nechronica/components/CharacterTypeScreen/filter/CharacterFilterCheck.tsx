@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { ClearOutlined } from '@ant-design/icons'
 import { Button, Flex, List, Typography } from 'antd'
-import { CharacterFilterItem } from '@/service/Nechronica/components/CharacterTypeScreen/CharacterFilterItem.tsx'
+import { CharacterFilterItem } from './CharacterFilterItem.tsx'
 
 interface Props {
   getCount: (value: number) => number

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Avatar, Checkbox, List, theme, Typography } from 'antd'
 import classNames from 'classnames'
-import styles from '@/service/Nechronica/components/CharacterTypeScreen/CharacterFilterCheck.module.css'
+import styles from './CharacterFilterItem.module.css'
 
 interface Props {
   getCount: (value: number) => number
