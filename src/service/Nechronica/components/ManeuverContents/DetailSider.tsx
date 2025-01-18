@@ -9,8 +9,7 @@ interface Props {
 }
 export default function DetailSider({ detailList }: Props) {
   const { screenSize } = useScreenContext()
-  const { setViewPopoverManeuver, setEditPopoverManeuver } =
-    useNechronicaContext()
+  const { setHoverManeuverId, setClickManeuverId } = useNechronicaContext()
 
   if (screenSize.viewPortWidth < 789) {
     return (
@@ -38,8 +37,8 @@ export default function DetailSider({ detailList }: Props) {
       }}
       onScrollCapture={(e) => {
         e.stopPropagation()
-        setViewPopoverManeuver('')
-        setEditPopoverManeuver('')
+        setHoverManeuverId('')
+        setClickManeuverId('')
       }}
     >
       <Flex

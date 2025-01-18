@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import { Avatar, Flex, type FlexProps, List } from 'antd'
-import ManeuverButton from './ManeuverButton.tsx'
+import ManeuverButton from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
 import unknownImg from '@/service/Nechronica/images/unknown.png'
 import {
   type NechronicaBasic,
@@ -17,14 +17,17 @@ const containerFlexProps: Omit<FlexProps, 'children'> = {
 
 interface Props {
   maneuverList: NechronicaManeuver[]
+  hoverContent?: (maneuver: NechronicaManeuver) => ReactNode
+  clickContent?: (maneuver: NechronicaManeuver) => ReactNode
   src: string
   parts: number[]
   basic: NechronicaBasic
   isSavantSkill: boolean
 }
-
 export default function PartsListItem({
   maneuverList,
+  hoverContent,
+  clickContent,
   src,
   parts,
   basic,
@@ -41,12 +44,21 @@ export default function PartsListItem({
         <ManeuverButton
           key={index}
           maneuver={maneuver}
+          hoverContent={hoverContent?.call(null, maneuver)}
+          clickContent={clickContent?.call(null, maneuver)}
           position={basic.position}
           mainClass={basic.mainClass}
           subClass={basic.subClass}
         />
       )),
-    [filteredManeuver, basic.position, basic.mainClass, basic.subClass],
+    [
+      filteredManeuver,
+      hoverContent,
+      clickContent,
+      basic.position,
+      basic.mainClass,
+      basic.subClass,
+    ],
   )
 
   const elm = useMemo(

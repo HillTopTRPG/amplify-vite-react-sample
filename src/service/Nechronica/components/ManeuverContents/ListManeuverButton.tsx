@@ -1,4 +1,5 @@
-import ManeuverButton from '@/service/Nechronica/components/CharacterCard/ManeuverButton.tsx'
+import ManeuverButton from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
+import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
 import {
   type NechronicaCharacter,
   type NechronicaManeuver,
@@ -20,6 +21,12 @@ export default function ListManeuverButton({
   return (
     <ManeuverButton
       maneuver={maneuver}
+      hoverContent={
+        <ManeuverPopoverContents type="hover" maneuver={maneuver} />
+      }
+      clickContent={
+        <ManeuverPopoverContents type="click" maneuver={maneuver} />
+      }
       position={position}
       mainClass={mainClass}
       subClass={subClass}

@@ -2,6 +2,7 @@ import { type Dispatch, type SetStateAction, useState } from 'react'
 import constate from 'constate'
 import type {
   NechronicaBasic,
+  NechronicaManeuver,
   NechronicaRoice,
   NechronicaType,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
@@ -53,6 +54,38 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
       modification: '',
     })
 
+    // マニューバ
+    const [maneuvers, setManeuvers] = useState<NechronicaManeuver[]>([])
+    const addManeuver = () => {
+      const maneuver: NechronicaManeuver = {
+        lost: false,
+        used: false,
+        type: 0,
+        parts: 0,
+        name: '名無し',
+        timing: 0,
+        cost: '',
+        range: '',
+        memo: '',
+        shozoku: '',
+        ignoreBravado: false,
+        isBravado: false,
+        isUnknown: false,
+        isAdded: true,
+      }
+      setManeuvers((prev) => [...prev, maneuver])
+    }
+    const updateManeuver = (idx: number, maneuver: NechronicaManeuver) => {
+      setManeuvers((prev) => {
+        const newList = [...prev]
+        newList[idx] = maneuver
+        return newList
+      })
+    }
+    const deleteManeuver = (index: number) => {
+      setManeuvers((prev) => prev.filter((_, idx) => idx !== index))
+    }
+
     // 未練
     const [roiceList, setRoiceList] = useState<NechronicaRoice[]>([])
     const addRoice = () => {
@@ -66,9 +99,9 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
     }
     const updateRoice = (idx: number, roice: NechronicaRoice) => {
       setRoiceList((prev) => {
-        const newRoiceList = [...prev]
-        newRoiceList[idx] = roice
-        return newRoiceList
+        const newList = [...prev]
+        newList[idx] = roice
+        return newList
       })
     }
     const deleteRoice = (index: number) => {
@@ -107,9 +140,14 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
       affection,
       setAffection,
 
+      // マニューバ
+      maneuvers,
+      addManeuver,
+      updateManeuver,
+      deleteManeuver,
+
       // 未練
       roiceList,
-      setRoiceList,
       addRoice,
       updateRoice,
       deleteRoice,

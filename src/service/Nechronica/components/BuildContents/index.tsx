@@ -12,6 +12,7 @@ import BasicDesign from './BasicDesign'
 import CharacterTypeRadioGroup from './CharacterTypeRadioGroup.tsx'
 import PersonalDataDesign from './PersonalDataDesign'
 import { useCharacterMakeContext } from './context.ts'
+import ManeuverDesign from '@/service/Nechronica/components/BuildContents/ManeuverDesign'
 import RoiceDesign from '@/service/Nechronica/components/BuildContents/RoiceDesign'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
@@ -29,7 +30,8 @@ const dollOnlyCollapseKeys = ['basic', 'roice']
 
 export default function BuildContents() {
   const { loading } = useNechronicaContext()
-  const { characterType, memo, setMemo, addRoice } = useCharacterMakeContext()
+  const { characterType, memo, setMemo, addRoice, addManeuver } =
+    useCharacterMakeContext()
 
   const [collapseKeys, setCollapseKeys] = useState<string[]>([])
 
@@ -55,6 +57,27 @@ export default function BuildContents() {
           </Flex>
         ),
         collapsible: characterType === 'doll' ? undefined : 'disabled',
+      },
+      {
+        key: 'maneuver',
+        label: 'マニューバ',
+        children: (
+          <Flex {...maneuverContainerProps}>
+            <ManeuverDesign />
+          </Flex>
+        ),
+        extra: (
+          <Button
+            type="text"
+            size="small"
+            onClick={(e) => {
+              addManeuver()
+              e.stopPropagation()
+            }}
+          >
+            新規追加
+          </Button>
+        ),
       },
       {
         key: 'roice',
@@ -102,7 +125,7 @@ export default function BuildContents() {
         ),
       },
     ],
-    [addRoice, characterType, memo, setMemo],
+    [addManeuver, addRoice, characterType, memo, setMemo],
   )
 
   const contents = useMemo(

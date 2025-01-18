@@ -2,12 +2,13 @@ import { useMemo } from 'react'
 import { Flex, List, Typography, Image } from 'antd'
 import CharacterAvatar from './CharacterAvatar.tsx'
 import ClassAvatar from './ClassAvatar.tsx'
-import ManeuverButton from './ManeuverButton.tsx'
 import PartsListItem from './PartsListItem.tsx'
 import RoiceButton from './RoiceButton.tsx'
 import styles from './index.module.css'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
 import { getCharacterTypeSrc, PARTS_TUPLE } from '@/service/Nechronica'
+import ManeuverButton from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
+import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 // const MANEUVER_LINE_RANGE = [3, 8] as const
@@ -57,6 +58,12 @@ export default function CharacterCard({ character }: Props) {
           <PartsListItem
             key={index}
             maneuverList={character.sheetData.maneuverList}
+            hoverContent={(maneuver) => (
+              <ManeuverPopoverContents type="hover" maneuver={maneuver} />
+            )}
+            clickContent={(maneuver) => (
+              <ManeuverPopoverContents type="click" maneuver={maneuver} />
+            )}
             src={src}
             parts={parts}
             basic={character.sheetData.basic}
@@ -78,6 +85,12 @@ export default function CharacterCard({ character }: Props) {
           <ManeuverButton
             key={index}
             maneuver={maneuver}
+            hoverContent={
+              <ManeuverPopoverContents type="hover" maneuver={maneuver} />
+            }
+            clickContent={
+              <ManeuverPopoverContents type="click" maneuver={maneuver} />
+            }
             position={basic.position}
             mainClass={basic.mainClass}
             subClass={basic.subClass}

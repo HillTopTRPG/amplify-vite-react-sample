@@ -270,8 +270,8 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
     [characterGroups, characters],
   )
 
-  const [viewPopoverManeuver, setViewPopoverManeuver] = useState('')
-  const [editPopoverManeuver, setEditPopoverManeuver] = useState('')
+  const [hoverManeuverId, setHoverManeuverId] = useState('')
+  const [clickManeuverId, setClickManeuverId] = useState('')
 
   return {
     loading: characterLoading || characterGroupLoading,
@@ -284,9 +284,9 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
     createCharacterGroup,
     updateCharacterGroup,
     deleteCharacterGroup,
-    viewPopoverManeuver,
-    setViewPopoverManeuver,
-    editPopoverManeuver,
-    setEditPopoverManeuver,
+    hoverManeuverId,
+    setHoverManeuverId,
+    clickManeuverId,
+    setClickManeuverId,
   }
 })

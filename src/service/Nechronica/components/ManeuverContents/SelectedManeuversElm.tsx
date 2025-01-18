@@ -1,5 +1,5 @@
 import { Flex, Skeleton, Spin } from 'antd'
-import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/ManeuverPopoverContents.tsx'
+import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
 import { type ManeuverInfo } from '@/service/Nechronica/components/ManeuverContents/index.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
@@ -19,7 +19,11 @@ export default function SelectedManeuversElm({ detailList }: Props) {
   }
   return detailList.map((info) => {
     return (
-      <ManeuverPopoverContents key={info.tempId} maneuver={info.maneuver} />
+      <ManeuverPopoverContents
+        key={info.tempId}
+        type="hover"
+        maneuver={info.maneuver}
+      />
     )
   })
 }

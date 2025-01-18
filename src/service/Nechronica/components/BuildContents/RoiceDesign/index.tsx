@@ -1,5 +1,5 @@
 import { Empty, Flex, List } from 'antd'
-import RoiceEdit from './RoiceEdit.tsx'
+import EditableRoice from './EditableRoice.tsx'
 import { useCharacterMakeContext } from '@/service/Nechronica/components/BuildContents/context.ts'
 
 export default function RoiceDesign() {
@@ -21,7 +21,7 @@ export default function RoiceDesign() {
         }}
         dataSource={roiceList}
         renderItem={(roice, idx) => {
-          return <RoiceEdit key={idx} roice={roice} index={idx} />
+          return <EditableRoice key={idx} roice={roice} index={idx} />
         }}
       />
     </Flex>
