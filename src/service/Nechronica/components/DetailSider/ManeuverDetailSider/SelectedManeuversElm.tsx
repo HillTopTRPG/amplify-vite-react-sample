@@ -1,4 +1,4 @@
-import { Flex, Skeleton, Spin } from 'antd'
+import { Flex, Spin, theme, Typography } from 'antd'
 import { clone } from 'lodash-es'
 import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
 import { type ManeuverInfo } from '@/service/Nechronica/components/ManeuverContents/index.tsx'
@@ -9,15 +9,26 @@ interface Props {
 }
 export default function SelectedManeuversElm({ detailList }: Props) {
   const { loading, updateCharacter } = useNechronicaContext()
+  const { token } = theme.useToken()
+
   if (loading) return <Spin size="large" />
+
   if (detailList.length === 0) {
     return (
       <Flex vertical style={{ padding: '0 10px', width: '100%' }}>
-        <Skeleton title paragraph={{ rows: 0 }} />
-        <Skeleton round />
+        <Typography.Title
+          level={4}
+          style={{ color: token.colorTextDescription }}
+        >
+          マニューバプレビュー
+        </Typography.Title>
+        <Typography.Text style={{ color: token.colorTextDescription }}>
+          選択したマニューバの詳細を表示します。
+        </Typography.Text>
       </Flex>
     )
   }
+
   return detailList.map((info) => {
     return (
       <ManeuverPopoverContents
