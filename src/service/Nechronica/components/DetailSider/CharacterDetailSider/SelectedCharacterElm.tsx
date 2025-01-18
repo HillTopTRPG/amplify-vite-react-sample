@@ -4,15 +4,15 @@ import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
-  detailList: string[]
+  characters: NechronicaCharacter[]
 }
-export default function SelectedCharacterElm({ detailList }: Props) {
-  const { loading, characters } = useNechronicaContext()
+export default function SelectedCharacterElm({ characters }: Props) {
+  const { loading } = useNechronicaContext()
   const { token } = theme.useToken()
 
   if (loading) return <Spin size="large" />
 
-  if (detailList.length === 0) {
+  if (characters.length === 0) {
     return (
       <Flex vertical style={{ padding: '0 10px' }}>
         <Typography.Title
@@ -28,10 +28,5 @@ export default function SelectedCharacterElm({ detailList }: Props) {
     )
   }
 
-  return detailList
-    .map((d) => characters.find((c) => c.id === d))
-    .filter((c): c is NechronicaCharacter => Boolean(c))
-    .map((c) => {
-      return <CharacterCard key={c.id} character={c} />
-    })
+  return characters.map((c) => <CharacterCard key={c.id} character={c} />)
 }

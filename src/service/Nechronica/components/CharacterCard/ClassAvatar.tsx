@@ -11,6 +11,7 @@ export default function ClassAvatar({ value }: Props) {
   return (
     <Flex vertical align="center">
       <Typography.Text
+        ellipsis
         style={{ fontSize: 10 }}
         onClick={(e) => e.stopPropagation()}
       >

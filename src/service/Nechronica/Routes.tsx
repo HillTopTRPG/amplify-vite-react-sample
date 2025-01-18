@@ -5,6 +5,7 @@ import { service } from './index'
 import { ScreenProvider } from '@/context/screenContext.ts'
 import { UserAttributesProvider } from '@/context/userAttributesContext.ts'
 import MainLayout from '@/layouts/MainLayout'
+import { NechronicaCharacterMakeProvider } from '@/service/Nechronica/components/BuildContents/context.ts'
 import { NechronicaProvider } from '@/service/Nechronica/context.ts'
 import { getKeys } from '@/utils/types.ts'
 
@@ -25,7 +26,9 @@ const screenRouteObj: RouteObject = {
     <ScreenProvider {...service}>
       <UserAttributesProvider>
         <NechronicaProvider>
-          <Outlet />
+          <NechronicaCharacterMakeProvider>
+            <Outlet />
+          </NechronicaCharacterMakeProvider>
         </NechronicaProvider>
       </UserAttributesProvider>
     </ScreenProvider>

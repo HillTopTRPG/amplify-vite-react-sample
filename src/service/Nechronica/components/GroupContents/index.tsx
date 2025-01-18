@@ -106,7 +106,7 @@ export default function GroupContents() {
             setHoverCharacter={setHoverCharacter}
           />
         </Flex>
-        <CharacterDetailSider detailList={detailList} />
+        <CharacterDetailSider characters={detailList} />
         <Modal
           title="追加するキャラを選択してください。"
           open={Boolean(targetCharacterGroup)}

@@ -14,6 +14,7 @@ import {
   type NechronicaAdditionalData,
   type NechronicaCharacter,
   type NechronicaDataHelper,
+  type NechronicaManeuver,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { type PromiseType, typedOmit, typedPick } from '@/utils/types.ts'
 
@@ -58,6 +59,13 @@ const updateCharacterGroup = (group: CharacterGroup) => {
 }
 const deleteCharacterGroup = (id: string) => {
   client.models.CharacterGroup.delete({ id })
+}
+
+export type ManeuverInfo = {
+  maneuver: NechronicaManeuver
+  maneuverIndex: number
+  character: NechronicaCharacter
+  iconClass: string
 }
 
 export const [NechronicaProvider, useNechronicaContext] = constate(() => {
@@ -273,6 +281,15 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
   const [hoverManeuverId, setHoverManeuverId] = useState('')
   const [clickManeuverId, setClickManeuverId] = useState('')
 
+  const setClickManeuverIdWrap = (fx: string | ((prev: string) => string)) => {
+    setClickManeuverId(fx)
+    setHoverManeuverId('')
+  }
+
+  const [selectedManeuverInfos, setSelectedManeuverInfos] = useState<
+    ManeuverInfo[]
+  >([])
+
   return {
     loading: characterLoading || characterGroupLoading,
     characters,
@@ -287,6 +304,8 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
     hoverManeuverId,
     setHoverManeuverId,
     clickManeuverId,
-    setClickManeuverId,
+    setClickManeuverId: setClickManeuverIdWrap,
+    selectedManeuverInfos,
+    setSelectedManeuverInfos,
   }
 })

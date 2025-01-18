@@ -14,6 +14,7 @@ import PersonalDataDesign from './PersonalDataDesign'
 import { useCharacterMakeContext } from './context.ts'
 import ManeuverDesign from '@/service/Nechronica/components/BuildContents/ManeuverDesign'
 import RoiceDesign from '@/service/Nechronica/components/BuildContents/RoiceDesign'
+import CharacterDetailSider from '@/service/Nechronica/components/DetailSider/CharacterDetailSider'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 const maneuverContainerProps: Omit<FlexProps, 'children'> = {
@@ -23,15 +24,22 @@ const maneuverContainerProps: Omit<FlexProps, 'children'> = {
     alignContent: 'flex-start',
   },
   wrap: true,
-  gap: 11,
+  gap: 8,
 } as const
 
 const dollOnlyCollapseKeys = ['basic', 'roice']
 
 export default function BuildContents() {
   const { loading } = useNechronicaContext()
-  const { characterType, memo, setMemo, addRoice, addManeuver } =
-    useCharacterMakeContext()
+  const {
+    makingNechronicaCharacter,
+    characterType,
+    memo,
+    setMemo,
+    addRoice,
+    setManeuvers,
+    addManeuver,
+  } = useCharacterMakeContext()
 
   const [collapseKeys, setCollapseKeys] = useState<string[]>([])
 
@@ -67,16 +75,28 @@ export default function BuildContents() {
           </Flex>
         ),
         extra: (
-          <Button
-            type="text"
-            size="small"
-            onClick={(e) => {
-              addManeuver()
-              e.stopPropagation()
-            }}
-          >
-            新規追加
-          </Button>
+          <>
+            <Button
+              type="text"
+              size="small"
+              onClick={(e) => {
+                addManeuver()
+                e.stopPropagation()
+              }}
+            >
+              新規追加
+            </Button>
+            <Button
+              type="text"
+              size="small"
+              onClick={(e) => {
+                setManeuvers([])
+                e.stopPropagation()
+              }}
+            >
+              All clear
+            </Button>
+          </>
         ),
       },
       {
@@ -87,6 +107,7 @@ export default function BuildContents() {
             <RoiceDesign />
           </Flex>
         ),
+        collapsible: characterType === 'doll' ? undefined : 'disabled',
         extra:
           characterType === 'doll' ? (
             <Button
@@ -125,7 +146,7 @@ export default function BuildContents() {
         ),
       },
     ],
-    [addManeuver, addRoice, characterType, memo, setMemo],
+    [addManeuver, addRoice, characterType, memo, setManeuvers, setMemo],
   )
 
   const contents = useMemo(
@@ -144,15 +165,17 @@ export default function BuildContents() {
           <CharacterTypeRadioGroup />
           <Collapse
             items={items}
+            size="small"
             activeKey={collapseKeys}
             destroyInactivePanel={true}
             onChange={setCollapseKeys}
             style={{ width: '100%' }}
           />
         </Flex>
+        <CharacterDetailSider characters={[makingNechronicaCharacter]} />
       </>
     ),
-    [collapseKeys, items],
+    [collapseKeys, items, makingNechronicaCharacter],
   )
 
   if (loading) return <Spin size="large" />

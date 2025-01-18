@@ -1,26 +1,32 @@
 import { Flex } from 'antd'
+import ManeuverImportButton from './ManeuverImportButton.tsx'
 import SelectedManeuversElm from './SelectedManeuversElm.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { type ManeuverInfo } from '@/service/Nechronica/components/ManeuverContents/index.tsx'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
-interface Props {
-  detailList: ManeuverInfo[]
-}
-export default function ManeuverDetailSider({ detailList }: Props) {
+export default function ManeuverDetailSider() {
   const { screenSize } = useScreenContext()
   const { setHoverManeuverId, setClickManeuverId } = useNechronicaContext()
 
   if (screenSize.viewPortWidth < 789) {
     return (
       <Flex
+        vertical
         gap={8}
-        justify="space-evenly"
         align="flex-start"
-        wrap
+        justify="flex-start"
         style={{ minHeight: '100vh', alignContent: 'flex-start' }}
       >
-        <SelectedManeuversElm detailList={detailList} />
+        <ManeuverImportButton />
+        <Flex
+          gap={8}
+          align="flex-start"
+          justify="space-evenly"
+          wrap
+          style={{ alignContent: 'flex-start' }}
+        >
+          <SelectedManeuversElm />
+        </Flex>
       </Flex>
     )
   }
@@ -47,7 +53,8 @@ export default function ManeuverDetailSider({ detailList }: Props) {
         gap={8}
         style={{ minHeight: 'calc(100vh - 48px)' }}
       >
-        <SelectedManeuversElm detailList={detailList} />
+        <ManeuverImportButton />
+        <SelectedManeuversElm />
       </Flex>
     </div>
   )

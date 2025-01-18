@@ -21,11 +21,10 @@ import ListManeuverButton from './ListManeuverButton.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import { getIconClass } from '@/service/Nechronica'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import {
-  type NechronicaCharacter,
-  type NechronicaManeuver,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+  type ManeuverInfo,
+  useNechronicaContext,
+} from '@/service/Nechronica/context.ts'
 import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const options: CheckboxGroupProps['options'] = [
@@ -48,13 +47,6 @@ const maneuverContainerProps: Omit<FlexProps, 'children'> = {
   gap: 11,
 } as const
 
-export type ManeuverInfo = {
-  maneuver: NechronicaManeuver
-  maneuverIndex: number
-  character: NechronicaCharacter
-  iconClass: string
-}
-
 const getPosition = (info: ManeuverInfo) => {
   const { position, mainClass, subClass } = info.character.sheetData.basic
   const iconClass = getIconClass(info.maneuver, position, mainClass, subClass)
@@ -68,7 +60,12 @@ const getClass = (info: ManeuverInfo) => {
 }
 
 export default function ManeuverContents() {
-  const { loading, characters } = useNechronicaContext()
+  const {
+    loading,
+    characters,
+    selectedManeuverInfos,
+    setSelectedManeuverInfos,
+  } = useNechronicaContext()
   const { currentUser } = useUserAttributes()
   const { scope } = useScreenContext()
   const [target, setTarget] = useState<'own' | 'server'>('own')
@@ -83,18 +80,16 @@ export default function ManeuverContents() {
     [characters, currentUser, scope, target],
   )
 
-  const [detailList, setDetailList] = useState<ManeuverInfo[]>([])
-
   const onClickManeuver = useCallback(
     (info: ManeuverInfo) => {
       if (
-        detailList.find(
+        selectedManeuverInfos.find(
           (d) =>
             `${d.character.id}-${d.maneuverIndex}` ===
             `${info.character.id}-${info.maneuverIndex}`,
         )
       ) {
-        setDetailList((prev) =>
+        setSelectedManeuverInfos((prev) =>
           prev.filter(
             (d) =>
               `${d.character.id}-${d.maneuverIndex}` !==
@@ -102,10 +97,10 @@ export default function ManeuverContents() {
           ),
         )
       } else {
-        setDetailList((prev) => [info, ...prev])
+        setSelectedManeuverInfos((prev) => [info, ...prev])
       }
     },
-    [detailList],
+    [selectedManeuverInfos, setSelectedManeuverInfos],
   )
 
   const getSourceManeuver = useCallback(
@@ -118,13 +113,13 @@ export default function ManeuverContents() {
 
   useEffect(() => {
     if (
-      JSON.stringify(detailList.map((info) => info.maneuver)) ===
-      JSON.stringify(detailList.map(getSourceManeuver))
+      JSON.stringify(selectedManeuverInfos.map((info) => info.maneuver)) ===
+      JSON.stringify(selectedManeuverInfos.map(getSourceManeuver))
     ) {
       return
     }
-    setDetailList(
-      detailList.map((info) => {
+    setSelectedManeuverInfos(
+      selectedManeuverInfos.map((info) => {
         const character = characters.find((c) => c.id === info.character.id)
         const newInfo = clone(info)
         if (!character) return newInfo
@@ -132,7 +127,12 @@ export default function ManeuverContents() {
         return newInfo
       }),
     )
-  }, [characters, detailList, getSourceManeuver])
+  }, [
+    characters,
+    selectedManeuverInfos,
+    getSourceManeuver,
+    setSelectedManeuverInfos,
+  ])
 
   const maneuvers: ManeuverInfo[] = useMemo(
     () =>
@@ -169,14 +169,14 @@ export default function ManeuverContents() {
     (info: ManeuverInfo) => ({
       maneuver: info.maneuver,
       character: info.character,
-      selected: detailList.some(
+      selected: selectedManeuverInfos.some(
         (d) =>
           `${d.character.id}-${d.maneuverIndex}` ===
           `${info.character.id}-${info.maneuverIndex}`,
       ),
       onClick: () => onClickManeuver(info),
     }),
-    [detailList, onClickManeuver],
+    [selectedManeuverInfos, onClickManeuver],
   )
 
   const allManeuvers = useMemo(
@@ -303,11 +303,11 @@ export default function ManeuverContents() {
   const getCountDetail = useCallback(
     (elms: ReactElement[]) =>
       elms.filter((elm) =>
-        detailList.some(
+        selectedManeuverInfos.some(
           (m) => `${m.character.id}-${m.maneuverIndex}` === elm.key,
         ),
       ).length,
-    [detailList],
+    [selectedManeuverInfos],
   )
 
   const items: CollapseProps['items'] = useMemo(
@@ -417,14 +417,15 @@ export default function ManeuverContents() {
           />
           <Collapse
             items={items}
+            size="small"
             defaultActiveKey={['all']}
             style={{ width: '100%' }}
           />
         </Flex>
-        <ManeuverDetailSider detailList={detailList} />
+        <ManeuverDetailSider />
       </>
     ),
-    [detailList, items, target],
+    [items, target],
   )
 
   if (loading) return <Spin size="large" />

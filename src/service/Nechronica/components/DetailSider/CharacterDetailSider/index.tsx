@@ -2,18 +2,19 @@ import { Flex } from 'antd'
 import SelectedCharacterElm from './SelectedCharacterElm.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useNechronicaContext } from '@/service/Nechronica/context.ts'
+import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
-  detailList: string[]
+  characters: NechronicaCharacter[]
 }
-export default function CharacterDetailSider({ detailList }: Props) {
+export default function CharacterDetailSider({ characters }: Props) {
   const { screenSize } = useScreenContext()
   const { setHoverManeuverId, setClickManeuverId } = useNechronicaContext()
 
   if (screenSize.viewPortWidth < 789) {
     return (
       <Flex vertical align="stretch" gap={8} style={{ minHeight: '100vh' }}>
-        <SelectedCharacterElm detailList={detailList} />
+        <SelectedCharacterElm characters={characters} />
       </Flex>
     )
   }
@@ -40,7 +41,7 @@ export default function CharacterDetailSider({ detailList }: Props) {
         gap={8}
         style={{ minHeight: 'calc(100vh - 48px)' }}
       >
-        <SelectedCharacterElm detailList={detailList} />
+        <SelectedCharacterElm characters={characters} />
       </Flex>
     </div>
   )

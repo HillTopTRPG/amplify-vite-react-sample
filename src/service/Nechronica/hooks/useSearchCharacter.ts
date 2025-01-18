@@ -86,7 +86,7 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
     [characters, filter],
   )
 
-  const [detailList, setDetailList] = useState<string[]>([])
+  const [detailList, setDetailList] = useState<NechronicaCharacter[]>([])
 
   useEffect(() => {
     const list = [...selectedCharacters]
@@ -95,8 +95,12 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
       if (index !== -1) list.splice(index, 1)
       list.unshift(hoverCharacter)
     }
-    setDetailList(list)
-  }, [hoverCharacter, selectedCharacters, setDetailList])
+    setDetailList(
+      list
+        .map((id) => characters.find((c) => c.id === id))
+        .filter((c): c is NechronicaCharacter => Boolean(c)),
+    )
+  }, [characters, hoverCharacter, selectedCharacters, setDetailList])
 
   return {
     filter,

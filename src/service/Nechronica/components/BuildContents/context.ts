@@ -1,10 +1,11 @@
 import { type Dispatch, type SetStateAction, useState } from 'react'
 import constate from 'constate'
-import type {
-  NechronicaBasic,
-  NechronicaManeuver,
-  NechronicaRoice,
-  NechronicaType,
+import {
+  type NechronicaBasic,
+  type NechronicaCharacter,
+  type NechronicaManeuver,
+  type NechronicaRoice,
+  type NechronicaType,
 } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
@@ -124,7 +125,43 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
     // メモ
     const [memo, setMemo] = useState('')
 
+    const makingNechronicaCharacter: NechronicaCharacter = {
+      id: '',
+      name: characterName,
+      additionalData: {
+        type: characterType,
+        sheetId: '',
+        stared: false,
+      },
+      sheetData: {
+        basic: {
+          characterName,
+          position,
+          mainClass,
+          subClass,
+          bonusStatus,
+          affection,
+          basePosition,
+          hairColor,
+          eyeColor,
+          skinColor,
+          height,
+          weight,
+          age,
+          shuzoku,
+          carma,
+        },
+        maneuverList: maneuvers,
+        roiceList: roiceList,
+      },
+      owner: '-',
+      public: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+
     return {
+      makingNechronicaCharacter,
       characterType,
       setCharacterType: setCharacterTypeWrap,
 
@@ -142,6 +179,7 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
 
       // マニューバ
       maneuvers,
+      setManeuvers,
       addManeuver,
       updateManeuver,
       deleteManeuver,

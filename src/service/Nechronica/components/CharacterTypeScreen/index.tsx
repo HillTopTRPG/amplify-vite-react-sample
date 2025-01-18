@@ -129,7 +129,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
             setHoverCharacter={setHoverCharacter}
           />
         </Flex>
-        <CharacterDetailSider detailList={detailList} />
+        <CharacterDetailSider characters={detailList} />
         {scrollContainerRef.current ? (
           <FloatButton.BackTop
             duration={100}
