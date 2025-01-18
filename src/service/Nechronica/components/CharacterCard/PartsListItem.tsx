@@ -17,8 +17,8 @@ const containerFlexProps: Omit<FlexProps, 'children'> = {
 
 interface Props {
   maneuverList: NechronicaManeuver[]
-  hoverContent?: (maneuver: NechronicaManeuver) => ReactNode
-  clickContent?: (maneuver: NechronicaManeuver) => ReactNode
+  hoverContent?: (maneuver: NechronicaManeuver, index: number) => ReactNode
+  clickContent?: (maneuver: NechronicaManeuver, index: number) => ReactNode
   src: string
   parts: number[]
   basic: NechronicaBasic
@@ -33,26 +33,29 @@ export default function PartsListItem({
   basic,
   isSavantSkill,
 }: Props) {
-  const filteredManeuver = useMemo(
-    () => maneuverList.filter((maneuver) => parts.includes(maneuver.parts)),
+  const filteredManeuvers = useMemo(
+    () =>
+      maneuverList
+        .map((maneuver, index) => ({ maneuver, index }))
+        .filter((info) => parts.includes(info.maneuver.parts)),
     [maneuverList, parts],
   )
 
   const maneuverButtons = useMemo(
     () =>
-      filteredManeuver.map((maneuver, index) => (
+      filteredManeuvers.map((info, index) => (
         <ManeuverButton
           key={index}
-          maneuver={maneuver}
-          hoverContent={hoverContent?.call(null, maneuver)}
-          clickContent={clickContent?.call(null, maneuver)}
+          maneuver={info.maneuver}
+          hoverContent={hoverContent?.call(null, info.maneuver, info.index)}
+          clickContent={clickContent?.call(null, info.maneuver, info.index)}
           position={basic.position}
           mainClass={basic.mainClass}
           subClass={basic.subClass}
         />
       )),
     [
-      filteredManeuver,
+      filteredManeuvers,
       hoverContent,
       clickContent,
       basic.position,
@@ -83,5 +86,5 @@ export default function PartsListItem({
     [isSavantSkill, maneuverButtons, src],
   )
 
-  return isSavantSkill && filteredManeuver.length === 0 ? null : elm
+  return isSavantSkill && filteredManeuvers.length === 0 ? null : elm
 }

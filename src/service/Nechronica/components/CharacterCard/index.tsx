@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Flex, List, Typography, Image } from 'antd'
+import { clone } from 'lodash-es'
 import CharacterAvatar from './CharacterAvatar.tsx'
 import ClassAvatar from './ClassAvatar.tsx'
 import PartsListItem from './PartsListItem.tsx'
@@ -9,25 +10,14 @@ import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
 import { getCharacterTypeSrc, PARTS_TUPLE } from '@/service/Nechronica'
 import ManeuverButton from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
 import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
+import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
-
-// const MANEUVER_LINE_RANGE = [3, 8] as const
-//
-// function getManeuverLineNum(maneuvers: NechronicaManeuver[]) {
-//   const lineManeuverMax = PARTS_TUPLE.map(
-//     (tuple) => maneuvers.filter((m) => tuple[1].includes(m.parts)).length,
-//   ).reduce((prev, curr) => (prev > curr ? prev : curr))
-//   return lineManeuverMax < MANEUVER_LINE_RANGE[0]
-//     ? MANEUVER_LINE_RANGE[0]
-//     : lineManeuverMax > MANEUVER_LINE_RANGE[1]
-//       ? MANEUVER_LINE_RANGE[1]
-//       : lineManeuverMax
-// }
 
 interface Props {
   character: NechronicaCharacter
 }
 export default function CharacterCard({ character }: Props) {
+  const { updateCharacter } = useNechronicaContext()
   const basic = character.sheetData.basic
   const characterType = character.additionalData.type
 
@@ -61,8 +51,17 @@ export default function CharacterCard({ character }: Props) {
             hoverContent={(maneuver) => (
               <ManeuverPopoverContents type="hover" maneuver={maneuver} />
             )}
-            clickContent={(maneuver) => (
-              <ManeuverPopoverContents type="click" maneuver={maneuver} />
+            clickContent={(maneuver, index) => (
+              <ManeuverPopoverContents
+                type="click"
+                maneuver={maneuver}
+                updateManeuver={(makeManeuver) => {
+                  const newCharacter = clone(character)
+                  newCharacter.sheetData.maneuverList[index] =
+                    makeManeuver(maneuver)
+                  updateCharacter(newCharacter)
+                }}
+              />
             )}
             src={src}
             parts={parts}
@@ -72,11 +71,7 @@ export default function CharacterCard({ character }: Props) {
         ))}
       </List>
     )
-  }, [
-    character.sheetData.maneuverList,
-    character.sheetData.basic,
-    characterType,
-  ])
+  }, [character, characterType, updateCharacter])
 
   const maneuverButtons = useMemo(
     () => (
@@ -89,7 +84,16 @@ export default function CharacterCard({ character }: Props) {
               <ManeuverPopoverContents type="hover" maneuver={maneuver} />
             }
             clickContent={
-              <ManeuverPopoverContents type="click" maneuver={maneuver} />
+              <ManeuverPopoverContents
+                type="click"
+                maneuver={maneuver}
+                updateManeuver={(makeManeuver) => {
+                  const newCharacter = clone(character)
+                  newCharacter.sheetData.maneuverList[index] =
+                    makeManeuver(maneuver)
+                  updateCharacter(newCharacter)
+                }}
+              />
             }
             position={basic.position}
             mainClass={basic.mainClass}
@@ -99,10 +103,11 @@ export default function CharacterCard({ character }: Props) {
       </Flex>
     ),
     [
-      character.sheetData.maneuverList,
+      character,
       basic.position,
       basic.mainClass,
       basic.subClass,
+      updateCharacter,
     ],
   )
 
