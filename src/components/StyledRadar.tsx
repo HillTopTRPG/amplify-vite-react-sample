@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
 import { useThemeContext } from '@/context/themeContext.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const NECHRONICA_MANEUVER_TYPES = [
   'その他',
@@ -23,36 +23,35 @@ type CharacterChartData = {
   score: number
 }
 
-const makeChartItemBase = (
-  item: string,
-  { id, sheetData }: NechronicaCharacter,
-): CharacterChartData => ({
-  key: `${id}-${item}`,
+const makeChartItemBase = (item: string): CharacterChartData => ({
+  key: `${item}`,
   item,
-  type: sheetData.basic.characterName,
+  type: '-',
   score: 0,
 })
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function makeChartData(d: NechronicaCharacter) {
   const items = [
-    makeChartItemBase('通常技', d),
-    makeChartItemBase('必殺技', d),
-    makeChartItemBase('行動値増加', d),
-    makeChartItemBase('補助', d),
-    makeChartItemBase('妨害', d),
-    makeChartItemBase('防御/生贄', d),
-    makeChartItemBase('移動', d),
+    makeChartItemBase('通常技'),
+    makeChartItemBase('必殺技'),
+    makeChartItemBase('行動値増加'),
+    makeChartItemBase('補助'),
+    makeChartItemBase('妨害'),
+    makeChartItemBase('防御/生贄'),
+    makeChartItemBase('移動'),
   ]
+  let allZero = true
   d.sheetData.maneuverList.forEach((maneuver) => {
-    NECHRONICA_MANEUVER_TYPES.filter(
-      (_, index) => index === maneuver.type,
-    ).forEach((type) => {
-      const item = items.find((item) => item.item === type)
-      if (!item) return
-      item.score += 1
-    })
+    const type = NECHRONICA_MANEUVER_TYPES[maneuver.type]
+    const item = items.find((item) => item.item === type)
+    if (!item) return
+    item.score += 1
+    allZero = false
   })
+  if (allZero) {
+    items.forEach((item) => (item.score = 0.1))
+  }
   return items
 }
 
@@ -86,6 +85,11 @@ export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
     [lastItem, onChangeItem],
   )
 
+  const isAllZero = useMemo(
+    () => data.every((d: CharacterChartData) => d.score === 0.1),
+    [data],
+  )
+
   const config: GetProps<typeof Radar> = useMemo(
     () => ({
       theme,
@@ -104,7 +108,7 @@ export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
       },
       scale: {
         x: { padding: 0.5, align: 0, label: false },
-        y: { label: false },
+        y: { label: false, domainMax: isAllZero ? 10 : undefined },
       },
       axis: {
         x: {
@@ -126,7 +130,7 @@ export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
       radiusAxis: false,
       tooltip: type === 'small' ? false : undefined,
     }),
-    [data, size, theme, type],
+    [data, isAllZero, size, theme, type],
   )
 
   return useMemo(

@@ -1,8 +1,8 @@
+import { getCharacterTypeSrc } from '@Nechronica/index.ts'
+import { type NechronicaType } from '@Nechronica/ts/NechronicaDataHelper.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { Avatar, Flex, Typography } from 'antd'
 import { useThemeContext } from '@/context/themeContext.ts'
-import { getCharacterTypeSrc } from '@/service/Nechronica'
-import { type NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const AVATAR_SIZE = 80
 

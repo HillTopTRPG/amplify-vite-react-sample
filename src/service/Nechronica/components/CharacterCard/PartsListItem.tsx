@@ -1,11 +1,11 @@
-import { useMemo } from 'react'
-import { Avatar, Flex, type FlexProps, List } from 'antd'
-import ManeuverButton from './ManeuverButton.tsx'
-import unknownImg from '@/service/Nechronica/images/unknown.png'
+import { type ReactNode, useMemo } from 'react'
+import ManeuverButton from '@Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
+import unknownImg from '@Nechronica/images/unknown.png'
 import {
   type NechronicaBasic,
   type NechronicaManeuver,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
+import { Avatar, Flex, type FlexProps, List } from 'antd'
 
 const containerFlexProps: Omit<FlexProps, 'children'> = {
   align: 'center',
@@ -17,36 +17,51 @@ const containerFlexProps: Omit<FlexProps, 'children'> = {
 
 interface Props {
   maneuverList: NechronicaManeuver[]
+  hoverContent?: (maneuver: NechronicaManeuver, index: number) => ReactNode
+  clickContent?: (maneuver: NechronicaManeuver, index: number) => ReactNode
   src: string
   parts: number[]
   basic: NechronicaBasic
   isSavantSkill: boolean
 }
-
 export default function PartsListItem({
   maneuverList,
+  hoverContent,
+  clickContent,
   src,
   parts,
   basic,
   isSavantSkill,
 }: Props) {
-  const filteredManeuver = useMemo(
-    () => maneuverList.filter((maneuver) => parts.includes(maneuver.parts)),
+  const filteredManeuvers = useMemo(
+    () =>
+      maneuverList
+        .map((maneuver, index) => ({ maneuver, index }))
+        .filter((info) => parts.includes(info.maneuver.parts)),
     [maneuverList, parts],
   )
 
   const maneuverButtons = useMemo(
     () =>
-      filteredManeuver.map((maneuver, index) => (
+      filteredManeuvers.map((info, index) => (
         <ManeuverButton
           key={index}
-          maneuver={maneuver}
+          maneuver={info.maneuver}
+          hoverContent={hoverContent?.call(null, info.maneuver, info.index)}
+          clickContent={clickContent?.call(null, info.maneuver, info.index)}
           position={basic.position}
           mainClass={basic.mainClass}
           subClass={basic.subClass}
         />
       )),
-    [filteredManeuver, basic.position, basic.mainClass, basic.subClass],
+    [
+      filteredManeuvers,
+      hoverContent,
+      clickContent,
+      basic.position,
+      basic.mainClass,
+      basic.subClass,
+    ],
   )
 
   const elm = useMemo(
@@ -71,5 +86,5 @@ export default function PartsListItem({
     [isSavantSkill, maneuverButtons, src],
   )
 
-  return isSavantSkill && filteredManeuver.length === 0 ? null : elm
+  return isSavantSkill && filteredManeuvers.length === 0 ? null : elm
 }

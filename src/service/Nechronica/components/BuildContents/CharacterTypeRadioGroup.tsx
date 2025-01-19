@@ -1,7 +1,7 @@
+import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
+import { nechronicaTypes } from '@Nechronica/index.ts'
 import { Radio } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { nechronicaTypes } from '@/service/Nechronica'
-import { useCharacterMakeContext } from '@/service/Nechronica/components/BuildContents/context.ts'
 
 export default function CharacterTypeRadioGroup() {
   const { t: i18nT } = useTranslation()

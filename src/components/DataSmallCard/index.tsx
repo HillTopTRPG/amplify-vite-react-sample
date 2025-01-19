@@ -4,6 +4,7 @@ import {
   type ReactNode,
   useState,
 } from 'react'
+import styles from '@Nechronica/components/Hoverable.module.css'
 import {
   CloseOutlined,
   MenuOutlined,
@@ -29,7 +30,6 @@ import {
 } from '@/components/DataSmallCard/context.ts'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
-import styles from '@/service/Nechronica/components/Hoverable.module.css'
 
 const cardStyle: CSSProperties = {
   width: 170,

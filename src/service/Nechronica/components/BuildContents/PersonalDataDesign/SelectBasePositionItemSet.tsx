@@ -1,6 +1,6 @@
 import { type CSSProperties, useId } from 'react'
+import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
 import { Col, Select } from 'antd'
-import { useCharacterMakeContext } from '@/service/Nechronica/components/BuildContents/context.ts'
 
 const options = [
   { label: '奈落', value: -2 },

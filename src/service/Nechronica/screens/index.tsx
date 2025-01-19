@@ -1,7 +1,7 @@
+import DashboardContents from '@Nechronica/components/DashboardContents'
 import { DashboardOutlined } from '@ant-design/icons'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import type { Screen } from '@/service'
-import DashboardContents from '@/service/Nechronica/components/DashboardContents'
 
 const spec = { label: 'ダッシュボード', icon: DashboardOutlined }
 

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
+import { useNechronicaContext } from '@Nechronica/context.ts'
 import { Flex, Spin, Typography } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 interface Props {
   label: string

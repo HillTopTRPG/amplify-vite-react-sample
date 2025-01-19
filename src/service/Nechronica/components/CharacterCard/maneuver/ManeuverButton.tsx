@@ -1,13 +1,18 @@
-import { type HTMLProps, useCallback, useId, useMemo } from 'react'
+import {
+  type HTMLProps,
+  type ReactNode,
+  useCallback,
+  useId,
+  useMemo,
+} from 'react'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { getBackImg, getManeuverSrc } from '@Nechronica/index.ts'
+import { type NechronicaManeuver } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex, Popover, Typography } from 'antd'
 import { type TextProps } from 'antd/es/typography/Text'
 import classNames from 'classnames'
+import ManeuverAvatar from './ManeuverAvatar.tsx'
 import styles from './ManeuverButton.module.css'
-import { getBackImg, getManeuverSrc } from '@/service/Nechronica'
-import ManeuverAvatar from '@/service/Nechronica/components/CharacterCard/ManeuverAvatar.tsx'
-import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/ManeuverPopoverContents.tsx'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const FONT_SIZE = 11
 const BUTTON_SIZE = 53
@@ -32,6 +37,8 @@ const avatarStackDivProps: HTMLProps<HTMLDivElement> = {
 
 interface Props {
   maneuver: NechronicaManeuver
+  hoverContent?: ReactNode
+  clickContent?: ReactNode
   position: number
   mainClass: number
   subClass: number
@@ -40,6 +47,8 @@ interface Props {
 }
 export default function ManeuverButton({
   maneuver,
+  hoverContent,
+  clickContent,
   position,
   mainClass,
   subClass,
@@ -48,32 +57,30 @@ export default function ManeuverButton({
 }: Props) {
   const maneuverId = useId()
   const {
-    viewPopoverManeuver,
-    setViewPopoverManeuver,
-    editPopoverManeuver,
-    setEditPopoverManeuver,
+    hoverManeuverId,
+    setHoverManeuverId,
+    clickManeuverId,
+    setClickManeuverId,
   } = useNechronicaContext()
 
   const onEditOpenChange = useCallback(
     (open: boolean) => {
-      setEditPopoverManeuver(open ? maneuverId : '')
+      setClickManeuverId(open ? maneuverId : '')
     },
-    [maneuverId, setEditPopoverManeuver],
+    [maneuverId, setClickManeuverId],
   )
 
   const onViewOpenChange = useCallback(
     (open: boolean) => {
-      if (open && editPopoverManeuver) return
-      setViewPopoverManeuver(open ? maneuverId : '')
+      if (open && clickManeuverId) return
+      setHoverManeuverId(open ? maneuverId : '')
     },
-    [editPopoverManeuver, maneuverId, setViewPopoverManeuver],
+    [clickManeuverId, maneuverId, setHoverManeuverId],
   )
 
   const isActive = useMemo(
-    () =>
-      [editPopoverManeuver, viewPopoverManeuver].includes(maneuverId) ||
-      selected,
-    [editPopoverManeuver, maneuverId, selected, viewPopoverManeuver],
+    () => [hoverManeuverId, clickManeuverId].includes(maneuverId) || selected,
+    [clickManeuverId, hoverManeuverId, maneuverId, selected],
   )
 
   const stackedAvatar = useMemo(
@@ -98,24 +105,19 @@ export default function ManeuverButton({
         <Typography.Text {...textProps}>{maneuver.name}</Typography.Text>
 
         <Popover
-          content={
-            <ManeuverPopoverContents
-              maneuver={maneuver}
-              onMouseEnter={() => setViewPopoverManeuver('')}
-            />
-          }
+          content={hoverContent}
           overlayInnerStyle={{ padding: 0 }}
           mouseEnterDelay={0.05}
-          trigger="hover"
-          open={viewPopoverManeuver === maneuverId}
+          trigger={hoverContent ? 'hover' : []}
+          open={hoverManeuverId === maneuverId}
           onOpenChange={onViewOpenChange}
         >
           <Popover
-            content={<ManeuverPopoverContents maneuver={maneuver} />}
+            content={clickContent}
             overlayInnerStyle={{ padding: 0 }}
             mouseEnterDelay={0.05}
-            trigger={onClick ? [] : ['click', 'contextMenu']}
-            open={editPopoverManeuver === maneuverId}
+            trigger={onClick || !clickContent ? [] : ['click', 'contextMenu']}
+            open={clickManeuverId === maneuverId}
             onOpenChange={onEditOpenChange}
           >
             {stackedAvatar}
@@ -124,15 +126,16 @@ export default function ManeuverButton({
       </Flex>
     ),
     [
-      editPopoverManeuver,
-      maneuver,
+      clickContent,
+      clickManeuverId,
+      hoverContent,
+      hoverManeuverId,
+      maneuver.name,
       maneuverId,
       onClick,
       onEditOpenChange,
       onViewOpenChange,
-      setViewPopoverManeuver,
       stackedAvatar,
-      viewPopoverManeuver,
     ],
   )
 }

@@ -1,8 +1,9 @@
-import { RadarChartOutlined } from '@ant-design/icons'
+import CharacterTypeScreen from '@Nechronica/components/CharacterTypeScreen'
+import legionImg from '@Nechronica/images/type/legion.png'
+import MenuImageIcon from '@/components/MenuImageIcon.tsx'
 import type { Screen } from '@/service'
-import CharacterTypeScreen from '@/service/Nechronica/components/CharacterTypeScreen'
 
-const spec = { label: 'レギオン', icon: RadarChartOutlined }
+const spec = { label: 'レギオン', icon: MenuImageIcon(legionImg) }
 
 const screen: Screen = {
   ...spec,

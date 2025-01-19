@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { Button, Flex, Typography } from 'antd'
-import { useTranslation } from 'react-i18next'
 import {
   type NechronicaRoice,
   posSelections,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
+import { Button, Flex, Typography } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 const FONT_SIZE = 12
 

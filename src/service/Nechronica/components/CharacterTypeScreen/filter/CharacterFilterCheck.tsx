@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { ClearOutlined } from '@ant-design/icons'
 import { Button, Flex, List, Typography } from 'antd'
-import { CharacterFilterItem } from '@/service/Nechronica/components/CharacterTypeScreen/CharacterFilterItem.tsx'
+import { CharacterFilterItem } from './CharacterFilterItem.tsx'
 
 interface Props {
   getCount: (value: number) => number
@@ -21,7 +21,9 @@ export default function CharacterFilterCheck({
     () => (
       <Flex vertical>
         <Flex align="center" gap={6}>
-          <Typography.Text style={{ fontSize: 14 }}>{label}</Typography.Text>
+          <Typography.Text strong style={{ fontSize: 14 }}>
+            {label}
+          </Typography.Text>
           <Button
             size="small"
             icon={<ClearOutlined />}

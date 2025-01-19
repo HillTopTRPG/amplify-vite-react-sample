@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import { Menu } from 'antd'
+import { Flex, Menu } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useThemeContext } from '@/context/themeContext.ts'
 import { getKeys, isIncludes } from '@/utils/types.ts'
@@ -36,12 +36,20 @@ export default function ScreenSelectMenu({ onSelect }: Props) {
           border: 'none',
           flexGrow: 1,
           width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignContent: 'center',
+          justifyContent: 'center',
         }}
         items={getKeys(screens)
           .filter((key) => key === screen || !screens[key].param)
           .map((key) => ({
             key,
-            icon: React.createElement(screens[key].icon),
+            icon: (
+              <Flex align="center">
+                {React.createElement(screens[key].icon)}
+              </Flex>
+            ),
             label: screens[key].label,
           }))}
       />

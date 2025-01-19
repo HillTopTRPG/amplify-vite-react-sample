@@ -1,22 +1,23 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { RadarChartOutlined } from '@ant-design/icons'
+import AddCharacterInput from '@Nechronica/components/CharacterTypeScreen/AddCharacterInput.tsx'
+import CharacterSmallCards from '@Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
+import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDetailSider'
+import SponsorShip from '@Nechronica/components/SponsorShip.tsx'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { useSearchCharacter } from '@Nechronica/hooks/useSearchCharacter.ts'
+import {
+  type NechronicaCharacter,
+  type NechronicaType,
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex, FloatButton, type InputRef, Spin } from 'antd'
+import DollFilterCollapse from './filter/DollFilterCollapse.tsx'
+import MenuImageIcon from '@/components/MenuImageIcon.tsx'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useScrollContainerContext } from '@/context/scrollContainer.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
-import AddCharacterInput from '@/service/Nechronica/components/CharacterTypeScreen/AddCharacterInput.tsx'
-import CharacterSmallCards from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
-import DetailSider from '@/service/Nechronica/components/CharacterTypeScreen/DetailSider.tsx'
-import DollFilterCollapse from '@/service/Nechronica/components/CharacterTypeScreen/DollFilterCollapse.tsx'
-import SponsorShip from '@/service/Nechronica/components/SponsorShip.tsx'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { useSearchCharacter } from '@/service/Nechronica/hooks/useSearchCharacter.ts'
-import {
-  type NechronicaCharacter,
-  type NechronicaType,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import { getCharacterTypeSrc } from '@/service/Nechronica'
 
 interface Props {
   characterType: NechronicaType
@@ -76,7 +77,10 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
 
   const loadingElm = useMemo(
     () => (
-      <ScreenContainer label={label} icon={RadarChartOutlined}>
+      <ScreenContainer
+        label={label}
+        icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
+      >
         <Spin size="large" />
         <div
           style={{
@@ -91,12 +95,15 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
         </div>
       </ScreenContainer>
     ),
-    [label],
+    [characterType, label],
   )
 
   const mainContents = useMemo(
     () => (
-      <ScreenContainer label={label} icon={RadarChartOutlined}>
+      <ScreenContainer
+        label={label}
+        icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
+      >
         <AddCharacterInput
           label={label}
           characterType={characterType}
@@ -129,7 +136,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
             setHoverCharacter={setHoverCharacter}
           />
         </Flex>
-        <DetailSider detailList={detailList} />
+        <CharacterDetailSider characters={detailList} />
         {scrollContainerRef.current ? (
           <FloatButton.BackTop
             duration={100}

@@ -1,20 +1,20 @@
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex } from 'antd'
+import SelectedCharacterElm from './SelectedCharacterElm.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
-import SelectedCharacterElm from '@/service/Nechronica/components/CharacterTypeScreen/SelectedCharacterElm.tsx'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 interface Props {
-  detailList: string[]
+  characters: NechronicaCharacter[]
 }
-export default function DetailSider({ detailList }: Props) {
+export default function CharacterDetailSider({ characters }: Props) {
   const { screenSize } = useScreenContext()
-  const { setViewPopoverManeuver, setEditPopoverManeuver } =
-    useNechronicaContext()
+  const { setHoverManeuverId, setClickManeuverId } = useNechronicaContext()
 
   if (screenSize.viewPortWidth < 789) {
     return (
       <Flex vertical align="stretch" gap={8} style={{ minHeight: '100vh' }}>
-        <SelectedCharacterElm detailList={detailList} />
+        <SelectedCharacterElm characters={characters} />
       </Flex>
     )
   }
@@ -31,8 +31,8 @@ export default function DetailSider({ detailList }: Props) {
       }}
       onScrollCapture={(e) => {
         e.stopPropagation()
-        setViewPopoverManeuver('')
-        setEditPopoverManeuver('')
+        setHoverManeuverId('')
+        setClickManeuverId('')
       }}
     >
       <Flex
@@ -41,7 +41,7 @@ export default function DetailSider({ detailList }: Props) {
         gap={8}
         style={{ minHeight: 'calc(100vh - 48px)' }}
       >
-        <SelectedCharacterElm detailList={detailList} />
+        <SelectedCharacterElm characters={characters} />
       </Flex>
     </div>
   )

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
 
 export type Filter = {
@@ -86,7 +86,7 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
     [characters, filter],
   )
 
-  const [detailList, setDetailList] = useState<string[]>([])
+  const [detailList, setDetailList] = useState<NechronicaCharacter[]>([])
 
   useEffect(() => {
     const list = [...selectedCharacters]
@@ -95,8 +95,12 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
       if (index !== -1) list.splice(index, 1)
       list.unshift(hoverCharacter)
     }
-    setDetailList(list)
-  }, [hoverCharacter, selectedCharacters, setDetailList])
+    setDetailList(
+      list
+        .map((id) => characters.find((c) => c.id === id))
+        .filter((c): c is NechronicaCharacter => Boolean(c)),
+    )
+  }, [characters, hoverCharacter, selectedCharacters, setDetailList])
 
   return {
     filter,

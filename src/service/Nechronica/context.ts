@@ -1,20 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { nechronicaTypes } from '@Nechronica/index.ts'
+import {
+  type Nechronica,
+  type NechronicaAdditionalData,
+  type NechronicaCharacter,
+  type NechronicaDataHelper,
+  type NechronicaManeuver,
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
+import type { Schema } from '@amplify/data/resource.ts'
 import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
-import type { Schema } from '../../../amplify/data/resource.ts'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import {
   type CharacterGroup,
   type CharacterGroupAdditionalData,
 } from '@/service'
-import { nechronicaTypes } from '@/service/Nechronica/index.ts'
-import {
-  type Nechronica,
-  type NechronicaAdditionalData,
-  type NechronicaCharacter,
-  type NechronicaDataHelper,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 import { type PromiseType, typedOmit, typedPick } from '@/utils/types.ts'
 
 type PublishObject = {
@@ -58,6 +59,13 @@ const updateCharacterGroup = (group: CharacterGroup) => {
 }
 const deleteCharacterGroup = (id: string) => {
   client.models.CharacterGroup.delete({ id })
+}
+
+export type ManeuverInfo = {
+  maneuver: NechronicaManeuver
+  maneuverIndex: number
+  character: NechronicaCharacter
+  iconClass: string
 }
 
 export const [NechronicaProvider, useNechronicaContext] = constate(() => {
@@ -270,8 +278,17 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
     [characterGroups, characters],
   )
 
-  const [viewPopoverManeuver, setViewPopoverManeuver] = useState('')
-  const [editPopoverManeuver, setEditPopoverManeuver] = useState('')
+  const [hoverManeuverId, setHoverManeuverId] = useState('')
+  const [clickManeuverId, setClickManeuverId] = useState('')
+
+  const setClickManeuverIdWrap = (fx: string | ((prev: string) => string)) => {
+    setClickManeuverId(fx)
+    setHoverManeuverId('')
+  }
+
+  const [selectedManeuverInfos, setSelectedManeuverInfos] = useState<
+    ManeuverInfo[]
+  >([])
 
   return {
     loading: characterLoading || characterGroupLoading,
@@ -284,9 +301,11 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
     createCharacterGroup,
     updateCharacterGroup,
     deleteCharacterGroup,
-    viewPopoverManeuver,
-    setViewPopoverManeuver,
-    editPopoverManeuver,
-    setEditPopoverManeuver,
+    hoverManeuverId,
+    setHoverManeuverId,
+    clickManeuverId,
+    setClickManeuverId: setClickManeuverIdWrap,
+    selectedManeuverInfos,
+    setSelectedManeuverInfos,
   }
 })

@@ -1,10 +1,12 @@
 import { type Dispatch, type SetStateAction, useState } from 'react'
+import {
+  type NechronicaBasic,
+  type NechronicaCharacter,
+  type NechronicaManeuver,
+  type NechronicaRoice,
+  type NechronicaType,
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
 import constate from 'constate'
-import type {
-  NechronicaBasic,
-  NechronicaRoice,
-  NechronicaType,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
   constate(() => {
@@ -53,6 +55,38 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
       modification: '',
     })
 
+    // マニューバ
+    const [maneuvers, setManeuvers] = useState<NechronicaManeuver[]>([])
+    const addManeuver = () => {
+      const maneuver: NechronicaManeuver = {
+        lost: false,
+        used: false,
+        type: 0,
+        parts: 0,
+        name: '名無し',
+        timing: 0,
+        cost: '',
+        range: '',
+        memo: '',
+        shozoku: '',
+        ignoreBravado: false,
+        isBravado: false,
+        isUnknown: false,
+        isAdded: true,
+      }
+      setManeuvers((prev) => [...prev, maneuver])
+    }
+    const updateManeuver = (idx: number, maneuver: NechronicaManeuver) => {
+      setManeuvers((prev) => {
+        const newList = [...prev]
+        newList[idx] = maneuver
+        return newList
+      })
+    }
+    const deleteManeuver = (index: number) => {
+      setManeuvers((prev) => prev.filter((_, idx) => idx !== index))
+    }
+
     // 未練
     const [roiceList, setRoiceList] = useState<NechronicaRoice[]>([])
     const addRoice = () => {
@@ -66,9 +100,9 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
     }
     const updateRoice = (idx: number, roice: NechronicaRoice) => {
       setRoiceList((prev) => {
-        const newRoiceList = [...prev]
-        newRoiceList[idx] = roice
-        return newRoiceList
+        const newList = [...prev]
+        newList[idx] = roice
+        return newList
       })
     }
     const deleteRoice = (index: number) => {
@@ -91,7 +125,43 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
     // メモ
     const [memo, setMemo] = useState('')
 
+    const makingNechronicaCharacter: NechronicaCharacter = {
+      id: '',
+      name: characterName,
+      additionalData: {
+        type: characterType,
+        sheetId: '',
+        stared: false,
+      },
+      sheetData: {
+        basic: {
+          characterName,
+          position,
+          mainClass,
+          subClass,
+          bonusStatus,
+          affection,
+          basePosition,
+          hairColor,
+          eyeColor,
+          skinColor,
+          height,
+          weight,
+          age,
+          shuzoku,
+          carma,
+        },
+        maneuverList: maneuvers,
+        roiceList: roiceList,
+      },
+      owner: '-',
+      public: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+
     return {
+      makingNechronicaCharacter,
       characterType,
       setCharacterType: setCharacterTypeWrap,
 
@@ -107,9 +177,15 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
       affection,
       setAffection,
 
+      // マニューバ
+      maneuvers,
+      setManeuvers,
+      addManeuver,
+      updateManeuver,
+      deleteManeuver,
+
       // 未練
       roiceList,
-      setRoiceList,
       addRoice,
       updateRoice,
       deleteRoice,

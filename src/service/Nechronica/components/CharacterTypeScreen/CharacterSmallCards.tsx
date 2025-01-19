@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
+import CharacterSmallCard from '@Nechronica/components/CharacterTypeScreen/CharacterSmallCard.tsx'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Divider, Flex, Spin, theme, Typography } from 'antd'
-import CharacterSmallCard from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCard.tsx'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const SEARCH_INPUT_WIDTH = 370
 

@@ -1,11 +1,12 @@
 import React from 'react'
 import { Outlet, type RouteObject } from 'react-router-dom'
+import { NechronicaCharacterMakeProvider } from '@Nechronica/components/BuildContents/context.ts'
+import { NechronicaProvider } from '@Nechronica/context.ts'
 import { tap } from 'lodash-es'
 import { service } from './index'
 import { ScreenProvider } from '@/context/screenContext.ts'
 import { UserAttributesProvider } from '@/context/userAttributesContext.ts'
 import MainLayout from '@/layouts/MainLayout'
-import { NechronicaProvider } from '@/service/Nechronica/context.ts'
 import { getKeys } from '@/utils/types.ts'
 
 function getPath(screen: keyof typeof service.screens) {
@@ -25,7 +26,9 @@ const screenRouteObj: RouteObject = {
     <ScreenProvider {...service}>
       <UserAttributesProvider>
         <NechronicaProvider>
-          <Outlet />
+          <NechronicaCharacterMakeProvider>
+            <Outlet />
+          </NechronicaCharacterMakeProvider>
         </NechronicaProvider>
       </UserAttributesProvider>
     </ScreenProvider>
