@@ -9,14 +9,15 @@ import {
   type NechronicaCharacter,
   type NechronicaType,
 } from '@Nechronica/ts/NechronicaDataHelper.ts'
-import { RadarChartOutlined } from '@ant-design/icons'
 import { Flex, FloatButton, type InputRef, Spin } from 'antd'
 import DollFilterCollapse from './filter/DollFilterCollapse.tsx'
+import MenuImageIcon from '@/components/MenuImageIcon.tsx'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useScrollContainerContext } from '@/context/scrollContainer.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
+import { getCharacterTypeSrc } from '@/service/Nechronica'
 
 interface Props {
   characterType: NechronicaType
@@ -76,7 +77,10 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
 
   const loadingElm = useMemo(
     () => (
-      <ScreenContainer label={label} icon={RadarChartOutlined}>
+      <ScreenContainer
+        label={label}
+        icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
+      >
         <Spin size="large" />
         <div
           style={{
@@ -91,12 +95,15 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
         </div>
       </ScreenContainer>
     ),
-    [label],
+    [characterType, label],
   )
 
   const mainContents = useMemo(
     () => (
-      <ScreenContainer label={label} icon={RadarChartOutlined}>
+      <ScreenContainer
+        label={label}
+        icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
+      >
         <AddCharacterInput
           label={label}
           characterType={characterType}

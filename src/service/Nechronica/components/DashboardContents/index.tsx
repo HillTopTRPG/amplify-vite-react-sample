@@ -1,5 +1,10 @@
-import { type ReactElement, useLayoutEffect, useMemo, useState } from 'react'
-import AddGroupInput from '@Nechronica/components/DashboardContents/AddGroupInput.tsx'
+import {
+  type ReactElement,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react'
 import CharacterTabContents from '@Nechronica/components/DashboardContents/CharacterTabContents.tsx'
 import GroupSmallCard from '@Nechronica/components/DashboardContents/GroupSmallCard.tsx'
 import SectionTitle from '@Nechronica/components/DashboardContents/SectionTitle.tsx'
@@ -7,7 +12,7 @@ import Style1 from '@Nechronica/components/DashboardContents/Style1.tsx'
 import Style2 from '@Nechronica/components/DashboardContents/Style2.tsx'
 import { useNechronicaContext } from '@Nechronica/context.ts'
 import { type NechronicaType } from '@Nechronica/ts/NechronicaDataHelper.ts'
-import { Flex, type GetProps, Spin, Tabs } from 'antd'
+import { Flex, type GetProps, Tabs } from 'antd'
 import { sum } from 'lodash-es'
 import CharacterTypeIcon from './CharacterTypeIcon.tsx'
 import CharacterTypeItemSet from './CharacterTypeItemSet.tsx'
@@ -86,6 +91,11 @@ export default function DashboardContents() {
         }),
     )
   }, [loading, currentUser, scope, characters, characterGroupRelations])
+
+  const toGroups = useCallback(
+    () => setScreen((v) => ({ ...v, screen: 'groups' })),
+    [setScreen],
+  )
 
   return useMemo(() => {
     // eslint-disable-next-line no-console
@@ -209,20 +219,17 @@ export default function DashboardContents() {
           ]}
         />
         <SectionTitle
-          label="キャラクターグループ"
+          label="キャラマイリスト"
           total={`${groupsElm.length}個`}
+          onClick={toGroups}
         />
-        <AddGroupInput />
-        <Flex gap={18} align="stretch" wrap>
-          {loading ? <Spin size="large" /> : groupsElm}
-        </Flex>
       </Flex>
     )
   }, [
     summaryData.enemies,
     summaryData.doll,
     groupsElm,
-    loading,
+    toGroups,
     setScreen,
     screenSize.viewPortWidth,
   ])

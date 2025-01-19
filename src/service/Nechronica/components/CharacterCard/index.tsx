@@ -151,12 +151,9 @@ export default function CharacterCard({ character }: Props) {
           <Image
             src={getCharacterTypeSrc(characterType, basic.position)}
             preview={false}
-            style={{
-              opacity: 0.1,
-              width: backImageSize,
-              height: backImageSize,
-              filter: 'blur(1px)',
-            }}
+            width={backImageSize}
+            height={backImageSize}
+            style={{ opacity: 0.1, filter: 'blur(1px)' }}
           />
         </div>
         <Flex align={isDollSavant ? 'flex-end' : 'flex-start'}>
