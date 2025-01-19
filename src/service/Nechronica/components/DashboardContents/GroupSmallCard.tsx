@@ -57,7 +57,7 @@ export default function GroupSmallCard({ group }: Props) {
   return (
     <DataSmallCard
       data={group}
-      cardProps={{ actions }}
+      cardProps={{ actions, style: { minHeight: 240 } }}
       contentsContainerProps={{
         onClick: () =>
           setScreen((v) => ({ ...v, screen: 'group', urlParam: group.id })),
@@ -67,7 +67,7 @@ export default function GroupSmallCard({ group }: Props) {
           <Flex align="center" gap={6}>
             <Typography.Text style={{ color: 'inherit' }}>
               <Typography.Link href={shareUrl} target="_blank">
-                共有ページのリンク
+                共有ページ
                 <SelectOutlined />
               </Typography.Link>
             </Typography.Text>
