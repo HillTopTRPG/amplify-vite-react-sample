@@ -21,7 +21,9 @@ export default function CharacterFilterCheck({
     () => (
       <Flex vertical>
         <Flex align="center" gap={6}>
-          <Typography.Text style={{ fontSize: 14 }}>{label}</Typography.Text>
+          <Typography.Text strong style={{ fontSize: 14 }}>
+            {label}
+          </Typography.Text>
           <Button
             size="small"
             icon={<ClearOutlined />}

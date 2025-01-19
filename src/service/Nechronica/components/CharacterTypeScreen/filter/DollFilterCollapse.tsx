@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import TextFilter from '@Nechronica/components/CharacterTypeScreen/filter/TextFilter.tsx'
 import { type Filter } from '@Nechronica/hooks/useSearchCharacter.ts'
 import { getCharacterTypeSrc, getClassSrc } from '@Nechronica/index.ts'
 import {
@@ -12,14 +13,11 @@ import {
   Collapse,
   type CollapseProps,
   Flex,
-  Input,
   theme,
   Typography,
 } from 'antd'
 import CharacterFilterCheck from './CharacterFilterCheck.tsx'
 import styles from './DollFilterCollapse.module.css'
-
-const SEARCH_INPUT_WIDTH = 370
 
 interface Props {
   filter: Filter
@@ -91,13 +89,7 @@ export default function DollFilterCollapse({
         ),
         children: (
           <Flex vertical gap={10}>
-            <Input.Search
-              addonBefore="テキスト検索"
-              placeholder="テキスト検索"
-              style={{ maxWidth: SEARCH_INPUT_WIDTH }}
-              defaultValue={filter.text}
-              onSearch={(v) => setFilter((filter) => ({ ...filter, text: v }))}
-            />
+            <TextFilter filter={filter} setFilter={setFilter} />
             <Flex wrap gap={10}>
               <CharacterFilterCheck
                 label="ポジション"
@@ -150,13 +142,11 @@ export default function DollFilterCollapse({
       />
     )
   }, [
-    collapseValue,
     isEmptyFilter,
-    filter.class,
-    filter.position,
-    filter.text,
-    setFilter,
     token.colorPrimary,
+    filter,
+    setFilter,
+    collapseValue,
     useCharacters,
   ])
 

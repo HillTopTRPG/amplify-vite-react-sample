@@ -1,5 +1,6 @@
 import { type CSSProperties, useId } from 'react'
 import { Space, Switch, Typography } from 'antd'
+import useOptimistic from '@/hooks/useOptimistic.ts'
 
 const CONTAINER_STYLE: CSSProperties = {
   alignItems: 'stretch',
@@ -26,9 +27,10 @@ export default function ManeuverItemCheckbox({
   onChange,
 }: Props) {
   const id = useId()
+  const [inputVal, setInputVal] = useOptimistic(value, onChange)
   return (
     <Space.Compact style={CONTAINER_STYLE}>
-      <Switch id={id} value={value} onChange={onChange} />
+      <Switch id={id} value={inputVal} onChange={setInputVal} />
       <label htmlFor={id} style={LABEL_STYLE}>
         <Typography.Text strong style={{ fontSize: 'inherit' }}>
           {label}

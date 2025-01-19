@@ -1,7 +1,9 @@
-import { type CSSProperties, useEffect, useId, useState } from 'react'
+import { type CSSProperties, useId } from 'react'
 import { SaveOutlined } from '@ant-design/icons'
-import { Button, Input, Space, Typography } from 'antd'
+import { Button, Input, Space, theme, Typography } from 'antd'
+import styles from './ManeuverTextItemInput.module.css'
 import InputWrap from '@/components/InputWrap.tsx'
+import useOptimistic from '@/hooks/useOptimistic.ts'
 
 const CONTAINER_STYLE: CSSProperties = {
   alignItems: 'stretch',
@@ -29,11 +31,8 @@ export default function ManeuverTextItemInput({
   multiLine,
 }: Props) {
   const id = useId()
-  const [inputValue, setInputValue] = useState('')
-
-  useEffect(() => {
-    setInputValue(value)
-  }, [value])
+  const { token } = theme.useToken()
+  const [inputValue, setInputValue] = useOptimistic(value)
 
   const onSave = () => {
     if (inputValue === value) return
@@ -47,24 +46,42 @@ export default function ManeuverTextItemInput({
           {label}
         </Typography.Text>
       </label>
-      {multiLine ? (
-        <Input.TextArea
-          id={id}
-          value={value}
-          autoSize={{ minRows: 3 }}
-          placeholder="改行可能"
-        />
-      ) : (
-        <Space.Compact>
+      <Space.Compact>
+        {multiLine ? (
+          <Input.TextArea
+            id={id}
+            className={styles.textarea}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            autoSize={{ minRows: 3 }}
+            placeholder="改行可能"
+            style={{
+              marginRight: -1,
+              borderRadius: `${token.borderRadius}px 0 0 ${token.borderRadius}px`,
+            }}
+          />
+        ) : (
           <InputWrap
             id={id}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onPressEnter={onSave}
+            style={{
+              borderRadius: `${token.borderRadius}px 0 0 ${token.borderRadius}px`,
+            }}
           />
-          <Button icon={<SaveOutlined />} onClick={onSave} />
-        </Space.Compact>
-      )}
+        )}
+        <Button
+          icon={<SaveOutlined />}
+          className={styles.save}
+          onClick={onSave}
+          type={inputValue === value ? 'default' : 'primary'}
+          style={{
+            color:
+              inputValue === value ? token.colorTextPlaceholder : undefined,
+          }}
+        />
+      </Space.Compact>
     </Space.Compact>
   )
 }
