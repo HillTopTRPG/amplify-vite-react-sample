@@ -1,7 +1,7 @@
-import { useCharacterMakeContext } from '@/service/Nechronica/components/BuildContents/context.ts'
-import ManeuverButton from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
-import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
-import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
+import ManeuverButton from '@Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
+import ManeuverPopoverContents from '@Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
+import { type NechronicaManeuver } from '@Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
   maneuver: NechronicaManeuver

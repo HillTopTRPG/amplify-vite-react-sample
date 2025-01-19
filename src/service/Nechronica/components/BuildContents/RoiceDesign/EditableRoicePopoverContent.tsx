@@ -1,4 +1,5 @@
 import { type CSSProperties } from 'react'
+import type { NechronicaRoice } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { ConfigProvider, Flex, theme, Typography } from 'antd'
 import { useCharacterMakeContext } from '../context.ts'
 import RoiceInsaneView from './form/RoiceInsaneView.tsx'
@@ -6,7 +7,6 @@ import RoiceMemoInput from './form/RoiceMemoInput.tsx'
 import RoiceTargetInput from './form/RoiceTargetInput.tsx'
 import SelectRoiceId from './form/SelectRoiceId.tsx'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
-import type { NechronicaRoice } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const containerStyle: CSSProperties = {
   width: 320,

@@ -1,8 +1,8 @@
+import { type NechronicaManeuver } from '@Nechronica/ts/NechronicaDataHelper.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { Col, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import ColSetTCR from './ColSetTCR.tsx'
-import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 
 interface Props {
   maneuver: NechronicaManeuver

@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useNechronicaContext } from '@Nechronica/context.ts'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 export default function AddGroupInput() {
   const { scope } = useScreenContext()

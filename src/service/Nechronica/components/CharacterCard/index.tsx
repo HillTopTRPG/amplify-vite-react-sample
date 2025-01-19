@@ -1,4 +1,9 @@
 import { useMemo } from 'react'
+import ManeuverButton from '@Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
+import ManeuverPopoverContents from '@Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { getCharacterTypeSrc, PARTS_TUPLE } from '@Nechronica/index.ts'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex, List, Typography, Image } from 'antd'
 import { clone } from 'lodash-es'
 import CharacterAvatar from './CharacterAvatar.tsx'
@@ -7,11 +12,6 @@ import PartsListItem from './PartsListItem.tsx'
 import RoiceButton from './RoiceButton.tsx'
 import styles from './index.module.css'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
-import { getCharacterTypeSrc, PARTS_TUPLE } from '@/service/Nechronica'
-import ManeuverButton from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
-import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
   character: NechronicaCharacter

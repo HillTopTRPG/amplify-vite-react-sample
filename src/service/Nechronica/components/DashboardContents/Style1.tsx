@@ -1,6 +1,6 @@
 import React, { type CSSProperties, useMemo } from 'react'
+import { useNechronicaContext } from '@Nechronica/context.ts'
 import { Spin, Typography } from 'antd'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 const SIZE = 380
 

@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { type CharacterGroupRelation } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { SelectOutlined } from '@ant-design/icons'
 import { Empty, Flex, QRCode, Switch, theme, Typography } from 'antd'
 import { clone, omit } from 'lodash-es'
 import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type CharacterGroupRelation } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
   group: CharacterGroupRelation

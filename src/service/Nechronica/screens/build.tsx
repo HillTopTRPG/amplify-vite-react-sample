@@ -1,7 +1,7 @@
+import BuildContents from '@Nechronica/components/BuildContents'
 import { BuildOutlined } from '@ant-design/icons'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import type { Screen } from '@/service'
-import BuildContents from '@/service/Nechronica/components/BuildContents'
 
 const spec = { label: 'キャラクタービルド', icon: BuildOutlined }
 

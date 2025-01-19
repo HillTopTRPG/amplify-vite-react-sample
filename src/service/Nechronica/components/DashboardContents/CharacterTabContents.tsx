@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
+import SectionTitle from '@Nechronica/components/DashboardContents/SectionTitle.tsx'
 import { Flex, type FlexProps } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
-import SectionTitle from '@/service/Nechronica/components/DashboardContents/SectionTitle.tsx'
 
 const containerProps: Omit<FlexProps, 'children'> = {
   gap: 4,

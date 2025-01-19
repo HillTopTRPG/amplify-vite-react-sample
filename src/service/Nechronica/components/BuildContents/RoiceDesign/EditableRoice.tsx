@@ -1,13 +1,13 @@
 import { type CSSProperties, useState } from 'react'
+import EditableRoicePopoverContent from '@Nechronica/components/BuildContents/RoiceDesign/EditableRoicePopoverContent.tsx'
+import {
+  type NechronicaRoice,
+  posSelections,
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex, List, Popover, theme, Typography } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from '../../Hoverable.module.css'
-import EditableRoicePopoverContent from '@/service/Nechronica/components/BuildContents/RoiceDesign/EditableRoicePopoverContent.tsx'
-import {
-  type NechronicaRoice,
-  posSelections,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const containerStyle: CSSProperties = {
   width: 160,

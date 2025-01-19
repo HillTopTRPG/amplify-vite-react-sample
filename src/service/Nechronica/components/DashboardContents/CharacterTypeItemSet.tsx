@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
+import { getCharacterTypeSrc, getClassSrc } from '@Nechronica/index.ts'
+import type { NechronicaType } from '@Nechronica/ts/NechronicaDataHelper.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { SelectOutlined } from '@ant-design/icons'
 import { Typography, Flex, theme } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './CharacterTypeItemSet.module.css'
-import { getCharacterTypeSrc, getClassSrc } from '@/service/Nechronica'
-import type { NechronicaType } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 
 interface DollsProps {
   type: Extract<NechronicaType, 'doll'>

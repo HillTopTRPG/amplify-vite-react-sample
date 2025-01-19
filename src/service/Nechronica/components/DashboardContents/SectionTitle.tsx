@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
+import styles from '@Nechronica/components/Hoverable.module.css'
 import { SelectOutlined } from '@ant-design/icons'
 import { Flex, theme, Typography } from 'antd'
 import classNames from 'classnames'
-import styles from '@/service/Nechronica/components/Hoverable.module.css'
 
 interface Props {
   label: string

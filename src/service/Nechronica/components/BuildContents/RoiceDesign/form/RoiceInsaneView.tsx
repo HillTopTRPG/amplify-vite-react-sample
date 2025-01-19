@@ -1,7 +1,7 @@
 import { type CSSProperties } from 'react'
+import { posSelections } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Space, theme, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { posSelections } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
   roiceId: number

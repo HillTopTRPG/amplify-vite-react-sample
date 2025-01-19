@@ -1,21 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { generateClient } from 'aws-amplify/api'
-import constate from 'constate'
-import type { Schema } from '../../../amplify/data/resource.ts'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
-import {
-  type CharacterGroup,
-  type CharacterGroupAdditionalData,
-} from '@/service'
-import { nechronicaTypes } from '@/service/Nechronica/index.ts'
+import { nechronicaTypes } from '@Nechronica/index.ts'
 import {
   type Nechronica,
   type NechronicaAdditionalData,
   type NechronicaCharacter,
   type NechronicaDataHelper,
   type NechronicaManeuver,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
+import type { Schema } from '@amplify/data/resource.ts'
+import { generateClient } from 'aws-amplify/api'
+import constate from 'constate'
+import { useScreenContext } from '@/context/screenContext.ts'
+import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import {
+  type CharacterGroup,
+  type CharacterGroupAdditionalData,
+} from '@/service'
 import { type PromiseType, typedOmit, typedPick } from '@/utils/types.ts'
 
 type PublishObject = {

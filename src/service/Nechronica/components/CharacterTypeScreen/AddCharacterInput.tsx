@@ -1,14 +1,14 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import {
+  NechronicaDataHelper,
+  type NechronicaType,
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { ImportOutlined } from '@ant-design/icons'
 import { Button, type InputRef, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import {
-  NechronicaDataHelper,
-  type NechronicaType,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
   label: string

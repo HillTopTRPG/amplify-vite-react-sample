@@ -6,12 +6,12 @@ import {
   ScrollRestoration,
 } from 'react-router-dom'
 import type { Location } from 'react-router-dom'
+import nechronicaRoutes from '@Nechronica/Routes.tsx'
 import Authenticator from '@/Authenticator.tsx'
 import { ServicesProvider } from '@/context/servicesContext.ts'
 import Home from '@/pages/Home.tsx'
 import NotFound from '@/pages/NotFound.tsx'
 import services from '@/service'
-import nechronicaRoutes from '@/service/Nechronica/Routes.tsx'
 
 function Root() {
   const getKey = useCallback((l: Location) => l.pathname, [])

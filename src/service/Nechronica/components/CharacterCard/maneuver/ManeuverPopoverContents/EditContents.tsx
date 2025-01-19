@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
+import ManeuverItemCheckbox from '@Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents/form/ManeuverItemCheckbox.tsx'
+import ManeuverItemSelect from '@Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents/form/ManeuverItemSelect.tsx'
+import { type NechronicaManeuver } from '@Nechronica/ts/NechronicaDataHelper.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { Col } from 'antd'
 import { useTranslation } from 'react-i18next'
 import ManeuverTextItemInput from './form/ManeuverTextItemInput.tsx'
-import ManeuverItemCheckbox from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents/form/ManeuverItemCheckbox.tsx'
-import ManeuverItemSelect from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents/form/ManeuverItemSelect.tsx'
-import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 
 interface Props {
   maneuver: NechronicaManeuver

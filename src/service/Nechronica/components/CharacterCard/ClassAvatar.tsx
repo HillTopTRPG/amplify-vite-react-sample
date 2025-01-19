@@ -1,6 +1,6 @@
+import { getClassSrc } from '@Nechronica/index.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { Avatar, Flex, Typography } from 'antd'
-import { getClassSrc } from '@/service/Nechronica'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const AVATAR_SIZE = 60
 

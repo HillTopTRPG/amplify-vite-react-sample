@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
 
 export type Filter = {

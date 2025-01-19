@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
+import ManeuverDesign from '@Nechronica/components/BuildContents/ManeuverDesign'
+import RoiceDesign from '@Nechronica/components/BuildContents/RoiceDesign'
+import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDetailSider'
+import { useNechronicaContext } from '@Nechronica/context.ts'
 import {
   Button,
   Collapse,
@@ -12,10 +16,6 @@ import BasicDesign from './BasicDesign'
 import CharacterTypeRadioGroup from './CharacterTypeRadioGroup.tsx'
 import PersonalDataDesign from './PersonalDataDesign'
 import { useCharacterMakeContext } from './context.ts'
-import ManeuverDesign from '@/service/Nechronica/components/BuildContents/ManeuverDesign'
-import RoiceDesign from '@/service/Nechronica/components/BuildContents/RoiceDesign'
-import CharacterDetailSider from '@/service/Nechronica/components/DetailSider/CharacterDetailSider'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 const maneuverContainerProps: Omit<FlexProps, 'children'> = {
   align: 'flex-start',

@@ -1,12 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { type NechronicaManeuver } from '@Nechronica/ts/NechronicaDataHelper.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { EditOutlined, EyeOutlined } from '@ant-design/icons'
 import { Button, Col, Flex, Row, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import EditContents from './EditContents.tsx'
 import ViewContents from './ViewContents.tsx'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 
 interface Props {
   type: 'hover' | 'click'

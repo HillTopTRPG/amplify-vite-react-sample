@@ -5,6 +5,9 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { type ManeuverInfo, useNechronicaContext } from '@Nechronica/context.ts'
+import { getIconClass } from '@Nechronica/index.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import {
   Collapse,
   type CollapseProps,
@@ -20,12 +23,6 @@ import ManeuverDetailSider from '../DetailSider/ManeuverDetailSider'
 import ListManeuverButton from './ListManeuverButton.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
-import { getIconClass } from '@/service/Nechronica'
-import {
-  type ManeuverInfo,
-  useNechronicaContext,
-} from '@/service/Nechronica/context.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 
 const options: CheckboxGroupProps['options'] = [
   {

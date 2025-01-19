@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
 import { useThemeContext } from '@/context/themeContext.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const NECHRONICA_MANEUVER_TYPES = [
   'その他',

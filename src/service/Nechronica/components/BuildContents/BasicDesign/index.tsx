@@ -4,11 +4,11 @@ import {
   useCallback,
   useMemo,
 } from 'react'
+import DollTypeSelectItemSet from '@Nechronica/components/BuildContents/BasicDesign/DollTypeSelectItemSet.tsx'
+import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { Col, type InputProps, Radio, Row } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
-import DollTypeSelectItemSet from '@/service/Nechronica/components/BuildContents/BasicDesign/DollTypeSelectItemSet.tsx'
-import { useCharacterMakeContext } from '@/service/Nechronica/components/BuildContents/context.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
 
 const gridGutter: [number, number] = [5, 5] as const

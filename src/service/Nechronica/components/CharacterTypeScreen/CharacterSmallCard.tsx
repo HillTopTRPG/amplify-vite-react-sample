@@ -1,18 +1,18 @@
 import { useCallback, useMemo } from 'react'
+import CharacterSmallCardBackImg from '@Nechronica/components/CharacterTypeScreen/CharacterSmallCardBackImg.tsx'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import {
+  type CharacterGroupRelation,
+  type NechronicaCharacter,
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
+import mapping from '@Nechronica/ts/mapping.json'
 import { Checkbox, Flex, List, Switch, theme, Typography } from 'antd'
 import { clone } from 'lodash-es'
+import UnGroupConfirmButton from './UnGroupConfirmButton.tsx'
 import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
-import CharacterSmallCardBackImg from '@/service/Nechronica/components/CharacterTypeScreen/CharacterSmallCardBackImg.tsx'
-import UnGroupConfirmButton from '@/service/Nechronica/components/GroupContents/UnGroupConfirmButton.tsx'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import {
-  type CharacterGroupRelation,
-  type NechronicaCharacter,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
-import mapping from '@/service/Nechronica/ts/mapping.json'
 import { typedOmit } from '@/utils/types.ts'
 
 interface Props {

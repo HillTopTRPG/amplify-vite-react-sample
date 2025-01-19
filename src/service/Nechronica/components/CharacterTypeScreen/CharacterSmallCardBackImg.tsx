@@ -1,7 +1,7 @@
 import { type CSSProperties } from 'react'
+import { getCharacterTypeSrc } from '@Nechronica/index.ts'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Image } from 'antd'
-import { getCharacterTypeSrc } from '@/service/Nechronica'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const containerStyle: CSSProperties = {
   position: 'absolute',

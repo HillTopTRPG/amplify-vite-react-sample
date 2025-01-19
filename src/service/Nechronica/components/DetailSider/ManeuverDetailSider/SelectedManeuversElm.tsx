@@ -1,7 +1,7 @@
+import ManeuverPopoverContents from '@Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
+import { useNechronicaContext } from '@Nechronica/context.ts'
 import { Flex, Spin, theme, Typography } from 'antd'
 import { clone } from 'lodash-es'
-import ManeuverPopoverContents from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 export default function SelectedManeuversElm() {
   const { loading, updateCharacter, selectedManeuverInfos } =

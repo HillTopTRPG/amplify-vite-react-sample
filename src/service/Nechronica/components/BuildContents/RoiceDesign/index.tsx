@@ -1,6 +1,6 @@
+import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
 import { Empty, List } from 'antd'
 import EditableRoice from './EditableRoice.tsx'
-import { useCharacterMakeContext } from '@/service/Nechronica/components/BuildContents/context.ts'
 
 export default function RoiceDesign() {
   const { roiceList } = useCharacterMakeContext()

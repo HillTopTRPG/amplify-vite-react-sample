@@ -1,12 +1,12 @@
 import { type Dispatch, type SetStateAction, useState } from 'react'
-import constate from 'constate'
 import {
   type NechronicaBasic,
   type NechronicaCharacter,
   type NechronicaManeuver,
   type NechronicaRoice,
   type NechronicaType,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
+import constate from 'constate'
 
 export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
   constate(() => {

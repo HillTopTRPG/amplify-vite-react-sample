@@ -1,6 +1,6 @@
+import CharacterTypeScreen from '@Nechronica/components/CharacterTypeScreen'
 import { RadarChartOutlined } from '@ant-design/icons'
 import type { Screen } from '@/service'
-import CharacterTypeScreen from '@/service/Nechronica/components/CharacterTypeScreen'
 
 const spec = { label: 'ホラー', icon: RadarChartOutlined }
 

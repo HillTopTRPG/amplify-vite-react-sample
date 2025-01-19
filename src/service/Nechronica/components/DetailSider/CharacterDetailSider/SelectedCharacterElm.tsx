@@ -1,7 +1,7 @@
+import CharacterCard from '@Nechronica/components/CharacterCard'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex, Spin, theme, Typography } from 'antd'
-import CharacterCard from '@/service/Nechronica/components/CharacterCard'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
   characters: NechronicaCharacter[]

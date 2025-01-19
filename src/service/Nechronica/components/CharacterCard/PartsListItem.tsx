@@ -1,11 +1,11 @@
 import { type ReactNode, useMemo } from 'react'
-import { Avatar, Flex, type FlexProps, List } from 'antd'
-import ManeuverButton from '@/service/Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
-import unknownImg from '@/service/Nechronica/images/unknown.png'
+import ManeuverButton from '@Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
+import unknownImg from '@Nechronica/images/unknown.png'
 import {
   type NechronicaBasic,
   type NechronicaManeuver,
-} from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
+} from '@Nechronica/ts/NechronicaDataHelper.ts'
+import { Avatar, Flex, type FlexProps, List } from 'antd'
 
 const containerFlexProps: Omit<FlexProps, 'children'> = {
   align: 'center',

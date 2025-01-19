@@ -1,9 +1,9 @@
 import { type CSSProperties } from 'react'
+import { useNechronicaContext } from '@Nechronica/context.ts'
 import { Flex } from 'antd'
 import ManeuverImportButton from './ManeuverImportButton.tsx'
 import SelectedManeuversElm from './SelectedManeuversElm.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
 
 const CONTAINER_STYLE: CSSProperties = {
   position: 'fixed',

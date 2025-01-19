@@ -1,9 +1,9 @@
 import { type Dispatch, type SetStateAction } from 'react'
+import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
 import { Row } from 'antd'
 import SelectBasePositionItemSet from './SelectBasePositionItemSet.tsx'
 import TextItemSet from './TextItemSet.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { useCharacterMakeContext } from '@/service/Nechronica/components/BuildContents/context.ts'
 
 const gridGutter: [number, number] = [5, 5] as const
 

@@ -1,7 +1,7 @@
+import GroupContents from '@Nechronica/components/GroupContents'
 import { GroupOutlined } from '@ant-design/icons'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import type { Screen } from '@/service'
-import GroupContents from '@/service/Nechronica/components/GroupContents'
 
 const spec = { label: 'キャラクターグループ', icon: GroupOutlined }
 

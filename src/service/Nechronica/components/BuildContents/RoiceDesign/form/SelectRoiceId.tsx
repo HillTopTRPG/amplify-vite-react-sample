@@ -1,7 +1,7 @@
 import { useId } from 'react'
+import { posSelections } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Select, Space, theme, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { posSelections } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
   value: number

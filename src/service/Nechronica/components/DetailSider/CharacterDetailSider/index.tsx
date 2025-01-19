@@ -1,8 +1,8 @@
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex } from 'antd'
 import SelectedCharacterElm from './SelectedCharacterElm.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type NechronicaCharacter } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 interface Props {
   characters: NechronicaCharacter[]

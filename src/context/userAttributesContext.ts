@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { type Schema } from '@amplify/data/resource.ts'
 import { generateClient } from 'aws-amplify/api'
 import {
   fetchUserAttributes,
@@ -7,7 +8,6 @@ import {
 } from 'aws-amplify/auth'
 import { getCurrentUser, type GetCurrentUserOutput } from 'aws-amplify/auth'
 import constate from 'constate'
-import { type Schema } from '../../amplify/data/resource.ts'
 import { useScreenContext } from '@/context/screenContext.ts'
 
 type User = Schema['User']['type'] & {

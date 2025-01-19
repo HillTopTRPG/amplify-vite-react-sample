@@ -5,14 +5,14 @@ import {
   useId,
   useMemo,
 } from 'react'
+import { useNechronicaContext } from '@Nechronica/context.ts'
+import { getBackImg, getManeuverSrc } from '@Nechronica/index.ts'
+import { type NechronicaManeuver } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex, Popover, Typography } from 'antd'
 import { type TextProps } from 'antd/es/typography/Text'
 import classNames from 'classnames'
 import ManeuverAvatar from './ManeuverAvatar.tsx'
 import styles from './ManeuverButton.module.css'
-import { getBackImg, getManeuverSrc } from '@/service/Nechronica'
-import { useNechronicaContext } from '@/service/Nechronica/context.ts'
-import { type NechronicaManeuver } from '@/service/Nechronica/ts/NechronicaDataHelper.ts'
 
 const FONT_SIZE = 11
 const BUTTON_SIZE = 53

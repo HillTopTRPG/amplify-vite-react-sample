@@ -1,7 +1,7 @@
+import ManeuverContents from '@Nechronica/components/ManeuverContents'
 import { DeploymentUnitOutlined } from '@ant-design/icons'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import type { Screen } from '@/service'
-import ManeuverContents from '@/service/Nechronica/components/ManeuverContents'
 
 const spec = { label: 'マニューバ', icon: DeploymentUnitOutlined }
 

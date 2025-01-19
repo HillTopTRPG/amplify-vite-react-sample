@@ -8,6 +8,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@amplify': path.resolve(__dirname, './amplify'),
+      '@Nechronica': path.resolve(__dirname, './src/service/Nechronica'),
     },
   },
 })
