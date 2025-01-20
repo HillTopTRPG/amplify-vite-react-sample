@@ -2,7 +2,7 @@ import { getCharacterTypeSrc } from '@Nechronica/index.ts'
 import { type NechronicaType } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@Nechronica/ts/mapping.json'
 import { Avatar, Flex, Typography } from 'antd'
-import { useThemeContext } from '@/context/themeContext.ts'
+import { themeSelector, useSelector } from '@/store'
 
 const AVATAR_SIZE = 80
 
@@ -31,7 +31,7 @@ interface Props {
   color?: boolean
 }
 export default function CharacterAvatar({ type, position, color }: Props) {
-  const { theme } = useThemeContext()
+  const theme = useSelector(themeSelector)
   const avatarBgColor = MAP[type].color[theme === 'dark' ? 0 : 1]
   const characterAvatarGradient = `radial-gradient(${avatarBgColor},${avatarBgColor} 60%,transparent 75%)`
 

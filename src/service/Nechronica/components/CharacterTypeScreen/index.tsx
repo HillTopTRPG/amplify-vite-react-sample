@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import AddCharacterInput from '@Nechronica/components/CharacterTypeScreen/AddCharacterInput.tsx'
 import CharacterSmallCards from '@Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
 import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDetailSider'
@@ -14,7 +21,7 @@ import DollFilterCollapse from './filter/DollFilterCollapse.tsx'
 import MenuImageIcon from '@/components/MenuImageIcon.tsx'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { useScrollContainerContext } from '@/context/scrollContainer.ts'
+import { scrollContainerContext } from '@/context/scrollContainer.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
@@ -29,7 +36,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
   const { scope, screenSize } = useScreenContext()
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
-  const { scrollContainerRef } = useScrollContainerContext()
+  const scrollContainerRef = useContext(scrollContainerContext)
 
   const makeUseCharacters = useCallback(
     () =>
@@ -137,7 +144,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
           />
         </Flex>
         <CharacterDetailSider characters={detailList} />
-        {scrollContainerRef.current ? (
+        {scrollContainerRef?.current ? (
           <FloatButton.BackTop
             duration={100}
             target={() => scrollContainerRef.current!}

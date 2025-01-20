@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo } from 'react'
 import { Flex, Menu } from 'antd'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { useThemeContext } from '@/context/themeContext.ts'
+import { themeSelector, useSelector } from '@/store'
 import { getKeys, isIncludes } from '@/utils/types.ts'
 
 interface Props {
   onSelect?: (key: string) => void
 }
 export default function ScreenSelectMenu({ onSelect }: Props) {
-  const { theme } = useThemeContext()
+  const theme = useSelector(themeSelector)
   const { screens, screen, setScreen } = useScreenContext()
 
   const onSelectHandler = useCallback(

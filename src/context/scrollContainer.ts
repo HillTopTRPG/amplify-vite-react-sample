@@ -1,10 +1,4 @@
-import { type RefObject } from 'react'
-import constate from 'constate'
+import { createContext, type RefObject } from 'react'
 
-export const [ScrollContainerProvider, useScrollContainerContext] = constate(
-  ({ scrollContainerRef }: { scrollContainerRef: RefObject<HTMLElement> }) => {
-    return {
-      scrollContainerRef,
-    }
-  },
-)
+export const scrollContainerContext =
+  createContext<RefObject<HTMLElement> | null>(null)

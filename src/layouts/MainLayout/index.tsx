@@ -7,8 +7,8 @@ import PageScrollDispatcher from './PageScrollDispatcher.tsx'
 import Sider from './Sider.tsx'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { type ScreenSize, useScreenContext } from '@/context/screenContext.ts'
-import { ScrollContainerProvider } from '@/context/scrollContainer.ts'
-import { useThemeContext } from '@/context/themeContext.ts'
+import { scrollContainerContext } from '@/context/scrollContainer.ts'
+import { themeSelector, useSelector } from '@/store'
 
 const { defaultAlgorithm, darkAlgorithm } = theme
 
@@ -19,7 +19,7 @@ interface Props {
   children: ReactNode
 }
 export default function MainLayout({ containerStyle, children }: Props) {
-  const { theme } = useThemeContext()
+  const theme = useSelector(themeSelector)
   const algorithm = theme === 'dark' ? darkAlgorithm : defaultAlgorithm
   const scrollContainerRef = useRef<HTMLElement>(null)
   const { screenSize } = useScreenContext()
@@ -27,7 +27,7 @@ export default function MainLayout({ containerStyle, children }: Props) {
   return (
     <>
       <PageScrollDispatcher scrollContainer={scrollContainerRef} />
-      <ScrollContainerProvider scrollContainerRef={scrollContainerRef}>
+      <scrollContainerContext.Provider value={scrollContainerRef}>
         <ConfigProvider
           theme={{ algorithm }}
           divider={{ style: { margin: '5px 0' } }}
@@ -61,7 +61,7 @@ export default function MainLayout({ containerStyle, children }: Props) {
             </Layout>
           </Layout>
         </ConfigProvider>
-      </ScrollContainerProvider>
+      </scrollContainerContext.Provider>
     </>
   )
 }

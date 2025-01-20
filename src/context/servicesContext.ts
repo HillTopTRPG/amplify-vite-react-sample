@@ -1,8 +1,4 @@
-import constate from 'constate'
-import { type Services } from '@/service'
+import { createContext } from 'react'
+import services from '@/service'
 
-const useServices = ({ services }: { services: Services }) => {
-  return { services }
-}
-
-export const [ServicesProvider, useServicesContext] = constate(useServices)
+export const serviceContext = createContext<typeof services>(services)

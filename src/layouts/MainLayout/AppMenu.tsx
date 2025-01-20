@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   BookOutlined,
@@ -21,18 +21,21 @@ import {
   Space,
   Spin,
 } from 'antd'
+import { useDispatch } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { useScreenContext } from '@/context/screenContext.ts'
-import { useServicesContext } from '@/context/servicesContext.ts'
-import { useThemeContext } from '@/context/themeContext.ts'
+import { serviceContext } from '@/context/servicesContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import { themeSelector, useSelector } from '@/store'
+import { updateTheme } from '@/store/themeSlice.ts'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
   const { users, me, loading } = useUserAttributes()
-  const { theme, updateTheme } = useThemeContext()
-  const { services } = useServicesContext()
+  const theme = useSelector(themeSelector)
+  const dispatch = useDispatch()
+  const services = useContext(serviceContext)
   const { screenSize } = useScreenContext()
   const { token } = AntdTheme.useToken()
   const { signOut } = useAuthenticator()
@@ -233,13 +236,16 @@ export default function AppMenu() {
           <Button
             type="text"
             icon={theme === 'dark' ? <MoonFilled /> : <SunFilled />}
-            onClick={() => updateTheme(theme === 'dark' ? 'light' : 'dark')}
+            onClick={() =>
+              dispatch(updateTheme(theme === 'dark' ? 'light' : 'dark'))
+            }
             size="middle"
           />
         </Flex>
       </Layout.Header>
     ),
     [
+      dispatch,
       dropdownProps,
       loading,
       me,
@@ -257,7 +263,6 @@ export default function AppMenu() {
       toggleOpenStatus,
       token.colorBgBlur,
       token.colorBgContainer,
-      updateTheme,
       useUsers,
       userName,
     ],

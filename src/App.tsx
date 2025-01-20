@@ -7,19 +7,23 @@ import {
 } from 'react-router-dom'
 import type { Location } from 'react-router-dom'
 import nechronicaRoutes from '@Nechronica/Routes.tsx'
+import { Provider } from 'react-redux'
 import Authenticator from '@/Authenticator.tsx'
-import { ServicesProvider } from '@/context/servicesContext.ts'
+import { serviceContext } from '@/context/servicesContext.ts'
 import Home from '@/pages/Home.tsx'
 import NotFound from '@/pages/NotFound.tsx'
 import services from '@/service'
+import { store } from '@/store'
 
 function Root() {
   const getKey = useCallback((l: Location) => l.pathname, [])
   return (
-    <ServicesProvider services={services}>
-      <ScrollRestoration getKey={getKey} />
-      <Outlet />
-    </ServicesProvider>
+    <Provider store={store}>
+      <serviceContext.Provider value={services}>
+        <ScrollRestoration getKey={getKey} />
+        <Outlet />
+      </serviceContext.Provider>
+    </Provider>
   )
 }
 
