@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 import { useNechronicaContext } from '@Nechronica/context.ts'
 import { Flex, Spin, Typography } from 'antd'
-import { useScreenContext } from '@/context/screenContext.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
+import { drawerStatusSelector, useSelector } from '@/store'
 
 interface Props {
   label: string
@@ -10,7 +11,8 @@ interface Props {
 }
 export default function Style2({ label, columns, children }: Props) {
   const { loading } = useNechronicaContext()
-  const { screenSize } = useScreenContext()
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
   const useColumns =
     screenSize.viewPortWidth < 612 ? Math.min(2, columns) : columns
 

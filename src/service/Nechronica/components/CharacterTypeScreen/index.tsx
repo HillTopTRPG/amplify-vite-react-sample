@@ -12,6 +12,7 @@ import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDe
 import SponsorShip from '@Nechronica/components/SponsorShip.tsx'
 import { useNechronicaContext } from '@Nechronica/context.ts'
 import { useSearchCharacter } from '@Nechronica/hooks/useSearchCharacter.ts'
+import { screens } from '@Nechronica/screens'
 import {
   type NechronicaCharacter,
   type NechronicaType,
@@ -20,11 +21,13 @@ import { Flex, FloatButton, type InputRef, Spin } from 'antd'
 import DollFilterCollapse from './filter/DollFilterCollapse.tsx'
 import MenuImageIcon from '@/components/MenuImageIcon.tsx'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
 import { scrollContainerContext } from '@/context/scrollContainer.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
+import { drawerStatusSelector, useSelector } from '@/store'
 
 interface Props {
   characterType: NechronicaType
@@ -33,7 +36,9 @@ interface Props {
 export default function CharacterTypeScreen({ characterType, label }: Props) {
   const { loading, characters } = useNechronicaContext()
   const { currentUser } = useUserAttributes()
-  const { scope, screenSize } = useScreenContext()
+  const { scope } = useScreenNavigateInService(screens)
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
   const scrollContainerRef = useContext(scrollContainerContext)
@@ -87,6 +92,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
       <ScreenContainer
         label={label}
         icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
+        screens={screens}
       >
         <Spin size="large" />
         <div
@@ -110,6 +116,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
       <ScreenContainer
         label={label}
         icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
+        screens={screens}
       >
         <AddCharacterInput
           label={label}

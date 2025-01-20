@@ -1,19 +1,20 @@
 import { useCallback, useMemo } from 'react'
 import { useNechronicaContext } from '@Nechronica/context.ts'
+import { screens } from '@Nechronica/screens'
 import { type CharacterGroupRelation } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { SelectOutlined } from '@ant-design/icons'
 import { Empty, Flex, QRCode, Switch, theme, Typography } from 'antd'
 import { clone, omit } from 'lodash-es'
 import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 
 interface Props {
   group: CharacterGroupRelation
 }
 export default function GroupSmallCard({ group }: Props) {
   const { token } = theme.useToken()
-  const { setScreen, getScreenUrl } = useScreenContext()
+  const { setScreen, getScreenUrl } = useScreenNavigateInService(screens)
   const { updateCharacterGroup, deleteCharacterGroup } = useNechronicaContext()
 
   const toggleStared = useMemo(

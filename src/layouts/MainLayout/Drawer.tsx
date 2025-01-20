@@ -1,10 +1,17 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Drawer as AntdDrawer } from 'antd'
+import { useDispatch } from 'react-redux'
 import ScreenSelectMenu from './ScreenSelectMenu.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
+import { drawerStatusSelector, useSelector } from '@/store'
+import { setDrawerStatus } from '@/store/drawerStatusSlice.ts'
 
 export default function Drawer() {
-  const { open, setOpenStatus } = useScreenContext()
+  const dispatch = useDispatch()
+  const open = useSelector(drawerStatusSelector)
+  const setOpenStatus = useCallback(
+    (v: boolean) => dispatch(setDrawerStatus(v)),
+    [dispatch],
+  )
 
   return useMemo(
     () => (

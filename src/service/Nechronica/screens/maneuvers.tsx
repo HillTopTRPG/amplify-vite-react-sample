@@ -1,4 +1,5 @@
 import ManeuverContents from '@Nechronica/components/ManeuverContents'
+import { screens } from '@Nechronica/screens.ts'
 import { DeploymentUnitOutlined } from '@ant-design/icons'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import type { Screen } from '@/service'
@@ -10,7 +11,7 @@ const screen: Screen = {
   containerStyle: (screenSize) =>
     screenSize.viewPortWidth >= 789 && { marginRight: 336 },
   contents: () => (
-    <ScreenContainer {...spec}>
+    <ScreenContainer {...spec} screens={screens}>
       <ManeuverContents />
     </ScreenContainer>
   ),

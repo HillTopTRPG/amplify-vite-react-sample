@@ -1,5 +1,6 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react'
 import { useNechronicaContext } from '@Nechronica/context.ts'
+import { screens } from '@Nechronica/screens'
 import {
   NechronicaDataHelper,
   type NechronicaType,
@@ -7,8 +8,8 @@ import {
 import { ImportOutlined } from '@ant-design/icons'
 import { Button, type InputRef, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 
 interface Props {
   label: string
@@ -20,7 +21,7 @@ export default function AddCharacterInput({
   characterType,
   sheetIdInputRef,
 }: Props) {
-  const { scope } = useScreenContext()
+  const { scope } = useScreenNavigateInService(screens)
   const { createCharacter } = useNechronicaContext()
   const { currentIsMe } = useUserAttributes()
   const [sheetId, setSheetId] = useState('')

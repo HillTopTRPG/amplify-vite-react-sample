@@ -8,7 +8,7 @@ import {
 } from 'aws-amplify/auth'
 import { getCurrentUser, type GetCurrentUserOutput } from 'aws-amplify/auth'
 import constate from 'constate'
-import { useScreenContext } from '@/context/screenContext.ts'
+import useScreenLocation from '@/hooks/useScreenLocation.ts'
 
 type User = Schema['User']['type'] & {
   setting: {
@@ -20,7 +20,7 @@ const client = generateClient<Schema>()
 
 export const [UserAttributesProvider, useUserAttributes] = constate(() => {
   const [attr, setAttrResult] = useState<FetchUserAttributesOutput>()
-  const { scope } = useScreenContext()
+  const { scope } = useScreenLocation()
   const [userAttributeLoading, setUserAttributeLoading] = useState(true)
   const reloadUserAttributes = useCallback(() => {
     fetchUserAttributes()

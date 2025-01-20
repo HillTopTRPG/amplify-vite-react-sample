@@ -3,13 +3,16 @@ import { useParams } from 'react-router-dom'
 import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDetailSider'
 import { useNechronicaContext } from '@Nechronica/context.ts'
 import { useSearchCharacter } from '@Nechronica/hooks/useSearchCharacter.ts'
+import { screens } from '@Nechronica/screens'
 import type { CharacterGroupRelation } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Button, Flex, Modal, Result, Spin } from 'antd'
 import CharacterSmallCard from '../CharacterTypeScreen/CharacterSmallCard.tsx'
 import CharacterSmallCards from '../CharacterTypeScreen/CharacterSmallCards.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
+import { drawerStatusSelector, useSelector } from '@/store'
 import { typedOmit } from '@/utils/types.ts'
 
 export default function GroupContents() {
@@ -19,7 +22,9 @@ export default function GroupContents() {
     useNechronicaContext()
 
   const { currentUser } = useUserAttributes()
-  const { screenSize, scope } = useScreenContext()
+  const { scope } = useScreenNavigateInService(screens)
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
 
   const characterGroupRelation = useMemo(() => {
     if (loading) return null

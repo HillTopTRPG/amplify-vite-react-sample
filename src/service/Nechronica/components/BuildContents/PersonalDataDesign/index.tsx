@@ -3,7 +3,8 @@ import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/co
 import { Row } from 'antd'
 import SelectBasePositionItemSet from './SelectBasePositionItemSet.tsx'
 import TextItemSet from './TextItemSet.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
+import { drawerStatusSelector, useSelector } from '@/store'
 
 const gridGutter: [number, number] = [5, 5] as const
 
@@ -25,7 +26,8 @@ type ItemSet =
   | ['basePosition', 'big' | 'small']
 
 export default function PersonalDataDesign() {
-  const { screenSize } = useScreenContext()
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
   const {
     characterType,
     characterNameSet,

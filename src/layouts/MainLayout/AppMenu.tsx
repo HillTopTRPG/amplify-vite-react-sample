@@ -24,10 +24,12 @@ import {
 import { useDispatch } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { serviceContext } from '@/context/servicesContext.ts'
+import { servicesContext } from '@/context/servicesContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
-import { themeSelector, useSelector } from '@/store'
+import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
+import { drawerStatusSelector, themeSelector, useSelector } from '@/store'
+import { toggleDrawerStatus } from '@/store/drawerStatusSlice.ts'
 import { updateTheme } from '@/store/themeSlice.ts'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
@@ -35,8 +37,9 @@ export default function AppMenu() {
   const { users, me, loading } = useUserAttributes()
   const theme = useSelector(themeSelector)
   const dispatch = useDispatch()
-  const services = useContext(serviceContext)
-  const { screenSize } = useScreenContext()
+  const services = useContext(servicesContext)
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
   const { token } = AntdTheme.useToken()
   const { signOut } = useAuthenticator()
   const navigate = useNavigate()
@@ -46,12 +49,11 @@ export default function AppMenu() {
     userName,
     service,
     setService,
-    screenIcon,
-    screenLabel,
-    toggleOpenStatus,
     screens,
     setScreen,
-  } = useScreenContext()
+    screenIcon,
+    screenLabel,
+  } = useScreenNavigateInGlobal()
 
   const serviceName = useMemo(
     () =>
@@ -122,7 +124,7 @@ export default function AppMenu() {
           <Button
             icon={<MenuOutlined />}
             type="text"
-            onClick={toggleOpenStatus}
+            onClick={() => dispatch(toggleDrawerStatus())}
           />
           <Flex align="center" justify="flex-start" style={{ flexGrow: 1 }}>
             <Button
@@ -260,7 +262,6 @@ export default function AppMenu() {
       setScreen,
       setService,
       theme,
-      toggleOpenStatus,
       token.colorBgBlur,
       token.colorBgContainer,
       useUsers,

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { screens } from '@Nechronica/screens'
 import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@Nechronica/ts/mapping.json'
-import { useScreenContext } from '@/context/screenContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
 
@@ -28,7 +29,7 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
     }
   }, [searchParams])
 
-  const { setScreen } = useScreenContext()
+  const { setScreen } = useScreenNavigateInService(screens)
   const [selectedCharacters, setSelectedCharacters] = useSelectIds()
   const [hoverCharacter, setHoverCharacter] = useState<string | null>(null)
 

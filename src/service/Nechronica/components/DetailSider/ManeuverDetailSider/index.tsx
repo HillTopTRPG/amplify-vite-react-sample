@@ -3,7 +3,8 @@ import { useNechronicaContext } from '@Nechronica/context.ts'
 import { Flex } from 'antd'
 import ManeuverImportButton from './ManeuverImportButton.tsx'
 import SelectedManeuversElm from './SelectedManeuversElm.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
+import { drawerStatusSelector, useSelector } from '@/store'
 
 const CONTAINER_STYLE: CSSProperties = {
   position: 'fixed',
@@ -15,7 +16,8 @@ const CONTAINER_STYLE: CSSProperties = {
 }
 
 export default function ManeuverDetailSider() {
-  const { screenSize } = useScreenContext()
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
   const { setHoverManeuverId, setClickManeuverId } = useNechronicaContext()
 
   if (screenSize.viewPortWidth < 789) {

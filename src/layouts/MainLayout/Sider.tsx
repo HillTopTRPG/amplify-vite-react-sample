@@ -1,11 +1,10 @@
 import { Layout } from 'antd'
 import ScreenSelectMenu from './ScreenSelectMenu.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { themeSelector, useSelector } from '@/store'
+import { drawerStatusSelector, themeSelector, useSelector } from '@/store'
 
 export default function Sider() {
   const theme = useSelector(themeSelector)
-  const { open } = useScreenContext()
+  const open = useSelector(drawerStatusSelector)
 
   return (
     <Layout.Sider

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import { Flex, Menu } from 'antd'
-import { useScreenContext } from '@/context/screenContext.ts'
+import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
 import { themeSelector, useSelector } from '@/store'
 import { getKeys, isIncludes } from '@/utils/types.ts'
 
@@ -9,7 +9,7 @@ interface Props {
 }
 export default function ScreenSelectMenu({ onSelect }: Props) {
   const theme = useSelector(themeSelector)
-  const { screens, screen, setScreen } = useScreenContext()
+  const { screens, screen, setScreen } = useScreenNavigateInGlobal()
 
   const onSelectHandler = useCallback(
     (key: string) => {

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { nechronicaTypes } from '@Nechronica/index.ts'
+import { screens } from '@Nechronica/screens'
 import {
   type Nechronica,
   type NechronicaAdditionalData,
@@ -10,8 +11,8 @@ import {
 import type { Schema } from '@amplify/data/resource.ts'
 import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
-import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import {
   type CharacterGroup,
   type CharacterGroupAdditionalData,
@@ -70,7 +71,7 @@ export type ManeuverInfo = {
 
 export const [NechronicaProvider, useNechronicaContext] = constate(() => {
   const { loading: loadingUserAttributes, me } = useUserAttributes()
-  const { scope } = useScreenContext()
+  const { scope } = useScreenNavigateInService(screens)
 
   const [filterLoading, setFilterLoading] = useState(true)
   const [filter, setFilter] = useState<object>({

@@ -2,6 +2,7 @@ import {
   type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
+  useContext,
   useState,
 } from 'react'
 import styles from '@Nechronica/components/Hoverable.module.css'
@@ -23,13 +24,15 @@ import {
   Typography,
 } from 'antd'
 import classNames from 'classnames'
-import CardDrawer from './CardDrawer.tsx'
 import {
-  SmallCardDataProvider,
-  useSmallCardDataContext,
-} from '@/components/DataSmallCard/context.ts'
-import { useScreenContext } from '@/context/screenContext.ts'
+  operationOpenContext,
+  shareOpenContext,
+  smallCardDataContext,
+} from './context.ts'
+import OperationCardDrawer from '@/components/DataSmallCard/OperationCardDrawer.tsx'
+import ShareCardDrawer from '@/components/DataSmallCard/ShareCardDrawer.tsx'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenLocation from '@/hooks/useScreenLocation.ts'
 
 const cardStyle: CSSProperties = {
   width: 170,
@@ -100,9 +103,23 @@ export default function DataSmallCard({
 }: Props) {
   const { token } = theme.useToken()
   const { currentIsMe } = useUserAttributes()
-  const { scope } = useScreenContext()
+  const { scope } = useScreenLocation()
   const [shareOpen, setShareOpen] = useState(false)
-  const [operateOpen, setOperateOpen] = useState<string>('')
+  const [operationOpen, setOperationOpen] = useState('')
+
+  const toggleShareOpen = () => {
+    setShareOpen((prev) => !prev)
+    setOperationOpen('')
+  }
+  const toggleOperationOpen = (operateType: string) => {
+    setOperationOpen((prev) => (!prev ? operateType : ''))
+    setShareOpen(false)
+  }
+  const close = () => {
+    setShareOpen(false)
+    setOperationOpen('')
+  }
+
   return (
     <Badge.Ribbon
       placement="start"
@@ -110,86 +127,83 @@ export default function DataSmallCard({
       color={data.public ? 'blue' : 'orange'}
       style={{ display: 'flex' }}
     >
-      <SmallCardDataProvider
-        data={data}
-        shareOpen={shareOpen}
-        setShareOpen={setShareOpen}
-        operateOpen={operateOpen}
-        setOperateOpen={setOperateOpen}
-      >
-        <Card
-          bordered={false}
-          hoverable={false}
-          {...cardProps}
-          actions={
-            scope === 'private' && currentIsMe ? cardProps.actions : undefined
-          }
-          style={{
-            ...cardStyle,
-            ...cardProps.style,
-          }}
-          styles={{
-            ...cardProps.styles,
-            body: {
-              padding: 0,
-              flexGrow: 1,
-              ...cardProps.styles?.body,
-            },
-          }}
+      <smallCardDataContext.Provider value={data}>
+        <shareOpenContext.Provider
+          value={{ shareOpen, toggleShareOpen, close }}
         >
-          <Flex align="center" justify="flex-end" style={cardHeaderStyle}>
-            {scope === 'private' && currentIsMe ? null : (
-              <Typography.Text
-                ellipsis
-                italic
-                style={{
-                  fontSize: 11,
-                  color: token.colorTextDescription,
+          <operationOpenContext.Provider
+            value={{ operationOpen, toggleOperationOpen, close }}
+          >
+            <Card
+              bordered={false}
+              hoverable={false}
+              {...cardProps}
+              actions={
+                scope === 'private' && currentIsMe
+                  ? cardProps.actions
+                  : undefined
+              }
+              style={{
+                ...cardStyle,
+                ...cardProps.style,
+              }}
+              styles={{
+                ...cardProps.styles,
+                body: {
+                  padding: 0,
                   flexGrow: 1,
-                }}
-              >
-                @{data.owner ?? ''}
-              </Typography.Text>
-            )}
-            {selected !== undefined ? (
-              <Checkbox style={{ alignSelf: 'flex-end' }} checked={selected} />
-            ) : null}
-          </Flex>
-          <div style={cardBodyStyle}>
-            <CardDrawer
-              data={data}
-              open={shareOpen}
-              onClose={() => setShareOpen(false)}
+                  ...cardProps.styles?.body,
+                },
+              }}
             >
-              {shareDrawerContents}
-            </CardDrawer>
-            <CardDrawer
-              data={data}
-              open={operateOpen}
-              onClose={() => setOperateOpen('')}
-            >
-              {operationDrawerContents(operateOpen)}
-            </CardDrawer>
-            {backgroundElm}
-            <Typography.Link
-              {...contentsContainerProps}
-              className={classNames(
-                styles.hoverable,
-                selected ? styles.active : null,
-              )}
-              style={contentsContainerStyle}
-            >
-              {children}
-            </Typography.Link>
-          </div>
-        </Card>
-      </SmallCardDataProvider>
+              <Flex align="center" justify="flex-end" style={cardHeaderStyle}>
+                {scope === 'private' && currentIsMe ? null : (
+                  <Typography.Text
+                    ellipsis
+                    italic
+                    style={{
+                      fontSize: 11,
+                      color: token.colorTextDescription,
+                      flexGrow: 1,
+                    }}
+                  >
+                    @{data.owner ?? ''}
+                  </Typography.Text>
+                )}
+                {selected !== undefined ? (
+                  <Checkbox
+                    style={{ alignSelf: 'flex-end' }}
+                    checked={selected}
+                  />
+                ) : null}
+              </Flex>
+              <div style={cardBodyStyle}>
+                <ShareCardDrawer shareDrawerContents={shareDrawerContents} />
+                <OperationCardDrawer
+                  operationDrawerContents={operationDrawerContents}
+                />
+                {backgroundElm}
+                <Typography.Link
+                  {...contentsContainerProps}
+                  className={classNames(
+                    styles.hoverable,
+                    selected ? styles.active : null,
+                  )}
+                  style={contentsContainerStyle}
+                >
+                  {children}
+                </Typography.Link>
+              </div>
+            </Card>
+          </operationOpenContext.Provider>
+        </shareOpenContext.Provider>
+      </smallCardDataContext.Provider>
     </Badge.Ribbon>
   )
 }
 
 function FavoriteButton({ toggle }: { toggle: () => void }) {
-  const { data } = useSmallCardDataContext()
+  const data = useContext(smallCardDataContext)
   return (
     <Button
       type="text"
@@ -201,11 +215,11 @@ function FavoriteButton({ toggle }: { toggle: () => void }) {
 DataSmallCard.FavoriteButton = FavoriteButton
 
 function ShareButton() {
-  const { shareOpen, toggleShare } = useSmallCardDataContext()
+  const { shareOpen, toggleShareOpen } = useContext(shareOpenContext)
   return (
     <Button
       type="text"
-      onClick={toggleShare}
+      onClick={toggleShareOpen}
       icon={shareOpen ? <CloseOutlined /> : <ShareAltOutlined />}
     />
   )
@@ -213,12 +227,13 @@ function ShareButton() {
 DataSmallCard.ShareButton = ShareButton
 
 function OperateButton({ operateType }: { operateType: string }) {
-  const { operateOpen, toggleOperate } = useSmallCardDataContext()
+  const { operationOpen, toggleOperationOpen } =
+    useContext(operationOpenContext)
   return (
     <Button
       type="text"
-      onClick={() => toggleOperate(operateType)}
-      icon={operateOpen ? <CloseOutlined /> : <MenuOutlined />}
+      onClick={() => toggleOperationOpen(operateType)}
+      icon={operationOpen ? <CloseOutlined /> : <MenuOutlined />}
     />
   )
 }

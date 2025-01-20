@@ -1,13 +1,14 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNechronicaContext } from '@Nechronica/context.ts'
+import { screens } from '@Nechronica/screens'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 
 export default function AddGroupInput() {
-  const { scope } = useScreenContext()
+  const { scope } = useScreenNavigateInService(screens)
   const { createCharacterGroup } = useNechronicaContext()
   const { currentIsMe } = useUserAttributes()
   const [newGroupName, setNewGroupName] = useState('')

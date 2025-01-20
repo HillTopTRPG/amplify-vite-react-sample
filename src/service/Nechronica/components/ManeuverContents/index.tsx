@@ -16,12 +16,13 @@ import PositionSkillManeuvers from '@Nechronica/components/ManeuverContents/Posi
 import TreasureManeuvers from '@Nechronica/components/ManeuverContents/TreasureManeuvers.tsx'
 import { type ManeuverInfo, useNechronicaContext } from '@Nechronica/context.ts'
 import { getIconClass } from '@Nechronica/index.ts'
+import { screens } from '@Nechronica/screens'
 import { Collapse, type CollapseProps, Flex, Radio, Spin } from 'antd'
 import { type CheckboxGroupProps } from 'antd/es/checkbox/Group'
 import { clone } from 'lodash-es'
 import ManeuverDetailSider from '../DetailSider/ManeuverDetailSider'
-import { useScreenContext } from '@/context/screenContext.ts'
 import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 
 const options: CheckboxGroupProps['options'] = [
   {
@@ -40,7 +41,7 @@ export default function ManeuverContents() {
     setSelectedManeuverInfos,
   } = useNechronicaContext()
   const { currentUser } = useUserAttributes()
-  const { scope } = useScreenContext()
+  const { scope } = useScreenNavigateInService(screens)
   const [target, setTarget] = useState<'own' | 'server'>('own')
 
   const useCharacters = useMemo(
