@@ -31,8 +31,8 @@ import {
 } from './context.ts'
 import OperationCardDrawer from '@/components/DataSmallCard/OperationCardDrawer.tsx'
 import ShareCardDrawer from '@/components/DataSmallCard/ShareCardDrawer.tsx'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useScreenLocation from '@/hooks/useScreenLocation.ts'
+import { currentIsMeSelector, useSelector } from '@/store'
 
 const cardStyle: CSSProperties = {
   width: 170,
@@ -102,7 +102,7 @@ export default function DataSmallCard({
   children,
 }: Props) {
   const { token } = theme.useToken()
-  const { currentIsMe } = useUserAttributes()
+  const currentIsMe = useSelector(currentIsMeSelector)
   const { scope } = useScreenLocation()
   const [shareOpen, setShareOpen] = useState(false)
   const [operationOpen, setOperationOpen] = useState('')

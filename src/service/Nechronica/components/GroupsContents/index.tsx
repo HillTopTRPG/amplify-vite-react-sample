@@ -3,13 +3,13 @@ import GroupSmallCard from '@Nechronica/components/DashboardContents/GroupSmallC
 import { useNechronicaContext } from '@Nechronica/context.ts'
 import { screens } from '@Nechronica/screens'
 import { Flex, Spin } from 'antd'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import { currentUserSelector, useSelector } from '@/store'
 
 export default function GroupsContents() {
   const { loading, characterGroupRelations } = useNechronicaContext()
 
-  const { currentUser } = useUserAttributes()
+  const currentUser = useSelector(currentUserSelector)
   const { scope } = useScreenNavigateInService(screens)
 
   const dataFilterFc = ({ owner }: { owner: string }): boolean => {

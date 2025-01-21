@@ -32,7 +32,6 @@ interface Props {
 }
 export default function CharacterAvatar({ type, position, color }: Props) {
   const theme = useSelector(themeSelector)
-  console.log('theme', theme)
   const avatarBgColor = MAP[type].color[theme === 'dark' ? 0 : 1]
   const characterAvatarGradient = `radial-gradient(${avatarBgColor},${avatarBgColor} 60%,transparent 75%)`
 

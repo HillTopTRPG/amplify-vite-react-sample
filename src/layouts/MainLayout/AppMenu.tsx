@@ -25,16 +25,24 @@ import { useDispatch } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import { servicesContext } from '@/context/servicesContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
-import { drawerStatusSelector, themeSelector, useSelector } from '@/store'
+import {
+  drawerStatusSelector,
+  meSelector,
+  themeSelector,
+  userAttributesLoadingSelector,
+  usersSelector,
+  useSelector,
+} from '@/store'
 import { toggleDrawerStatus } from '@/store/drawerStatusSlice.ts'
 import { updateTheme } from '@/store/themeSlice.ts'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const { users, me, loading } = useUserAttributes()
+  const users = useSelector(usersSelector)
+  const me = useSelector(meSelector)
+  const loading = useSelector(userAttributesLoadingSelector)
   const theme = useSelector(themeSelector)
   const dispatch = useDispatch()
   const services = useContext(servicesContext)

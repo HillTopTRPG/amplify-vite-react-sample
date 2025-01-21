@@ -21,8 +21,8 @@ import { Collapse, type CollapseProps, Flex, Radio, Spin } from 'antd'
 import { type CheckboxGroupProps } from 'antd/es/checkbox/Group'
 import { clone } from 'lodash-es'
 import ManeuverDetailSider from '../DetailSider/ManeuverDetailSider'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import { currentUserSelector, useSelector } from '@/store'
 
 const options: CheckboxGroupProps['options'] = [
   {
@@ -40,7 +40,7 @@ export default function ManeuverContents() {
     selectedManeuverInfos,
     setSelectedManeuverInfos,
   } = useNechronicaContext()
-  const { currentUser } = useUserAttributes()
+  const currentUser = useSelector(currentUserSelector)
   const { scope } = useScreenNavigateInService(screens)
   const [target, setTarget] = useState<'own' | 'server'>('own')
 

@@ -12,7 +12,7 @@ import UnGroupConfirmButton from './UnGroupConfirmButton.tsx'
 import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import { currentUserSelector, useSelector } from '@/store'
 import { typedOmit } from '@/utils/types.ts'
 
 interface Props {
@@ -38,7 +38,7 @@ export default function CharacterSmallCard({
     characterGroupRelations,
     updateCharacterGroup,
   } = useNechronicaContext()
-  const { currentUser } = useUserAttributes()
+  const currentUser = useSelector(currentUserSelector)
 
   const useCharacterGroupRelations = useMemo(
     () =>

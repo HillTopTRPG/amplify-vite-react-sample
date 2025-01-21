@@ -22,12 +22,11 @@ import DollFilterCollapse from './filter/DollFilterCollapse.tsx'
 import MenuImageIcon from '@/components/MenuImageIcon.tsx'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import { scrollContainerContext } from '@/context/scrollContainer.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
-import { drawerStatusSelector, useSelector } from '@/store'
+import { currentUserSelector, drawerStatusSelector, useSelector } from '@/store'
 
 interface Props {
   characterType: NechronicaType
@@ -35,7 +34,7 @@ interface Props {
 }
 export default function CharacterTypeScreen({ characterType, label }: Props) {
   const { loading, characters } = useNechronicaContext()
-  const { currentUser } = useUserAttributes()
+  const currentUser = useSelector(currentUserSelector)
   const { scope } = useScreenNavigateInService(screens)
   const drawerStatus = useSelector(drawerStatusSelector)
   const screenSize = useScreenSize(drawerStatus)

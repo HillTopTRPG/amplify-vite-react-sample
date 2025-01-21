@@ -8,11 +8,10 @@ import type { CharacterGroupRelation } from '@Nechronica/ts/NechronicaDataHelper
 import { Button, Flex, Modal, Result, Spin } from 'antd'
 import CharacterSmallCard from '../CharacterTypeScreen/CharacterSmallCard.tsx'
 import CharacterSmallCards from '../CharacterTypeScreen/CharacterSmallCards.tsx'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
-import { drawerStatusSelector, useSelector } from '@/store'
+import { currentUserSelector, drawerStatusSelector, useSelector } from '@/store'
 import { typedOmit } from '@/utils/types.ts'
 
 export default function GroupContents() {
@@ -21,7 +20,7 @@ export default function GroupContents() {
   const { loading, characters, characterGroupRelations, updateCharacterGroup } =
     useNechronicaContext()
 
-  const { currentUser } = useUserAttributes()
+  const currentUser = useSelector(currentUserSelector)
   const { scope } = useScreenNavigateInService(screens)
   const drawerStatus = useSelector(drawerStatusSelector)
   const screenSize = useScreenSize(drawerStatus)

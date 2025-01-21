@@ -11,12 +11,12 @@ import {
 import type { Schema } from '@amplify/data/resource.ts'
 import { generateClient } from 'aws-amplify/api'
 import constate from 'constate'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import {
   type CharacterGroup,
   type CharacterGroupAdditionalData,
 } from '@/service'
+import { meSelector, userAttributesLoadingSelector, useSelector } from '@/store'
 import { type PromiseType, typedOmit, typedPick } from '@/utils/types.ts'
 
 type PublishObject = {
@@ -70,7 +70,8 @@ export type ManeuverInfo = {
 }
 
 export const [NechronicaProvider, useNechronicaContext] = constate(() => {
-  const { loading: loadingUserAttributes, me } = useUserAttributes()
+  const me = useSelector(meSelector)
+  const userAttributesLoading = useSelector(userAttributesLoadingSelector)
   const { scope } = useScreenNavigateInService(screens)
 
   const [filterLoading, setFilterLoading] = useState(true)
@@ -80,7 +81,7 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
     },
   })
 
-  if (filterLoading && !loadingUserAttributes) {
+  if (filterLoading && !userAttributesLoading) {
     if (me?.userName) {
       setFilter({
         or: [
@@ -106,7 +107,7 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
   const [publishCharacterLoading, setPublishCharacterLoading] =
     useState<boolean>(true)
   useEffect(() => {
-    if (loadingUserAttributes) return () => {}
+    if (userAttributesLoading) return () => {}
     const sub = client.models.NechronicaCharacter.observeQuery({
       selectionSet: ['id', 'owner', 'public'],
     }).subscribe({
@@ -121,7 +122,7 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
       console.log('unsub1')
       sub.unsubscribe()
     }
-  }, [loadingUserAttributes])
+  }, [userAttributesLoading])
 
   const [characters, setCharacters] = useState<NechronicaCharacter[]>([])
   const [characterLoading, setCharacterLoading] = useState<boolean>(true)
@@ -198,7 +199,7 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
   const [publishCharacterGroupLoading, setPublishCharacterGroupLoading] =
     useState<boolean>(true)
   useEffect(() => {
-    if (loadingUserAttributes) return () => {}
+    if (userAttributesLoading) return () => {}
     const sub = client.models.CharacterGroup.observeQuery({
       selectionSet: ['id', 'owner', 'public'],
     }).subscribe({
@@ -213,7 +214,7 @@ export const [NechronicaProvider, useNechronicaContext] = constate(() => {
       console.log('unsub3')
       sub.unsubscribe()
     }
-  }, [loadingUserAttributes])
+  }, [userAttributesLoading])
 
   const [characterGroups, setCharacterGroups] = useState<CharacterGroup[]>([])
   const [characterGroupLoading, setCharacterGroupLoading] =

@@ -17,10 +17,9 @@ import { Flex, type GetProps, Tabs } from 'antd'
 import { sum } from 'lodash-es'
 import CharacterTypeIcon from './CharacterTypeIcon.tsx'
 import CharacterTypeItemSet from './CharacterTypeItemSet.tsx'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
-import { drawerStatusSelector, useSelector } from '@/store'
+import { currentUserSelector, drawerStatusSelector, useSelector } from '@/store'
 
 const enemies = ['savant', 'horror', 'legion'] as const
 
@@ -35,7 +34,7 @@ export default function DashboardContents() {
   const { scope, setScreen } = useScreenNavigateInService(screens)
   const drawerStatus = useSelector(drawerStatusSelector)
   const screenSize = useScreenSize(drawerStatus)
-  const { currentUser } = useUserAttributes()
+  const currentUser = useSelector(currentUserSelector)
 
   const [summaryData, setSummaryData] = useState<{
     doll: {

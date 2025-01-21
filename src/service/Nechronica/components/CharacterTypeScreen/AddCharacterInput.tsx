@@ -8,8 +8,8 @@ import {
 import { ImportOutlined } from '@ant-design/icons'
 import { Button, type InputRef, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import {currentIsMeSelector, useSelector} from '@/store'
 
 interface Props {
   label: string
@@ -23,7 +23,7 @@ export default function AddCharacterInput({
 }: Props) {
   const { scope } = useScreenNavigateInService(screens)
   const { createCharacter } = useNechronicaContext()
-  const { currentIsMe } = useUserAttributes()
+  const currentIsMe = useSelector(currentIsMeSelector)
   const [sheetId, setSheetId] = useState('')
 
   const onCreateCharacter = useCallback(async () => {

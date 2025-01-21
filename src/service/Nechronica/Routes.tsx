@@ -4,7 +4,6 @@ import { NechronicaCharacterMakeProvider } from '@Nechronica/components/BuildCon
 import { NechronicaProvider } from '@Nechronica/context.ts'
 import { tap } from 'lodash-es'
 import { service } from './index'
-import { UserAttributesProvider } from '@/context/userAttributesContext.ts'
 import MainLayout from '@/layouts/MainLayout'
 import { getKeys } from '@/utils/types.ts'
 
@@ -22,13 +21,11 @@ function getPath(screen: keyof typeof service.screens) {
 const screenRouteObj: RouteObject = {
   path: service.service,
   element: (
-    <UserAttributesProvider>
-      <NechronicaProvider>
-        <NechronicaCharacterMakeProvider>
-          <Outlet />
-        </NechronicaCharacterMakeProvider>
-      </NechronicaProvider>
-    </UserAttributesProvider>
+    <NechronicaProvider>
+      <NechronicaCharacterMakeProvider>
+        <Outlet />
+      </NechronicaCharacterMakeProvider>
+    </NechronicaProvider>
   ),
   children: getKeys(service.screens).map((screen) => ({
     path: getPath(screen),
