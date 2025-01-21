@@ -14,8 +14,8 @@ export type CharacterGroup = {
   characterIds: string[]
   owner: string
   public: boolean
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 export type Screen = {

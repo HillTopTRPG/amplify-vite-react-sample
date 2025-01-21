@@ -4,7 +4,9 @@ import {
   type TypedUseSelectorHook,
   useDispatch,
 } from 'react-redux'
+import commonSlice from '@/store/commonSlice.ts'
 import drawerStatusSlice from '@/store/drawerStatusSlice.ts'
+import nechronicaSlice from '@/store/nechronicaSlice.ts'
 import scrollMapSlice from '@/store/scrollMapSlice.ts'
 import themeSlice from '@/store/themeSlice.ts'
 import userAttributesSlice from '@/store/userAttributesSlice.ts'
@@ -15,6 +17,8 @@ export const store = configureStore({
     drawerStatus: drawerStatusSlice,
     scrollMap: scrollMapSlice,
     userAttributes: userAttributesSlice,
+    common: commonSlice,
+    nechronica: nechronicaSlice,
   }),
 })
 
@@ -29,7 +33,23 @@ export const currentUserSelector = (state: RootState) =>
 export const currentIsMeSelector = (state: RootState) =>
   state.userAttributes.currentIsMe
 export const usersSelector = (state: RootState) => state.userAttributes.users
-export const userAttributesLoadingSelector = (state: RootState) => state.userAttributes.loading
+export const userAttributesLoadingSelector = (state: RootState) =>
+  state.userAttributes.loading
+export const filterSelector = (state: RootState) => state.userAttributes.filter
+export const nechronicaLoadingSelector = (state: RootState) =>
+  state.nechronica.loading
+export const nechronicaCharactersSelector = (state: RootState) =>
+  state.nechronica.characters
+export const selectedManeuverInfosSelector = (state: RootState) =>
+  state.nechronica.selectedManeuverInfos
+export const hoverManeuverIdSelector = (state: RootState) =>
+  state.nechronica.hoverManeuverId
+export const clickManeuverIdSelector = (state: RootState) =>
+  state.nechronica.clickManeuverId
+export const characterGroupsSelector = (state: RootState) =>
+  state.common.characterGroups
+export const nechronicaCharacterGroupRelationsSelector = (state: RootState) =>
+  state.nechronica.characterGroupRelations
 
 export const useSelector: TypedUseSelectorHook<RootState> = rawUseSelector
 

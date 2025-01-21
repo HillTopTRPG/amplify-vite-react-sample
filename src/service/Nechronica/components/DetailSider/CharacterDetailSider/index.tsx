@@ -1,17 +1,20 @@
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex } from 'antd'
 import SelectedCharacterElm from './SelectedCharacterElm.tsx'
 import useScreenSize from '@/hooks/useScreenSize.ts'
-import { drawerStatusSelector, useSelector } from '@/store'
+import { drawerStatusSelector, useAppDispatch, useSelector } from '@/store'
+import {
+  setClickManeuverId,
+  setHoverManeuverId,
+} from '@/store/nechronicaSlice.ts'
 
 interface Props {
   characters: NechronicaCharacter[]
 }
 export default function CharacterDetailSider({ characters }: Props) {
+  const dispatch = useAppDispatch()
   const drawerStatus = useSelector(drawerStatusSelector)
   const screenSize = useScreenSize(drawerStatus)
-  const { setHoverManeuverId, setClickManeuverId } = useNechronicaContext()
 
   if (screenSize.viewPortWidth < 789) {
     return (
@@ -33,8 +36,8 @@ export default function CharacterDetailSider({ characters }: Props) {
       }}
       onScrollCapture={(e) => {
         e.stopPropagation()
-        setHoverManeuverId('')
-        setClickManeuverId('')
+        dispatch(setHoverManeuverId(''))
+        dispatch(setClickManeuverId(''))
       }}
     >
       <Flex

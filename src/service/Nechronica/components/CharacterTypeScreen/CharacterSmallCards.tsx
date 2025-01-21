@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import CharacterSmallCard from '@Nechronica/components/CharacterTypeScreen/CharacterSmallCard.tsx'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Divider, Flex, Spin, theme, Typography } from 'antd'
+import { nechronicaLoadingSelector, useSelector } from '@/store'
 
 const SEARCH_INPUT_WIDTH = 370
 
@@ -24,7 +24,7 @@ export default function CharacterSmallCards({
   setHoverCharacter,
   onUnGroup,
 }: Props) {
-  const { loading } = useNechronicaContext()
+  const loading = useSelector(nechronicaLoadingSelector)
   const { token } = theme.useToken()
 
   const onSelectCharacter = useCallback(

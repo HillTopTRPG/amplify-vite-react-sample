@@ -1,23 +1,22 @@
 import { useMemo } from 'react'
 import ManeuverButton from '@Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
 import ManeuverPopoverContents from '@Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { getCharacterTypeSrc, PARTS_TUPLE } from '@Nechronica/index.ts'
 import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex, List, Typography, Image } from 'antd'
-import { clone } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 import CharacterAvatar from './CharacterAvatar.tsx'
 import ClassAvatar from './ClassAvatar.tsx'
 import PartsListItem from './PartsListItem.tsx'
 import RoiceButton from './RoiceButton.tsx'
 import styles from './index.module.css'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
+import { updateNechronicaCharacter } from '@/store/nechronicaSlice.ts'
 
 interface Props {
   character: NechronicaCharacter
 }
 export default function CharacterCard({ character }: Props) {
-  const { updateCharacter } = useNechronicaContext()
   const basic = character.sheetData.basic
   const characterType = character.additionalData.type
 
@@ -56,10 +55,10 @@ export default function CharacterCard({ character }: Props) {
                 type="click"
                 maneuver={maneuver}
                 updateManeuver={(makeManeuver) => {
-                  const newCharacter = clone(character)
+                  const newCharacter = cloneDeep(character)
                   newCharacter.sheetData.maneuverList[index] =
                     makeManeuver(maneuver)
-                  updateCharacter(newCharacter)
+                  updateNechronicaCharacter(newCharacter)
                 }}
               />
             )}
@@ -71,7 +70,7 @@ export default function CharacterCard({ character }: Props) {
         ))}
       </List>
     )
-  }, [character, characterType, updateCharacter])
+  }, [character, characterType])
 
   const maneuverButtons = useMemo(
     () => (
@@ -88,10 +87,10 @@ export default function CharacterCard({ character }: Props) {
                 type="click"
                 maneuver={maneuver}
                 updateManeuver={(makeManeuver) => {
-                  const newCharacter = clone(character)
+                  const newCharacter = cloneDeep(character)
                   newCharacter.sheetData.maneuverList[index] =
                     makeManeuver(maneuver)
-                  updateCharacter(newCharacter)
+                  updateNechronicaCharacter(newCharacter)
                 }}
               />
             }
@@ -102,13 +101,7 @@ export default function CharacterCard({ character }: Props) {
         ))}
       </Flex>
     ),
-    [
-      character,
-      basic.position,
-      basic.mainClass,
-      basic.subClass,
-      updateCharacter,
-    ],
+    [character, basic.position, basic.mainClass, basic.subClass],
   )
 
   const radarData = useMemo(() => makeChartData(character), [character])

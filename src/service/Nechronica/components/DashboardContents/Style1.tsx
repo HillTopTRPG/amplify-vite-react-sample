@@ -1,6 +1,6 @@
 import React, { type CSSProperties, useMemo } from 'react'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { Spin, Typography } from 'antd'
+import { nechronicaLoadingSelector, useSelector } from '@/store'
 
 const SIZE = 380
 
@@ -26,7 +26,7 @@ interface Props {
   children: React.ReactNode
 }
 export default function Style1({ label, height, children }: Props) {
-  const { loading } = useNechronicaContext()
+  const loading = useSelector(nechronicaLoadingSelector)
 
   return useMemo(
     () => (

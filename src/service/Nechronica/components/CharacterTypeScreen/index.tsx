@@ -10,7 +10,6 @@ import AddCharacterInput from '@Nechronica/components/CharacterTypeScreen/AddCha
 import CharacterSmallCards from '@Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
 import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDetailSider'
 import SponsorShip from '@Nechronica/components/SponsorShip.tsx'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { useSearchCharacter } from '@Nechronica/hooks/useSearchCharacter.ts'
 import { screens } from '@Nechronica/screens'
 import {
@@ -26,14 +25,21 @@ import useKeyBind from '@/hooks/useKeyBind.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
-import { currentUserSelector, drawerStatusSelector, useSelector } from '@/store'
+import {
+  currentUserSelector,
+  drawerStatusSelector,
+  nechronicaCharactersSelector,
+  nechronicaLoadingSelector,
+  useSelector,
+} from '@/store'
 
 interface Props {
   characterType: NechronicaType
   label: string
 }
 export default function CharacterTypeScreen({ characterType, label }: Props) {
-  const { loading, characters } = useNechronicaContext()
+  const loading = useSelector(nechronicaLoadingSelector)
+  const characters = useSelector(nechronicaCharactersSelector)
   const currentUser = useSelector(currentUserSelector)
   const { scope } = useScreenNavigateInService(screens)
   const drawerStatus = useSelector(drawerStatusSelector)

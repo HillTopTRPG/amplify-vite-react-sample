@@ -30,6 +30,7 @@ interface State {
   me: User | null
   currentUser: User | null
   currentIsMe: boolean
+  filter: object
 }
 const initialState: State = {
   attr: undefined,
@@ -41,6 +42,11 @@ const initialState: State = {
   me: null,
   currentUser: null,
   currentIsMe: false,
+  filter: {
+    public: {
+      eq: true,
+    },
+  },
 }
 
 export const fetchAttr = createAsyncThunk(
@@ -81,6 +87,23 @@ const userAttributesSlice = createSlice({
       state.currentIsMe =
         Boolean(state.currentUser) &&
         state.currentUser?.userName === state.user?.username
+
+      if (state.me?.userName) {
+        state.filter = {
+          or: [
+            {
+              owner: {
+                eq: scope === 'private' ? (state.me.userName ?? '') : '',
+              },
+            },
+            {
+              public: {
+                eq: true,
+              },
+            },
+          ],
+        }
+      }
 
       state.loading = false
 

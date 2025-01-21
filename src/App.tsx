@@ -9,6 +9,7 @@ import type { Location } from 'react-router-dom'
 import nechronicaRoutes from '@Nechronica/Routes.tsx'
 import { Provider } from 'react-redux'
 import Authenticator from '@/Authenticator.tsx'
+import FetchGameSystemData from '@/FetchGameSystemData.tsx'
 import FetchUserAttributes from '@/FetchUserAttributes.tsx'
 import { servicesContext } from '@/context/servicesContext.ts'
 import Home from '@/pages/Home.tsx'
@@ -21,10 +22,12 @@ function Root() {
   return (
     <Provider store={store}>
       <FetchUserAttributes>
-        <servicesContext.Provider value={services}>
-          <ScrollRestoration getKey={getKey} />
-          <Outlet />
-        </servicesContext.Provider>
+        <FetchGameSystemData>
+          <servicesContext.Provider value={services}>
+            <ScrollRestoration getKey={getKey} />
+            <Outlet />
+          </servicesContext.Provider>
+        </FetchGameSystemData>
       </FetchUserAttributes>
     </Provider>
   )

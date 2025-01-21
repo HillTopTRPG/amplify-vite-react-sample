@@ -1,11 +1,17 @@
 import ManeuverPopoverContents from '@Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { Flex, Spin, theme, Typography } from 'antd'
-import { clone } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
+import {
+  nechronicaLoadingSelector,
+  selectedManeuverInfosSelector,
+  useSelector,
+} from '@/store'
+import { updateNechronicaCharacter } from '@/store/nechronicaSlice.ts'
 
 export default function SelectedManeuversElm() {
-  const { loading, updateCharacter, selectedManeuverInfos } =
-    useNechronicaContext()
+  const loading = useSelector(nechronicaLoadingSelector)
+  const selectedManeuverInfos = useSelector(selectedManeuverInfosSelector)
+
   const { token } = theme.useToken()
 
   if (loading) return <Spin size="large" />
@@ -33,10 +39,10 @@ export default function SelectedManeuversElm() {
         type="hover"
         maneuver={info.maneuver}
         updateManeuver={(makeManeuver) => {
-          const newCharacter = clone(info.character)
+          const newCharacter = cloneDeep(info.character)
           newCharacter.sheetData.maneuverList[info.maneuverIndex] =
             makeManeuver(info.maneuver)
-          updateCharacter(newCharacter)
+          updateNechronicaCharacter(newCharacter)
         }}
       />
     )

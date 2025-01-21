@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import ManeuverDesign from '@Nechronica/components/BuildContents/ManeuverDesign'
 import RoiceDesign from '@Nechronica/components/BuildContents/RoiceDesign'
 import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDetailSider'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import {
   Button,
   Collapse,
@@ -16,6 +15,7 @@ import BasicDesign from './BasicDesign'
 import CharacterTypeRadioGroup from './CharacterTypeRadioGroup.tsx'
 import PersonalDataDesign from './PersonalDataDesign'
 import { useCharacterMakeContext } from './context.ts'
+import { nechronicaLoadingSelector, useSelector } from '@/store'
 
 const maneuverContainerProps: Omit<FlexProps, 'children'> = {
   align: 'flex-start',
@@ -30,7 +30,7 @@ const maneuverContainerProps: Omit<FlexProps, 'children'> = {
 const dollOnlyCollapseKeys = ['basic', 'roice']
 
 export default function BuildContents() {
-  const { loading } = useNechronicaContext()
+  const loading = useSelector(nechronicaLoadingSelector)
   const {
     makingNechronicaCharacter,
     characterType,

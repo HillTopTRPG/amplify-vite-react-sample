@@ -1,18 +1,26 @@
 import { useCallback, useMemo } from 'react'
 import CharacterSmallCardBackImg from '@Nechronica/components/CharacterTypeScreen/CharacterSmallCardBackImg.tsx'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import {
   type CharacterGroupRelation,
   type NechronicaCharacter,
 } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@Nechronica/ts/mapping.json'
 import { Checkbox, Flex, List, Switch, theme, Typography } from 'antd'
-import { clone } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 import UnGroupConfirmButton from './UnGroupConfirmButton.tsx'
 import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
-import { currentUserSelector, useSelector } from '@/store'
+import {
+  currentUserSelector,
+  nechronicaCharacterGroupRelationsSelector,
+  useSelector,
+} from '@/store'
+import { updateCharacterGroup } from '@/store/commonSlice.ts'
+import {
+  deleteNechronicaCharacter,
+  updateNechronicaCharacter,
+} from '@/store/nechronicaSlice.ts'
 import { typedOmit } from '@/utils/types.ts'
 
 interface Props {
@@ -32,12 +40,9 @@ export default function CharacterSmallCard({
   onUnGroup,
 }: Props) {
   const { token } = theme.useToken()
-  const {
-    updateCharacter,
-    deleteCharacter,
-    characterGroupRelations,
-    updateCharacterGroup,
-  } = useNechronicaContext()
+  const characterGroupRelations = useSelector(
+    nechronicaCharacterGroupRelationsSelector,
+  )
   const currentUser = useSelector(currentUserSelector)
 
   const useCharacterGroupRelations = useMemo(
@@ -50,11 +55,11 @@ export default function CharacterSmallCard({
 
   const toggleStared = useMemo(
     () => () => {
-      const newData = clone(character)
+      const newData = cloneDeep(character)
       newData.additionalData.stared = !newData.additionalData.stared
-      updateCharacter(newData)
+      updateNechronicaCharacter(newData)
     },
-    [character, updateCharacter],
+    [character],
   )
 
   const actions = useMemo(() => {
@@ -116,22 +121,22 @@ export default function CharacterSmallCard({
 
   const onChangeCharacterPublic = useCallback(
     (nextPublic: boolean) => {
-      const newValue = clone(character)
+      const newValue = cloneDeep(character)
       newValue.public = nextPublic
-      updateCharacter(newValue)
+      updateNechronicaCharacter(newValue)
     },
-    [character, updateCharacter],
+    [character],
   )
 
   const onChangeGroup = useCallback(
     (cgr: CharacterGroupRelation, checked: boolean) => {
-      const newValue = clone(cgr)
+      const newValue = cloneDeep(cgr)
       newValue.characterIds = checked
         ? [...newValue.characterIds, character.id]
         : newValue.characterIds.filter((id) => id !== character.id)
       updateCharacterGroup(typedOmit(newValue, 'characters'))
     },
-    [character.id, updateCharacterGroup],
+    [character.id],
   )
 
   return useMemo(
@@ -205,7 +210,7 @@ export default function CharacterSmallCard({
               </Flex>
               <DeleteConfirmButton
                 name={character.name}
-                onConfirm={() => deleteCharacter(character.id)}
+                onConfirm={() => deleteNechronicaCharacter(character.id)}
                 style={{
                   alignSelf: 'flex-start',
                 }}
@@ -237,7 +242,6 @@ export default function CharacterSmallCard({
       character,
       characterName,
       constBlocks,
-      deleteCharacter,
       onChangeCharacterPublic,
       onChangeGroup,
       onHover,

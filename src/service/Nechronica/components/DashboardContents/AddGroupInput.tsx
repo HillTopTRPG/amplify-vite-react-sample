@@ -1,26 +1,29 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { screens } from '@Nechronica/screens'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
-import { currentIsMeSelector, useSelector } from '@/store'
+import { currentIsMeSelector, useAppDispatch, useSelector } from '@/store'
+import { createCharacterGroup } from '@/store/commonSlice.ts'
 
 export default function AddGroupInput() {
+  const dispatch = useAppDispatch()
   const { scope } = useScreenNavigateInService(screens)
-  const { createCharacterGroup } = useNechronicaContext()
   const currentIsMe = useSelector(currentIsMeSelector)
   const [newGroupName, setNewGroupName] = useState('')
 
   const onCreateCharacterGroup = useCallback(() => {
     if (!newGroupName.trim()) return
-    createCharacterGroup({
-      name: newGroupName,
-      characterIds: [],
-    })
+    dispatch(
+      createCharacterGroup({
+        system: 'nechronica',
+        name: newGroupName,
+        characterIds: [],
+      }),
+    )
     setNewGroupName('')
-  }, [createCharacterGroup, newGroupName])
+  }, [dispatch, newGroupName])
 
   const elm = useMemo(
     () => (
