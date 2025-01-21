@@ -156,8 +156,8 @@ export const [NechronicaCharacterMakeProvider, useCharacterMakeContext] =
       },
       owner: '-',
       public: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: '',
+      updatedAt: '',
     }
 
     return {
