@@ -10,7 +10,6 @@ import App from '@/App.tsx'
 import '@aws-amplify/ui-react/styles.css'
 import '@/main.css'
 import './i18n/configs'
-import { ThemeProvider } from '@/context/themeContext.ts'
 
 Amplify.configure(outputs)
 
@@ -36,9 +35,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HelmetProvider>
       <Authenticator.Provider>
-        <ThemeProvider>
-          <App />
-        </ThemeProvider>
+        <App />
       </Authenticator.Provider>
     </HelmetProvider>
   </React.StrictMode>,

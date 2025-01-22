@@ -1,9 +1,13 @@
 import { type CSSProperties } from 'react'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { Flex } from 'antd'
 import ManeuverImportButton from './ManeuverImportButton.tsx'
 import SelectedManeuversElm from './SelectedManeuversElm.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
+import { drawerStatusSelector, useAppDispatch, useSelector } from '@/store'
+import {
+  setClickManeuverId,
+  setHoverManeuverId,
+} from '@/store/nechronicaSlice.ts'
 
 const CONTAINER_STYLE: CSSProperties = {
   position: 'fixed',
@@ -15,8 +19,9 @@ const CONTAINER_STYLE: CSSProperties = {
 }
 
 export default function ManeuverDetailSider() {
-  const { screenSize } = useScreenContext()
-  const { setHoverManeuverId, setClickManeuverId } = useNechronicaContext()
+  const dispatch = useAppDispatch()
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
 
   if (screenSize.viewPortWidth < 789) {
     return (
@@ -46,8 +51,8 @@ export default function ManeuverDetailSider() {
       style={CONTAINER_STYLE}
       onScrollCapture={(e) => {
         e.stopPropagation()
-        setHoverManeuverId('')
-        setClickManeuverId('')
+        dispatch(setHoverManeuverId(''))
+        dispatch(setClickManeuverId(''))
       }}
     >
       <Flex

@@ -10,14 +10,22 @@ import GroupSmallCard from '@Nechronica/components/DashboardContents/GroupSmallC
 import SectionTitle from '@Nechronica/components/DashboardContents/SectionTitle.tsx'
 import Style1 from '@Nechronica/components/DashboardContents/Style1.tsx'
 import Style2 from '@Nechronica/components/DashboardContents/Style2.tsx'
-import { useNechronicaContext } from '@Nechronica/context.ts'
+import { screens } from '@Nechronica/screens'
 import { type NechronicaType } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex, type GetProps, Tabs } from 'antd'
 import { sum } from 'lodash-es'
 import CharacterTypeIcon from './CharacterTypeIcon.tsx'
 import CharacterTypeItemSet from './CharacterTypeItemSet.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
+import {
+  currentUserSelector,
+  drawerStatusSelector,
+  nechronicaCharacterGroupRelationsSelector,
+  nechronicaCharactersSelector,
+  nechronicaLoadingSelector,
+  useSelector,
+} from '@/store'
 
 const enemies = ['savant', 'horror', 'legion'] as const
 
@@ -27,10 +35,15 @@ const dollConst = [
 ] as const
 
 export default function DashboardContents() {
-  const { loading, characters, characterGroupRelations } =
-    useNechronicaContext()
-  const { scope, setScreen, screenSize } = useScreenContext()
-  const { currentUser } = useUserAttributes()
+  const loading = useSelector(nechronicaLoadingSelector)
+  const characters = useSelector(nechronicaCharactersSelector)
+  const characterGroupRelations = useSelector(
+    nechronicaCharacterGroupRelationsSelector,
+  )
+  const { scope, setScreen } = useScreenNavigateInService(screens)
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
+  const currentUser = useSelector(currentUserSelector)
 
   const [summaryData, setSummaryData] = useState<{
     doll: {

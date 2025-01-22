@@ -14,14 +14,23 @@ import MutationManeuvers from '@Nechronica/components/ManeuverContents/MutationM
 import OtherManeuvers from '@Nechronica/components/ManeuverContents/OtherManeuvers.tsx'
 import PositionSkillManeuvers from '@Nechronica/components/ManeuverContents/PositionSkillManeuvers.tsx'
 import TreasureManeuvers from '@Nechronica/components/ManeuverContents/TreasureManeuvers.tsx'
-import { type ManeuverInfo, useNechronicaContext } from '@Nechronica/context.ts'
 import { getIconClass } from '@Nechronica/index.ts'
+import { screens } from '@Nechronica/screens'
 import { Collapse, type CollapseProps, Flex, Radio, Spin } from 'antd'
 import { type CheckboxGroupProps } from 'antd/es/checkbox/Group'
-import { clone } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 import ManeuverDetailSider from '../DetailSider/ManeuverDetailSider'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import {
+  currentUserSelector,
+  nechronicaCharactersSelector,
+  nechronicaLoadingSelector,
+  selectedManeuverInfosSelector,
+  useAppDispatch,
+  useSelector,
+} from '@/store'
+import { type ManeuverInfo } from '@/store/nechronicaSlice.ts'
+import { setSelectedManeuverInfos } from '@/store/nechronicaSlice.ts'
 
 const options: CheckboxGroupProps['options'] = [
   {
@@ -33,14 +42,12 @@ const options: CheckboxGroupProps['options'] = [
 ] as const
 
 export default function ManeuverContents() {
-  const {
-    loading,
-    characters,
-    selectedManeuverInfos,
-    setSelectedManeuverInfos,
-  } = useNechronicaContext()
-  const { currentUser } = useUserAttributes()
-  const { scope } = useScreenContext()
+  const dispatch = useAppDispatch()
+  const loading = useSelector(nechronicaLoadingSelector)
+  const characters = useSelector(nechronicaCharactersSelector)
+  const selectedManeuverInfos = useSelector(selectedManeuverInfosSelector)
+  const currentUser = useSelector(currentUserSelector)
+  const { scope } = useScreenNavigateInService(screens)
   const [target, setTarget] = useState<'own' | 'server'>('own')
 
   const useCharacters = useMemo(
@@ -68,21 +75,19 @@ export default function ManeuverContents() {
     ) {
       return
     }
-    setSelectedManeuverInfos(
-      selectedManeuverInfos.map((info) => {
-        const character = characters.find((c) => c.id === info.character.id)
-        const newInfo = clone(info)
-        if (!character) return newInfo
-        newInfo.maneuver = character.sheetData.maneuverList[info.maneuverIndex]
-        return newInfo
-      }),
+    dispatch(
+      setSelectedManeuverInfos(
+        selectedManeuverInfos.map((info) => {
+          const character = characters.find((c) => c.id === info.character.id)
+          const newInfo = cloneDeep(info)
+          if (!character) return newInfo
+          newInfo.maneuver =
+            character.sheetData.maneuverList[info.maneuverIndex]
+          return newInfo
+        }),
+      ),
     )
-  }, [
-    characters,
-    selectedManeuverInfos,
-    getSourceManeuver,
-    setSelectedManeuverInfos,
-  ])
+  }, [characters, selectedManeuverInfos, getSourceManeuver, dispatch])
 
   const maneuvers: ManeuverInfo[] = useMemo(
     () =>

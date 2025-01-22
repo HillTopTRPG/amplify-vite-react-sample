@@ -4,22 +4,25 @@ import { Button, Flex, Popover, QRCode, Space, theme, Typography } from 'antd'
 import { Helmet } from 'react-helmet-async'
 import { useMediaQuery } from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import { type Screen } from '@/service'
+import { currentUserSelector, meSelector, useSelector } from '@/store'
 
 interface Props {
   label: string
   icon: React.FC
+  screens: Record<string, Screen>
   children?: ReactNode
 }
 const ScreenContainer = forwardRef<HTMLElement, Props>(function Component(
-  { label, icon, children }: Props,
+  { label, icon, screens, children }: Props,
   ref: Ref<HTMLElement>,
 ) {
   const isMobile = useMediaQuery(MEDIA_QUERY.MOBILE)
   const { token } = theme.useToken()
-  const { scope, getScreenUrl } = useScreenContext()
-  const { me, currentUser } = useUserAttributes()
+  const { scope, getScreenUrl } = useScreenNavigateInService(screens)
+  const me = useSelector(meSelector)
+  const currentUser = useSelector(currentUserSelector)
   const shareUrl = useMemo(
     () =>
       getScreenUrl((v) => ({

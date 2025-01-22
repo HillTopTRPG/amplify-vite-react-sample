@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { type NechronicaManeuver } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import mapping from '@Nechronica/ts/mapping.json'
 import { EditOutlined, EyeOutlined } from '@ant-design/icons'
@@ -7,6 +6,8 @@ import { Button, Col, Flex, Row, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import EditContents from './EditContents.tsx'
 import ViewContents from './ViewContents.tsx'
+import { useAppDispatch } from '@/store'
+import { setHoverManeuverId } from '@/store/nechronicaSlice.ts'
 
 interface Props {
   type: 'hover' | 'click'
@@ -20,14 +21,14 @@ export default function ManeuverPopoverContents({
   maneuver,
   updateManeuver,
 }: Props) {
+  const dispatch = useAppDispatch()
   const { t: i18nT } = useTranslation()
   const [mode, setMode] = useState<'view' | 'edit'>('view')
-  const { setHoverManeuverId } = useNechronicaContext()
 
   const onMouseEnter = useCallback(() => {
     if (type !== 'hover') return
-    setHoverManeuverId('')
-  }, [setHoverManeuverId, type])
+    dispatch(setHoverManeuverId(''))
+  }, [dispatch, type])
 
   return useMemo(
     () => (

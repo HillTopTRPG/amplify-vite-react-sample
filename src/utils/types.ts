@@ -114,3 +114,7 @@ export type PromiseType<T extends Promise<unknown>> =
   T extends Promise<infer P> ? P : never
 
 export type ValueType<T> = T[keyof T]
+
+export type OnlyTypeKey<T extends object, ExpectType> = {
+  [K in keyof T]: T[K] extends ExpectType ? K : never
+}[keyof T]

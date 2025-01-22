@@ -1,8 +1,6 @@
 import { type FC, type ComponentType, type CSSProperties } from 'react'
 import { service as nechronica } from './Nechronica/index.ts'
-import { type ScreenSize } from '@/context/screenContext.ts'
-
-export type Scope = 'private' | 'public'
+import { type ScreenSize } from '@/hooks/useScreenSize.ts'
 
 export type CharacterGroupAdditionalData = {
   stared: boolean
@@ -16,8 +14,8 @@ export type CharacterGroup = {
   characterIds: string[]
   owner: string
   public: boolean
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 export type Screen = {

@@ -1,7 +1,8 @@
-import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
 import ManeuverButton from '@Nechronica/components/CharacterCard/maneuver/ManeuverButton.tsx'
 import ManeuverPopoverContents from '@Nechronica/components/CharacterCard/maneuver/ManeuverPopoverContents'
 import { type NechronicaManeuver } from '@Nechronica/ts/NechronicaDataHelper.ts'
+import { useAppDispatch } from '@/store'
+import { updateMakingManeuver } from '@/store/nechronicaSlice.ts'
 
 interface Props {
   maneuver: NechronicaManeuver
@@ -17,7 +18,7 @@ export default function EditableManeuver({
   subClass,
   index,
 }: Props) {
-  const { updateManeuver } = useCharacterMakeContext()
+  const dispatch = useAppDispatch()
   return (
     <ManeuverButton
       maneuver={maneuver}
@@ -32,7 +33,12 @@ export default function EditableManeuver({
           type="click"
           maneuver={maneuver}
           updateManeuver={(makeManeuver) =>
-            updateManeuver(index, makeManeuver(maneuver))
+            dispatch(
+              updateMakingManeuver({
+                index,
+                data: makeManeuver(maneuver),
+              }),
+            )
           }
         />
       }

@@ -1,7 +1,9 @@
 import { type RefObject, useCallback, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useScreenContext } from '@/context/screenContext.ts'
+import { useDispatch } from 'react-redux'
 import { useDebounce } from '@/hooks/useDebounce.tsx'
+import { scrollMapSelector, useSelector } from '@/store'
+import { updateScrollMap } from '@/store/scrollMapSlice.ts'
 
 interface Props {
   scrollContainer: RefObject<HTMLElement>
@@ -11,7 +13,8 @@ export default function PageScrollDispatcher({
   scrollContainer,
   forceTop,
 }: Props) {
-  const { scrollMap, setScrollMap } = useScreenContext()
+  const dispatch = useDispatch()
+  const scrollMap = useSelector(scrollMapSelector)
   const debounce = useDebounce(100)
   const { pathname } = useLocation()
 
@@ -21,19 +24,23 @@ export default function PageScrollDispatcher({
       debounce(() => {
         // eslint-disable-next-line no-console
         console.log('scrolled', scrollTop)
-        setScrollMap((v) => ({
-          ...v,
-          [pathname]: scrollTop,
-        }))
+        dispatch(
+          updateScrollMap({
+            key: pathname,
+            value: scrollTop,
+          }),
+        )
       })
     },
-    [debounce, pathname, setScrollMap],
+    [debounce, dispatch, pathname],
   )
 
   useEffect(() => {
     const elm = scrollContainer.current
     if (!elm) return
-    setTimeout(() => elm.scroll(0, forceTop ? 0 : (scrollMap[pathname] ?? 0)))
+    if (scrollMap && pathname in scrollMap) {
+      setTimeout(() => elm.scroll(0, forceTop ? 0 : (scrollMap[pathname] ?? 0)))
+    }
     elm.addEventListener('scroll', onScroll, {
       capture: true,
     })

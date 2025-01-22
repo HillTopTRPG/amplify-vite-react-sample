@@ -1,7 +1,8 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import SectionTitle from '@Nechronica/components/DashboardContents/SectionTitle.tsx'
+import { screens } from '@Nechronica/screens'
 import { Flex, type FlexProps } from 'antd'
-import { useScreenContext } from '@/context/screenContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 
 const containerProps: Omit<FlexProps, 'children'> = {
   gap: 4,
@@ -22,7 +23,7 @@ export default function CharacterTabContents({
   enemiesElm,
   enemiesTotal,
 }: Props) {
-  const { setScreen } = useScreenContext()
+  const { setScreen } = useScreenNavigateInService(screens)
 
   const toDoll = useCallback(
     () => setScreen((v) => ({ ...v, screen: 'dolls' })),

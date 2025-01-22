@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   BookOutlined,
@@ -21,19 +21,33 @@ import {
   Space,
   Spin,
 } from 'antd'
+import { useDispatch } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { useServicesContext } from '@/context/servicesContext.ts'
-import { useThemeContext } from '@/context/themeContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import { servicesContext } from '@/context/servicesContext.ts'
+import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
+import {
+  drawerStatusSelector,
+  meSelector,
+  themeSelector,
+  userAttributesLoadingSelector,
+  usersSelector,
+  useSelector,
+} from '@/store'
+import { toggleDrawerStatus } from '@/store/drawerStatusSlice.ts'
+import { updateTheme } from '@/store/themeSlice.ts'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const { users, me, loading } = useUserAttributes()
-  const { theme, updateTheme } = useThemeContext()
-  const { services } = useServicesContext()
-  const { screenSize } = useScreenContext()
+  const users = useSelector(usersSelector)
+  const me = useSelector(meSelector)
+  const loading = useSelector(userAttributesLoadingSelector)
+  const theme = useSelector(themeSelector)
+  const dispatch = useDispatch()
+  const services = useContext(servicesContext)
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
   const { token } = AntdTheme.useToken()
   const { signOut } = useAuthenticator()
   const navigate = useNavigate()
@@ -43,12 +57,11 @@ export default function AppMenu() {
     userName,
     service,
     setService,
-    screenIcon,
-    screenLabel,
-    toggleOpenStatus,
     screens,
     setScreen,
-  } = useScreenContext()
+    screenIcon,
+    screenLabel,
+  } = useScreenNavigateInGlobal()
 
   const serviceName = useMemo(
     () =>
@@ -119,7 +132,7 @@ export default function AppMenu() {
           <Button
             icon={<MenuOutlined />}
             type="text"
-            onClick={toggleOpenStatus}
+            onClick={() => dispatch(toggleDrawerStatus())}
           />
           <Flex align="center" justify="flex-start" style={{ flexGrow: 1 }}>
             <Button
@@ -233,13 +246,16 @@ export default function AppMenu() {
           <Button
             type="text"
             icon={theme === 'dark' ? <MoonFilled /> : <SunFilled />}
-            onClick={() => updateTheme(theme === 'dark' ? 'light' : 'dark')}
+            onClick={() =>
+              dispatch(updateTheme(theme === 'dark' ? 'light' : 'dark'))
+            }
             size="middle"
           />
         </Flex>
       </Layout.Header>
     ),
     [
+      dispatch,
       dropdownProps,
       loading,
       me,
@@ -254,10 +270,8 @@ export default function AppMenu() {
       setScreen,
       setService,
       theme,
-      toggleOpenStatus,
       token.colorBgBlur,
       token.colorBgContainer,
-      updateTheme,
       useUsers,
       userName,
     ],

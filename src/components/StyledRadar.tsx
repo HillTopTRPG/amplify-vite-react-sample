@@ -3,7 +3,7 @@ import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts
 import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
 import { type GetProps } from 'antd'
-import { useThemeContext } from '@/context/themeContext.ts'
+import { themeSelector, useSelector } from '@/store'
 
 const NECHRONICA_MANEUVER_TYPES = [
   'その他',
@@ -63,7 +63,7 @@ interface Props {
   onChangeItem?: (type: 'pointerup' | 'pointermove', item: string) => void
 }
 export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
-  const { theme } = useThemeContext()
+  const theme = useSelector(themeSelector)
   const [lastItem, setLastItem] = useState<string | null>(null)
 
   /* 現在は使ってないがホバーされたチャートの項目をハンドリングできる */

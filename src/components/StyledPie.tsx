@@ -1,6 +1,6 @@
 import { Pie } from '@ant-design/plots'
 import { type GetProps } from 'antd'
-import { useThemeContext } from '@/context/themeContext.ts'
+import { themeSelector, useSelector } from '@/store'
 
 export default function StyledPie({
   data,
@@ -9,7 +9,7 @@ export default function StyledPie({
   data: unknown[]
   height: number
 }) {
-  const { theme } = useThemeContext()
+  const theme = useSelector(themeSelector)
   const config: GetProps<typeof Pie> = {
     theme,
     data,

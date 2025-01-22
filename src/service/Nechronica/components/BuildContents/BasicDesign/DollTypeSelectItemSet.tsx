@@ -1,9 +1,4 @@
-import {
-  type CSSProperties,
-  type Dispatch,
-  type SetStateAction,
-  useId,
-} from 'react'
+import { type CSSProperties, useId } from 'react'
 import { Col, Select } from 'antd'
 
 const flexCenterEndStyle: CSSProperties = {
@@ -16,7 +11,7 @@ const flexCenterEndStyle: CSSProperties = {
 interface Props {
   label: string
   value: number
-  onChange: Dispatch<SetStateAction<number>>
+  onChange: (val: number) => void
   optionMap: { text: string }[]
 }
 export default function DollTypeSelectItemSet({

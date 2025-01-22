@@ -1,9 +1,12 @@
-import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
 import { Empty, List } from 'antd'
 import EditableRoice from './EditableRoice.tsx'
+import {
+  makingNechronicaCharacterRoiceListSelector,
+  useSelector,
+} from '@/store'
 
 export default function RoiceDesign() {
-  const { roiceList } = useCharacterMakeContext()
+  const roiceList = useSelector(makingNechronicaCharacterRoiceListSelector)
 
   return (
     <List

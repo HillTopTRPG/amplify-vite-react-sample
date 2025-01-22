@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import ManeuverDesign from '@Nechronica/components/BuildContents/ManeuverDesign'
 import RoiceDesign from '@Nechronica/components/BuildContents/RoiceDesign'
 import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDetailSider'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import {
   Button,
   Collapse,
@@ -15,7 +14,13 @@ import {
 import BasicDesign from './BasicDesign'
 import CharacterTypeRadioGroup from './CharacterTypeRadioGroup.tsx'
 import PersonalDataDesign from './PersonalDataDesign'
-import { useCharacterMakeContext } from './context.ts'
+import {
+  makingNechronicaCharacterSelector,
+  nechronicaLoadingSelector,
+  useAppDispatch,
+  useSelector,
+} from '@/store'
+import { addMakingManeuver, addMakingRoice } from '@/store/nechronicaSlice.ts'
 
 const maneuverContainerProps: Omit<FlexProps, 'children'> = {
   align: 'flex-start',
@@ -30,16 +35,15 @@ const maneuverContainerProps: Omit<FlexProps, 'children'> = {
 const dollOnlyCollapseKeys = ['basic', 'roice']
 
 export default function BuildContents() {
-  const { loading } = useNechronicaContext()
-  const {
-    makingNechronicaCharacter,
-    characterType,
-    memo,
-    setMemo,
-    addRoice,
-    setManeuvers,
-    addManeuver,
-  } = useCharacterMakeContext()
+  const dispatch = useAppDispatch()
+  const loading = useSelector(nechronicaLoadingSelector)
+  const makingNechronicaCharacter = useSelector(
+    makingNechronicaCharacterSelector,
+  )
+  const characterType = makingNechronicaCharacter.additionalData.type
+
+  // TODO NechronicaCharacterに追加
+  const [memo, setMemo] = useState('')
 
   const [collapseKeys, setCollapseKeys] = useState<string[]>([])
 
@@ -80,21 +84,11 @@ export default function BuildContents() {
               type="text"
               size="small"
               onClick={(e) => {
-                addManeuver()
+                dispatch(addMakingManeuver())
                 e.stopPropagation()
               }}
             >
               新規追加
-            </Button>
-            <Button
-              type="text"
-              size="small"
-              onClick={(e) => {
-                setManeuvers([])
-                e.stopPropagation()
-              }}
-            >
-              All clear
             </Button>
           </>
         ),
@@ -114,7 +108,7 @@ export default function BuildContents() {
               type="text"
               size="small"
               onClick={(e) => {
-                addRoice()
+                dispatch(addMakingRoice())
                 e.stopPropagation()
               }}
             >
@@ -146,7 +140,7 @@ export default function BuildContents() {
         ),
       },
     ],
-    [addManeuver, addRoice, characterType, memo, setManeuvers, setMemo],
+    [characterType, dispatch, memo, setMemo],
   )
 
   const contents = useMemo(

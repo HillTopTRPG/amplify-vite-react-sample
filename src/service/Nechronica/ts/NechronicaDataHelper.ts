@@ -1,4 +1,4 @@
-import { clone } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 import { type CharacterGroup } from '@/service'
 import { convertNumberZero } from '@/service/common/PrimaryDataUtility.ts'
 import { getJsonByGet, getJsonByJsonp } from '@/service/common/fetch-util.ts'
@@ -89,8 +89,8 @@ export type NechronicaCharacter = {
   sheetData: Nechronica
   owner: string
   public: boolean
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 export type CharacterGroupRelation = CharacterGroup & {
@@ -368,14 +368,15 @@ export function mergeNechronica(
   mergeData: Nechronica,
   targets: DataType[],
 ): Nechronica {
-  const result: Nechronica = clone<Nechronica>(oldData)!
+  const result: Nechronica = cloneDeep<Nechronica>(oldData)!
 
-  if (targets.includes('basic')) result.basic = clone(mergeData.basic)!
-  if (targets.includes('roice')) result.roiceList = clone(mergeData.roiceList)!
+  if (targets.includes('basic')) result.basic = cloneDeep(mergeData.basic)!
+  if (targets.includes('roice'))
+    result.roiceList = cloneDeep(mergeData.roiceList)!
   if (targets.includes('maneuver')) {
     // 主催者が追加したマニューバは引き継がせる
     const addedManeuvers = result.maneuverList.filter((m) => m.isAdded)
-    result.maneuverList = clone(mergeData.maneuverList)!
+    result.maneuverList = cloneDeep(mergeData.maneuverList)!
     result.maneuverList.push(...addedManeuvers)
   }
 

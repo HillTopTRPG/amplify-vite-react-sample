@@ -1,15 +1,23 @@
 import AddGroupInput from '@Nechronica/components/DashboardContents/AddGroupInput.tsx'
 import GroupSmallCard from '@Nechronica/components/DashboardContents/GroupSmallCard.tsx'
-import { useNechronicaContext } from '@Nechronica/context.ts'
+import { screens } from '@Nechronica/screens'
 import { Flex, Spin } from 'antd'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import {
+  currentUserSelector,
+  nechronicaCharacterGroupRelationsSelector,
+  nechronicaLoadingSelector,
+  useSelector,
+} from '@/store'
 
 export default function GroupsContents() {
-  const { loading, characterGroupRelations } = useNechronicaContext()
+  const loading = useSelector(nechronicaLoadingSelector)
+  const characterGroupRelations = useSelector(
+    nechronicaCharacterGroupRelationsSelector,
+  )
 
-  const { currentUser } = useUserAttributes()
-  const { scope } = useScreenContext()
+  const currentUser = useSelector(currentUserSelector)
+  const { scope } = useScreenNavigateInService(screens)
 
   const dataFilterFc = ({ owner }: { owner: string }): boolean => {
     if (scope === 'public' && !currentUser) return true

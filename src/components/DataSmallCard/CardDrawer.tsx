@@ -1,19 +1,18 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useContext } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Drawer, Flex, theme, Typography } from 'antd'
-import { type SmallCardData } from '@/components/DataSmallCard/index.tsx'
+import { smallCardDataContext } from '@/components/DataSmallCard/context.ts'
 
 export default function CardDrawer({
-  data,
   open,
   onClose,
   children,
 }: {
-  data: SmallCardData
   open: boolean | string
   onClose: () => void
   children: ReactNode
 }) {
+  const data = useContext(smallCardDataContext)
   const { token } = theme.useToken()
   return (
     <Drawer

@@ -1,6 +1,14 @@
 import { type CSSProperties, useId } from 'react'
+import { type NechronicaBasic } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Col } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
+import {
+  makingNechronicaCharacterBaseSelector,
+  useAppDispatch,
+  useSelector,
+} from '@/store'
+import { setMakingBasicData } from '@/store/nechronicaSlice.ts'
+import type { OnlyTypeKey } from '@/utils/types.ts'
 
 const flexCenterStyle: CSSProperties = {
   display: 'flex',
@@ -13,19 +21,19 @@ interface Props {
   label: string
   thSpan: number
   tdSpan: number
-  value: string
-  onChange: (value: string) => void
+  property: OnlyTypeKey<NechronicaBasic, string>
   required?: 'required'
 }
 export default function TextItemSet({
   label,
   thSpan,
   tdSpan,
-  value,
-  onChange,
+  property,
   required,
 }: Props) {
   const id = useId()
+  const dispatch = useAppDispatch()
+  const basic = useSelector(makingNechronicaCharacterBaseSelector)
   return (
     <>
       <Col span={thSpan} style={flexCenterStyle}>
@@ -39,12 +47,14 @@ export default function TextItemSet({
       <Col span={tdSpan} style={flexCenterStyle}>
         <InputWrap
           id={id}
-          value={value}
+          value={basic[property]}
           addonAfter={required ? '必須' : undefined}
           placeholder={required ? '未入力' : undefined}
           style={{ width: '100%' }}
           required={true}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) =>
+            dispatch(setMakingBasicData({ value: e.target.value, property }))
+          }
         />
       </Col>
     </>

@@ -5,7 +5,6 @@ import {
   useId,
   useMemo,
 } from 'react'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { getBackImg, getManeuverSrc } from '@Nechronica/index.ts'
 import { type NechronicaManeuver } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Flex, Popover, Typography } from 'antd'
@@ -13,6 +12,16 @@ import { type TextProps } from 'antd/es/typography/Text'
 import classNames from 'classnames'
 import ManeuverAvatar from './ManeuverAvatar.tsx'
 import styles from './ManeuverButton.module.css'
+import {
+  clickManeuverIdSelector,
+  hoverManeuverIdSelector,
+  useAppDispatch,
+  useSelector,
+} from '@/store'
+import {
+  setClickManeuverId,
+  setHoverManeuverId,
+} from '@/store/nechronicaSlice.ts'
 
 const FONT_SIZE = 11
 const BUTTON_SIZE = 53
@@ -55,27 +64,24 @@ export default function ManeuverButton({
   selected,
   onClick,
 }: Props) {
+  const dispatch = useAppDispatch()
   const maneuverId = useId()
-  const {
-    hoverManeuverId,
-    setHoverManeuverId,
-    clickManeuverId,
-    setClickManeuverId,
-  } = useNechronicaContext()
+  const hoverManeuverId = useSelector(hoverManeuverIdSelector)
+  const clickManeuverId = useSelector(clickManeuverIdSelector)
 
   const onEditOpenChange = useCallback(
     (open: boolean) => {
-      setClickManeuverId(open ? maneuverId : '')
+      dispatch(setClickManeuverId(open ? maneuverId : ''))
     },
-    [maneuverId, setClickManeuverId],
+    [dispatch, maneuverId],
   )
 
   const onViewOpenChange = useCallback(
     (open: boolean) => {
       if (open && clickManeuverId) return
-      setHoverManeuverId(open ? maneuverId : '')
+      dispatch(setHoverManeuverId(open ? maneuverId : ''))
     },
-    [clickManeuverId, maneuverId, setHoverManeuverId],
+    [clickManeuverId, dispatch, maneuverId],
   )
 
   const isActive = useMemo(

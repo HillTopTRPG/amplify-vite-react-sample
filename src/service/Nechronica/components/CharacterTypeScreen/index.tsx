@@ -1,10 +1,17 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import AddCharacterInput from '@Nechronica/components/CharacterTypeScreen/AddCharacterInput.tsx'
 import CharacterSmallCards from '@Nechronica/components/CharacterTypeScreen/CharacterSmallCards.tsx'
 import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDetailSider'
 import SponsorShip from '@Nechronica/components/SponsorShip.tsx'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { useSearchCharacter } from '@Nechronica/hooks/useSearchCharacter.ts'
+import { screens } from '@Nechronica/screens'
 import {
   type NechronicaCharacter,
   type NechronicaType,
@@ -13,23 +20,33 @@ import { Flex, FloatButton, type InputRef, Spin } from 'antd'
 import DollFilterCollapse from './filter/DollFilterCollapse.tsx'
 import MenuImageIcon from '@/components/MenuImageIcon.tsx'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { useScrollContainerContext } from '@/context/scrollContainer.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import { scrollContainerContext } from '@/context/scrollContainer.ts'
 import useKeyBind from '@/hooks/useKeyBind.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
 import { getCharacterTypeSrc } from '@/service/Nechronica'
+import {
+  currentUserSelector,
+  drawerStatusSelector,
+  nechronicaCharactersSelector,
+  nechronicaLoadingSelector,
+  useSelector,
+} from '@/store'
 
 interface Props {
   characterType: NechronicaType
   label: string
 }
 export default function CharacterTypeScreen({ characterType, label }: Props) {
-  const { loading, characters } = useNechronicaContext()
-  const { currentUser } = useUserAttributes()
-  const { scope, screenSize } = useScreenContext()
+  const loading = useSelector(nechronicaLoadingSelector)
+  const characters = useSelector(nechronicaCharactersSelector)
+  const currentUser = useSelector(currentUserSelector)
+  const { scope } = useScreenNavigateInService(screens)
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
-  const { scrollContainerRef } = useScrollContainerContext()
+  const scrollContainerRef = useContext(scrollContainerContext)
 
   const makeUseCharacters = useCallback(
     () =>
@@ -80,6 +97,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
       <ScreenContainer
         label={label}
         icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
+        screens={screens}
       >
         <Spin size="large" />
         <div
@@ -103,6 +121,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
       <ScreenContainer
         label={label}
         icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
+        screens={screens}
       >
         <AddCharacterInput
           label={label}
@@ -137,7 +156,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
           />
         </Flex>
         <CharacterDetailSider characters={detailList} />
-        {scrollContainerRef.current ? (
+        {scrollContainerRef?.current ? (
           <FloatButton.BackTop
             duration={100}
             target={() => scrollContainerRef.current!}

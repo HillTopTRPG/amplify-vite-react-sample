@@ -1,5 +1,5 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react'
-import { useNechronicaContext } from '@Nechronica/context.ts'
+import { screens } from '@Nechronica/screens'
 import {
   NechronicaDataHelper,
   type NechronicaType,
@@ -7,8 +7,9 @@ import {
 import { ImportOutlined } from '@ant-design/icons'
 import { Button, type InputRef, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import { currentIsMeSelector, useAppDispatch, useSelector } from '@/store'
+import { createNechronicaCharacter } from '@/store/nechronicaSlice.ts'
 
 interface Props {
   label: string
@@ -20,9 +21,9 @@ export default function AddCharacterInput({
   characterType,
   sheetIdInputRef,
 }: Props) {
-  const { scope } = useScreenContext()
-  const { createCharacter } = useNechronicaContext()
-  const { currentIsMe } = useUserAttributes()
+  const dispatch = useAppDispatch()
+  const { scope } = useScreenNavigateInService(screens)
+  const currentIsMe = useSelector(currentIsMeSelector)
   const [sheetId, setSheetId] = useState('')
 
   const onCreateCharacter = useCallback(async () => {
@@ -37,8 +38,8 @@ export default function AddCharacterInput({
     setSheetId('')
     sheetIdInputRef?.current?.blur()
     sheetIdInputRef?.current?.focus()
-    createCharacter(sheetData)
-  }, [characterType, createCharacter, currentIsMe, sheetId, sheetIdInputRef])
+    dispatch(createNechronicaCharacter(sheetData))
+  }, [characterType, currentIsMe, dispatch, sheetId, sheetIdInputRef])
 
   const elm = useMemo(
     () => (

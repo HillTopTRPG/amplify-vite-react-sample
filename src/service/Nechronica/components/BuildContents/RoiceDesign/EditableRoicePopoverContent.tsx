@@ -1,12 +1,16 @@
 import { type CSSProperties } from 'react'
 import type { NechronicaRoice } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { ConfigProvider, Flex, theme, Typography } from 'antd'
-import { useCharacterMakeContext } from '../context.ts'
 import RoiceInsaneView from './form/RoiceInsaneView.tsx'
 import RoiceMemoInput from './form/RoiceMemoInput.tsx'
 import RoiceTargetInput from './form/RoiceTargetInput.tsx'
 import SelectRoiceId from './form/SelectRoiceId.tsx'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
+import { useAppDispatch } from '@/store'
+import {
+  deleteMakingRoice,
+  updateMakingRoice,
+} from '@/store/nechronicaSlice.ts'
 
 const containerStyle: CSSProperties = {
   width: 320,
@@ -27,13 +31,16 @@ export default function EditableRoicePopoverContent({
   onDelete,
 }: Props) {
   const { token } = theme.useToken()
-  const { updateRoice, deleteRoice } = useCharacterMakeContext()
-  const setName = (name: string) => updateRoice(index, { ...roice, name })
-  const setId = (id: number) => updateRoice(index, { ...roice, id })
-  const setMemo = (memo: string) => updateRoice(index, { ...roice, memo })
+  const dispatch = useAppDispatch()
+  const setName = (name: string) =>
+    dispatch(updateMakingRoice({ index, data: { ...roice, name } }))
+  const setId = (id: number) =>
+    dispatch(updateMakingRoice({ index, data: { ...roice, id } }))
+  const setMemo = (memo: string) =>
+    dispatch(updateMakingRoice({ index, data: { ...roice, memo } }))
   const onDeleteRoice = () => {
     onDelete()
-    deleteRoice(index)
+    dispatch(deleteMakingRoice(index))
   }
   return (
     <Flex vertical style={containerStyle} gap={8}>

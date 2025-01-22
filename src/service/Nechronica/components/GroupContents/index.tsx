@@ -1,25 +1,39 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import CharacterDetailSider from '@Nechronica/components/DetailSider/CharacterDetailSider'
-import { useNechronicaContext } from '@Nechronica/context.ts'
 import { useSearchCharacter } from '@Nechronica/hooks/useSearchCharacter.ts'
+import { screens } from '@Nechronica/screens'
 import type { CharacterGroupRelation } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { Button, Flex, Modal, Result, Spin } from 'antd'
 import CharacterSmallCard from '../CharacterTypeScreen/CharacterSmallCard.tsx'
 import CharacterSmallCards from '../CharacterTypeScreen/CharacterSmallCards.tsx'
-import { useScreenContext } from '@/context/screenContext.ts'
-import { useUserAttributes } from '@/context/userAttributesContext.ts'
+import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import useScreenSize from '@/hooks/useScreenSize.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
+import {
+  currentUserSelector,
+  drawerStatusSelector,
+  nechronicaCharacterGroupRelationsSelector,
+  nechronicaCharactersSelector,
+  nechronicaLoadingSelector,
+  useSelector,
+} from '@/store'
+import { updateCharacterGroup } from '@/store/commonSlice.ts'
 import { typedOmit } from '@/utils/types.ts'
 
 export default function GroupContents() {
   const { groupId } = useParams()
 
-  const { loading, characters, characterGroupRelations, updateCharacterGroup } =
-    useNechronicaContext()
+  const loading = useSelector(nechronicaLoadingSelector)
+  const characters = useSelector(nechronicaCharactersSelector)
+  const characterGroupRelations = useSelector(
+    nechronicaCharacterGroupRelationsSelector,
+  )
 
-  const { currentUser } = useUserAttributes()
-  const { screenSize, scope } = useScreenContext()
+  const currentUser = useSelector(currentUserSelector)
+  const { scope } = useScreenNavigateInService(screens)
+  const drawerStatus = useSelector(drawerStatusSelector)
+  const screenSize = useScreenSize(drawerStatus)
 
   const characterGroupRelation = useMemo(() => {
     if (loading) return null
@@ -60,7 +74,7 @@ export default function GroupContents() {
       characterIds: [...targetCharacterGroup.characterIds, ...selectIds],
     })
     handleCancel()
-  }, [handleCancel, selectIds, targetCharacterGroup, updateCharacterGroup])
+  }, [handleCancel, selectIds, targetCharacterGroup])
 
   const onAddCharacters = useCallback(() => {
     if (!characterGroupRelation) return
@@ -77,7 +91,7 @@ export default function GroupContents() {
         ),
       })
     },
-    [characterGroupRelation, updateCharacterGroup],
+    [characterGroupRelation],
   )
 
   const contents = useMemo(
