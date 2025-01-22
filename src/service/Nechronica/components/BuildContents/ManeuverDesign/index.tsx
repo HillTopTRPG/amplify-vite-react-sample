@@ -1,8 +1,15 @@
 import EditableManeuver from '@Nechronica/components/BuildContents/ManeuverDesign/EditableManeuver.tsx'
-import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
+import {
+  makingNechronicaCharacterBaseSelector,
+  makingNechronicaCharacterManeuverListSelector,
+  useSelector,
+} from '@/store'
 
 export default function ManeuverDesign() {
-  const { maneuvers, position, mainClass, subClass } = useCharacterMakeContext()
+  const maneuvers = useSelector(makingNechronicaCharacterManeuverListSelector)
+  const { position, mainClass, subClass } = useSelector(
+    makingNechronicaCharacterBaseSelector,
+  )
 
   return (
     <>

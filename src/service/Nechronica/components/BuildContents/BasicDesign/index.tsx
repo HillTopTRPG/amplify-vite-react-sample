@@ -5,11 +5,22 @@ import {
   useMemo,
 } from 'react'
 import DollTypeSelectItemSet from '@Nechronica/components/BuildContents/BasicDesign/DollTypeSelectItemSet.tsx'
-import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
 import mapping from '@Nechronica/ts/mapping.json'
 import { Col, type InputProps, Radio, Row } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
 import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
+import {
+  makingNechronicaCharacterBaseSelector,
+  useAppDispatch,
+  useSelector,
+} from '@/store'
+import {
+  setMakingNechronicaAffection,
+  setMakingNechronicaBonusStatus,
+  setMakingNechronicaMainClass,
+  setMakingNechronicaPosition,
+  setMakingNechronicaSubClass,
+} from '@/store/nechronicaCharacterMakeSlice.ts'
 
 const gridGutter: [number, number] = [5, 5] as const
 
@@ -22,26 +33,18 @@ const flexCenterStyle: CSSProperties = {
 } as const
 
 export default function BasicDesign() {
-  const {
-    position,
-    setPosition,
-    mainClass,
-    setMainClass,
-    subClass,
-    setSubClass,
-    bonusStatus,
-    setBonusStatus,
-    affection,
-    setAffection,
-  } = useCharacterMakeContext()
+  const dispatch = useAppDispatch()
+  const { position, mainClass, subClass, bonusStatus, affection } = useSelector(
+    makingNechronicaCharacterBaseSelector,
+  )
 
   const makeAffectionInputProps = useCallback(
     (property: 'armed' | 'mutation' | 'modification'): InputProps => {
-      const onChange = (e: ChangeEvent<HTMLInputElement>) =>
-        setAffection((v) => ({
-          ...v,
-          [property]: e.target.value,
-        }))
+      const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+        dispatch(
+          setMakingNechronicaAffection({ property, value: e.target.value }),
+        )
+      }
       return {
         value: affection[property],
         style: { width: '100%' },
@@ -49,7 +52,7 @@ export default function BasicDesign() {
         onChange,
       }
     },
-    [affection, setAffection],
+    [affection, dispatch],
   )
 
   const getTotalValue = useCallback(
@@ -88,7 +91,7 @@ export default function BasicDesign() {
       <DollTypeSelectItemSet
         label="ポジション"
         value={position}
-        onChange={setPosition}
+        onChange={(val) => dispatch(setMakingNechronicaPosition(val))}
         optionMap={mapping.CHARACTER_POSITION}
       />
       <Col span={statusSpan} style={flexCenterStyle}>
@@ -103,7 +106,7 @@ export default function BasicDesign() {
       <DollTypeSelectItemSet
         label="メインクラス"
         value={mainClass}
-        onChange={setMainClass}
+        onChange={(val) => dispatch(setMakingNechronicaMainClass(val))}
         optionMap={mapping.CHARACTER_CLASS}
       />
       <Col span={statusSpan} style={flexCenterStyle}>
@@ -118,7 +121,7 @@ export default function BasicDesign() {
       <DollTypeSelectItemSet
         label="サブクラス"
         value={subClass}
-        onChange={setSubClass}
+        onChange={(val) => dispatch(setMakingNechronicaSubClass(val))}
         optionMap={mapping.CHARACTER_CLASS}
       />
       <Col span={statusSpan} style={flexCenterStyle}>
@@ -137,7 +140,9 @@ export default function BasicDesign() {
         <Row gutter={gridGutter}>
           <Radio.Group
             value={bonusStatus}
-            onChange={(e) => setBonusStatus(e.target.value)}
+            onChange={(e) =>
+              dispatch(setMakingNechronicaBonusStatus(e.target.value))
+            }
             style={{ width: '100%', display: 'inline-flex' }}
           >
             <Col span={8} style={flexCenterStyle}>

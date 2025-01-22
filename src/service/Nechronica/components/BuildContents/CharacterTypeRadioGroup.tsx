@@ -1,16 +1,24 @@
-import { useCharacterMakeContext } from '@Nechronica/components/BuildContents/context.ts'
 import { nechronicaTypes } from '@Nechronica/index.ts'
 import { Radio } from 'antd'
 import { useTranslation } from 'react-i18next'
+import {
+  makingNechronicaCharacterTypeSelector,
+  useAppDispatch,
+  useSelector,
+} from '@/store'
+import { setMakingNechronicaCharacterType } from '@/store/nechronicaCharacterMakeSlice.ts'
 
 export default function CharacterTypeRadioGroup() {
+  const dispatch = useAppDispatch()
   const { t: i18nT } = useTranslation()
-  const { characterType, setCharacterType } = useCharacterMakeContext()
+  const characterType = useSelector(makingNechronicaCharacterTypeSelector)
 
   return (
     <Radio.Group
       value={characterType}
-      onChange={(e) => setCharacterType(e.target.value)}
+      onChange={(e) =>
+        dispatch(setMakingNechronicaCharacterType(e.target.value))
+      }
       options={nechronicaTypes.map((nt) => ({
         label: i18nT(`Nechronica.CHARACTER_TYPE.${nt}`),
         value: nt,

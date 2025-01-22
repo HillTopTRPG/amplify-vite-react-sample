@@ -14,8 +14,16 @@ import {
 import BasicDesign from './BasicDesign'
 import CharacterTypeRadioGroup from './CharacterTypeRadioGroup.tsx'
 import PersonalDataDesign from './PersonalDataDesign'
-import { useCharacterMakeContext } from './context.ts'
-import { nechronicaLoadingSelector, useSelector } from '@/store'
+import {
+  makingNechronicaCharacterSelector,
+  nechronicaLoadingSelector,
+  useAppDispatch,
+  useSelector,
+} from '@/store'
+import {
+  addMakingNechronicaManeuver,
+  addMakingNechronicaRoice,
+} from '@/store/nechronicaCharacterMakeSlice.ts'
 
 const maneuverContainerProps: Omit<FlexProps, 'children'> = {
   align: 'flex-start',
@@ -30,16 +38,15 @@ const maneuverContainerProps: Omit<FlexProps, 'children'> = {
 const dollOnlyCollapseKeys = ['basic', 'roice']
 
 export default function BuildContents() {
+  const dispatch = useAppDispatch()
   const loading = useSelector(nechronicaLoadingSelector)
-  const {
-    makingNechronicaCharacter,
-    characterType,
-    memo,
-    setMemo,
-    addRoice,
-    setManeuvers,
-    addManeuver,
-  } = useCharacterMakeContext()
+  const makingNechronicaCharacter = useSelector(
+    makingNechronicaCharacterSelector,
+  )
+  const characterType = makingNechronicaCharacter.additionalData.type
+
+  // TODO NechronicaCharacterに追加
+  const [memo, setMemo] = useState('')
 
   const [collapseKeys, setCollapseKeys] = useState<string[]>([])
 
@@ -80,21 +87,11 @@ export default function BuildContents() {
               type="text"
               size="small"
               onClick={(e) => {
-                addManeuver()
+                dispatch(addMakingNechronicaManeuver())
                 e.stopPropagation()
               }}
             >
               新規追加
-            </Button>
-            <Button
-              type="text"
-              size="small"
-              onClick={(e) => {
-                setManeuvers([])
-                e.stopPropagation()
-              }}
-            >
-              All clear
             </Button>
           </>
         ),
@@ -114,7 +111,7 @@ export default function BuildContents() {
               type="text"
               size="small"
               onClick={(e) => {
-                addRoice()
+                dispatch(addMakingNechronicaRoice())
                 e.stopPropagation()
               }}
             >
@@ -146,7 +143,7 @@ export default function BuildContents() {
         ),
       },
     ],
-    [addManeuver, addRoice, characterType, memo, setManeuvers, setMemo],
+    [characterType, dispatch, memo, setMemo],
   )
 
   const contents = useMemo(

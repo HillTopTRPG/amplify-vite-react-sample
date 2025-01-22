@@ -6,6 +6,7 @@ import {
 } from 'react-redux'
 import commonSlice from '@/store/commonSlice.ts'
 import drawerStatusSlice from '@/store/drawerStatusSlice.ts'
+import nechronicaCharacterMakeSlice from '@/store/nechronicaCharacterMakeSlice.ts'
 import nechronicaSlice from '@/store/nechronicaSlice.ts'
 import scrollMapSlice from '@/store/scrollMapSlice.ts'
 import themeSlice from '@/store/themeSlice.ts'
@@ -19,6 +20,7 @@ export const store = configureStore({
     userAttributes: userAttributesSlice,
     common: commonSlice,
     nechronica: nechronicaSlice,
+    makingNechronica: nechronicaCharacterMakeSlice,
   }),
 })
 
@@ -50,6 +52,17 @@ export const characterGroupsSelector = (state: RootState) =>
   state.common.characterGroups
 export const nechronicaCharacterGroupRelationsSelector = (state: RootState) =>
   state.nechronica.characterGroupRelations
+export const makingNechronicaCharacterSelector = (state: RootState) =>
+  state.makingNechronica.makingNechronicaCharacter
+export const makingNechronicaCharacterTypeSelector = (state: RootState) =>
+  state.makingNechronica.makingNechronicaCharacter.additionalData.type
+export const makingNechronicaCharacterBaseSelector = (state: RootState) =>
+  state.makingNechronica.makingNechronicaCharacter.sheetData.basic
+export const makingNechronicaCharacterManeuverListSelector = (
+  state: RootState,
+) => state.makingNechronica.makingNechronicaCharacter.sheetData.maneuverList
+export const makingNechronicaCharacterRoiceListSelector = (state: RootState) =>
+  state.makingNechronica.makingNechronicaCharacter.sheetData.roiceList
 
 export const useSelector: TypedUseSelectorHook<RootState> = rawUseSelector
 

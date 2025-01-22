@@ -1,6 +1,8 @@
 import { type CSSProperties, useId } from 'react'
+import type { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { Col } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
+import { useAppDispatch } from '@/store'
 
 const flexCenterStyle: CSSProperties = {
   display: 'flex',
@@ -14,7 +16,7 @@ interface Props {
   thSpan: number
   tdSpan: number
   value: string
-  onChange: (value: string) => void
+  actionCreatorWithPayload: ActionCreatorWithPayload<string, string>
   required?: 'required'
 }
 export default function TextItemSet({
@@ -22,10 +24,11 @@ export default function TextItemSet({
   thSpan,
   tdSpan,
   value,
-  onChange,
+  actionCreatorWithPayload,
   required,
 }: Props) {
   const id = useId()
+  const dispatch = useAppDispatch()
   return (
     <>
       <Col span={thSpan} style={flexCenterStyle}>
@@ -44,7 +47,7 @@ export default function TextItemSet({
           placeholder={required ? '未入力' : undefined}
           style={{ width: '100%' }}
           required={true}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => dispatch(actionCreatorWithPayload(e.target.value))}
         />
       </Col>
     </>
