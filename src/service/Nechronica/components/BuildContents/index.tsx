@@ -20,10 +20,7 @@ import {
   useAppDispatch,
   useSelector,
 } from '@/store'
-import {
-  addMakingNechronicaManeuver,
-  addMakingNechronicaRoice,
-} from '@/store/nechronicaCharacterMakeSlice.ts'
+import { addMakingManeuver, addMakingRoice } from '@/store/nechronicaSlice.ts'
 
 const maneuverContainerProps: Omit<FlexProps, 'children'> = {
   align: 'flex-start',
@@ -87,7 +84,7 @@ export default function BuildContents() {
               type="text"
               size="small"
               onClick={(e) => {
-                dispatch(addMakingNechronicaManeuver())
+                dispatch(addMakingManeuver())
                 e.stopPropagation()
               }}
             >
@@ -111,7 +108,7 @@ export default function BuildContents() {
               type="text"
               size="small"
               onClick={(e) => {
-                dispatch(addMakingNechronicaRoice())
+                dispatch(addMakingRoice())
                 e.stopPropagation()
               }}
             >

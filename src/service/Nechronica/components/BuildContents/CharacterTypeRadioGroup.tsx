@@ -6,7 +6,7 @@ import {
   useAppDispatch,
   useSelector,
 } from '@/store'
-import { setMakingNechronicaCharacterType } from '@/store/nechronicaCharacterMakeSlice.ts'
+import { setMakingCharacterType } from '@/store/nechronicaSlice.ts'
 
 export default function CharacterTypeRadioGroup() {
   const dispatch = useAppDispatch()
@@ -16,9 +16,7 @@ export default function CharacterTypeRadioGroup() {
   return (
     <Radio.Group
       value={characterType}
-      onChange={(e) =>
-        dispatch(setMakingNechronicaCharacterType(e.target.value))
-      }
+      onChange={(e) => dispatch(setMakingCharacterType(e.target.value))}
       options={nechronicaTypes.map((nt) => ({
         label: i18nT(`Nechronica.CHARACTER_TYPE.${nt}`),
         value: nt,

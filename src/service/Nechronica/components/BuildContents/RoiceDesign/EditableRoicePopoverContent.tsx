@@ -8,9 +8,9 @@ import SelectRoiceId from './form/SelectRoiceId.tsx'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import { useAppDispatch } from '@/store'
 import {
-  deleteMakingNechronicaRoice,
-  updateMakingNechronicaRoice,
-} from '@/store/nechronicaCharacterMakeSlice.ts'
+  deleteMakingRoice,
+  updateMakingRoice,
+} from '@/store/nechronicaSlice.ts'
 
 const containerStyle: CSSProperties = {
   width: 320,
@@ -33,14 +33,14 @@ export default function EditableRoicePopoverContent({
   const { token } = theme.useToken()
   const dispatch = useAppDispatch()
   const setName = (name: string) =>
-    dispatch(updateMakingNechronicaRoice({ index, data: { ...roice, name } }))
+    dispatch(updateMakingRoice({ index, data: { ...roice, name } }))
   const setId = (id: number) =>
-    dispatch(updateMakingNechronicaRoice({ index, data: { ...roice, id } }))
+    dispatch(updateMakingRoice({ index, data: { ...roice, id } }))
   const setMemo = (memo: string) =>
-    dispatch(updateMakingNechronicaRoice({ index, data: { ...roice, memo } }))
+    dispatch(updateMakingRoice({ index, data: { ...roice, memo } }))
   const onDeleteRoice = () => {
     onDelete()
-    dispatch(deleteMakingNechronicaRoice(index))
+    dispatch(deleteMakingRoice(index))
   }
   return (
     <Flex vertical style={containerStyle} gap={8}>

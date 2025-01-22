@@ -5,7 +5,7 @@ import {
   useAppDispatch,
   useSelector,
 } from '@/store'
-import { setMakingNechronicaBasePosition } from '@/store/nechronicaCharacterMakeSlice.ts'
+import { setMakingBasicData } from '@/store/nechronicaSlice.ts'
 
 const options = [
   { label: '奈落', value: -2 },
@@ -45,7 +45,9 @@ export default function SelectBasePositionItemSet({ thSpan, tdSpan }: Props) {
           id={id}
           options={options}
           value={basePosition}
-          onChange={(val) => dispatch(setMakingNechronicaBasePosition(val))}
+          onChange={(value) =>
+            dispatch(setMakingBasicData({ value, property: 'basePosition' }))
+          }
         />
       </Col>
     </>

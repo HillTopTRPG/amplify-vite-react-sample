@@ -6,8 +6,10 @@ import {
   useAppDispatch,
   useSelector,
 } from '@/store'
-import { addMakingNechronicaManeuver } from '@/store/nechronicaCharacterMakeSlice.ts'
-import { setSelectedManeuverInfos } from '@/store/nechronicaSlice.ts'
+import {
+  setSelectedManeuverInfos,
+  addMakingManeuver,
+} from '@/store/nechronicaSlice.ts'
 
 export default function ManeuverImportButton() {
   const dispatch = useAppDispatch()
@@ -16,7 +18,7 @@ export default function ManeuverImportButton() {
 
   const onClick = useCallback(() => {
     selectedManeuverInfos.forEach((info) => {
-      dispatch(addMakingNechronicaManeuver(structuredClone(info.maneuver)))
+      dispatch(addMakingManeuver(structuredClone(info.maneuver)))
     })
     messageApi
       .info(`${selectedManeuverInfos.length}個のマニューバのコピー完了`)

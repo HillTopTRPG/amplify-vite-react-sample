@@ -15,12 +15,10 @@ import {
   useSelector,
 } from '@/store'
 import {
-  setMakingNechronicaAffection,
-  setMakingNechronicaBonusStatus,
-  setMakingNechronicaMainClass,
-  setMakingNechronicaPosition,
-  setMakingNechronicaSubClass,
-} from '@/store/nechronicaCharacterMakeSlice.ts'
+  setMakingAffection,
+  setMakingBonusStatus,
+  setMakingBasicData,
+} from '@/store/nechronicaSlice.ts'
 
 const gridGutter: [number, number] = [5, 5] as const
 
@@ -41,9 +39,7 @@ export default function BasicDesign() {
   const makeAffectionInputProps = useCallback(
     (property: 'armed' | 'mutation' | 'modification'): InputProps => {
       const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-        dispatch(
-          setMakingNechronicaAffection({ property, value: e.target.value }),
-        )
+        dispatch(setMakingAffection({ property, value: e.target.value }))
       }
       return {
         value: affection[property],
@@ -91,7 +87,9 @@ export default function BasicDesign() {
       <DollTypeSelectItemSet
         label="ポジション"
         value={position}
-        onChange={(val) => dispatch(setMakingNechronicaPosition(val))}
+        onChange={(value) =>
+          dispatch(setMakingBasicData({ value, property: 'position' }))
+        }
         optionMap={mapping.CHARACTER_POSITION}
       />
       <Col span={statusSpan} style={flexCenterStyle}>
@@ -106,7 +104,9 @@ export default function BasicDesign() {
       <DollTypeSelectItemSet
         label="メインクラス"
         value={mainClass}
-        onChange={(val) => dispatch(setMakingNechronicaMainClass(val))}
+        onChange={(value) =>
+          dispatch(setMakingBasicData({ value, property: 'mainClass' }))
+        }
         optionMap={mapping.CHARACTER_CLASS}
       />
       <Col span={statusSpan} style={flexCenterStyle}>
@@ -121,7 +121,9 @@ export default function BasicDesign() {
       <DollTypeSelectItemSet
         label="サブクラス"
         value={subClass}
-        onChange={(val) => dispatch(setMakingNechronicaSubClass(val))}
+        onChange={(value) =>
+          dispatch(setMakingBasicData({ value, property: 'subClass' }))
+        }
         optionMap={mapping.CHARACTER_CLASS}
       />
       <Col span={statusSpan} style={flexCenterStyle}>
@@ -140,9 +142,7 @@ export default function BasicDesign() {
         <Row gutter={gridGutter}>
           <Radio.Group
             value={bonusStatus}
-            onChange={(e) =>
-              dispatch(setMakingNechronicaBonusStatus(e.target.value))
-            }
+            onChange={(e) => dispatch(setMakingBonusStatus(e.target.value))}
             style={{ width: '100%', display: 'inline-flex' }}
           >
             <Col span={8} style={flexCenterStyle}>
