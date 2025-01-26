@@ -36,7 +36,7 @@ import {
   useSelector,
 } from '@/store'
 import { toggleDrawerStatus } from '@/store/drawerStatusSlice.ts'
-import { updateTheme } from '@/store/themeSlice.ts'
+import { toggleTheme } from '@/store/themeSlice.ts'
 import { getKeys, isProperty } from '@/utils/types.ts'
 
 export default function AppMenu() {
@@ -246,9 +246,7 @@ export default function AppMenu() {
           <Button
             type="text"
             icon={theme === 'dark' ? <MoonFilled /> : <SunFilled />}
-            onClick={() =>
-              dispatch(updateTheme(theme === 'dark' ? 'light' : 'dark'))
-            }
+            onClick={() => dispatch(toggleTheme())}
             size="middle"
           />
         </Flex>

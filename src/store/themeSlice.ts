@@ -1,4 +1,4 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 const LOCAL_STORAGE_KEY = 'theme'
 
@@ -10,12 +10,13 @@ const themeSlice = createSlice({
   name: 'theme',
   initialState,
   reducers: {
-    updateTheme: (_, action: PayloadAction<Theme>) => {
-      localStorage.setItem(LOCAL_STORAGE_KEY, action.payload)
-      return action.payload
+    toggleTheme: (state) => {
+      const newTheme = state === 'dark' ? 'light' : 'dark'
+      localStorage.setItem(LOCAL_STORAGE_KEY, newTheme)
+      return newTheme
     },
   },
 })
 
-export const { updateTheme } = themeSlice.actions
+export const { toggleTheme } = themeSlice.actions
 export default themeSlice.reducer
