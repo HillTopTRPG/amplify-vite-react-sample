@@ -14,7 +14,8 @@ export default function HomeHeaderContents({ toggleDrawerOpen }: Props) {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const theme = useSelector(themeSelector)
-  const { isMobile } = useScreenSize(false)
+  const { width } = useScreenSize(false)
+  const withIcon = width < 730
 
   return (
     <>
@@ -22,12 +23,13 @@ export default function HomeHeaderContents({ toggleDrawerOpen }: Props) {
         <Typography.Title
           level={3}
           className={styles.customFont}
-          style={{ margin: 0 }}
+          style={{ margin: 0, cursor: 'pointer' }}
+          onClick={() => navigate('/')}
         >
           Memento Nexus
         </Typography.Title>
       </Flex>
-      {isMobile ? null : (
+      {withIcon ? null : (
         <>
           {MENU_LINKS.map((info, idx) => (
             <Typography.Link key={idx} onClick={() => navigate(info.to)}>
@@ -46,7 +48,7 @@ export default function HomeHeaderContents({ toggleDrawerOpen }: Props) {
         ]}
         style={{ backgroundColor: '#888', color: 'white' }}
       />
-      {isMobile ? (
+      {withIcon ? (
         <Button
           type="text"
           size="large"

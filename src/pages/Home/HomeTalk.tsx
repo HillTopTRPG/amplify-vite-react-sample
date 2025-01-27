@@ -23,7 +23,7 @@ export default function HomeTalk({ open }: Props) {
           style={{
             position: 'absolute',
             left: 'calc(50% - 70px)',
-            top: 'calc(50% - 140px)',
+            top: 'calc(50% - 80px)',
           }}
         ></div>
       </Tooltip>

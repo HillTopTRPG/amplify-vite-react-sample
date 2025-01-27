@@ -1,21 +1,16 @@
 import { useMemo } from 'react'
 import backImg from '@/assets/main-back.png'
-import useScreenSize from '@/hooks/useScreenSize.ts'
 import { themeSelector, useSelector } from '@/store'
 
 interface Props {
-  zoomUpBack: number
+  status: number
+  lastStatus: number
 }
-export default function HomeBackImage({ zoomUpBack }: Props) {
-  const { isMobile } = useScreenSize(false)
+export default function HomeBackImage({ status, lastStatus }: Props) {
   const theme = useSelector(themeSelector)
   return useMemo(() => {
     const transform =
-      zoomUpBack === 1
-        ? 'scale(1.5)'
-        : zoomUpBack === 2
-          ? 'scale(2) translate(20px, -30px)'
-          : undefined
+      status === 1 ? 'scale(1.5)' : status === 2 ? 'scale(2)' : undefined
     return (
       <div
         style={{
@@ -25,14 +20,16 @@ export default function HomeBackImage({ zoomUpBack }: Props) {
           right: 0,
           bottom: 0,
           backgroundImage: `url(${backImg})`,
-          backgroundSize: isMobile ? 'cover' : 'contain',
+          backgroundSize: 'auto 100%',
           backgroundPositionX: 'center',
           transform,
-          transition: 'transform 600ms ease-in-out',
+          transition: [lastStatus, status].includes(2)
+            ? undefined
+            : 'transform 800ms ease-in-out',
           transformOrigin: 'top center',
           filter: theme === 'dark' ? 'grayscale(0.7)' : undefined,
         }}
       ></div>
     )
-  }, [isMobile, theme, zoomUpBack])
+  }, [status, lastStatus, theme])
 }

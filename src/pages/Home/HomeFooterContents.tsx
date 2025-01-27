@@ -1,4 +1,12 @@
-import { Image, Flex, Typography, type ImageProps } from 'antd'
+import type { CSSProperties } from 'react'
+import {
+  Image,
+  Flex,
+  Typography,
+  type ImageProps,
+  theme as AntTheme,
+  Layout,
+} from 'antd'
 import amplifyImg from '@/assets/Arch_AWS-Amplify_64.png'
 import antdImg from '@/assets/ant-design-2.svg'
 import hilltopImg from '@/assets/icon-HillTop.jpg'
@@ -16,39 +24,62 @@ const imageProps: ImageProps = {
   style: { backgroundColor: 'white' },
 }
 
-export default function HomeFooterContents() {
+interface Props {
+  status: number
+}
+export default function HomeFooterContents({ status }: Props) {
   const theme = useSelector(themeSelector)
+  const { token } = AntTheme.useToken()
+
+  const footerStyle: CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+    gap: 18,
+    color: theme === 'dark' ? token.colorBgContainer : token.colorBgBlur,
+    borderBottom: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
+    padding: '3px 20px 8px 20px',
+    height: status === 2 ? 'calc((100vh - 128px) / 4 + 64px)' : 64,
+  }
   return (
-    <Flex
-      gap={10}
-      align="baseline"
-      justify="space-around"
-      style={{width: '100%'}}
-    >
-      <Flex vertical align="flex-start">
-        <Typography.Text>開発者</Typography.Text>
-        <Flex align="flex-end" gap={4}>
-          <Image src={hilltopImg} {...imageProps} />
-          <Image
-            src={theme === 'dark' ? xLogoWhiteImage : xLogoBlackImage}
-            preview={false}
-            width={12}
-          />
-          <Typography.Link style={{fontSize: 12}}>
-            @HillTop_TRPG
-          </Typography.Link>
+    <Layout.Footer style={footerStyle}>
+      <Flex
+        gap={10}
+        align="baseline"
+        justify="space-around"
+        style={{
+          width: '100%',
+          height: status === 2 ? 'calc((100vh - 128px) / 4 + 64px)' : 64,
+          transition: 'height 500ms ease-in-out',
+          fontSize: 12,
+        }}
+      >
+        <Flex vertical align="flex-start">
+          <Typography.Text>開発者</Typography.Text>
+          <Flex align="flex-end" gap={4}>
+            <Image src={hilltopImg} {...imageProps} />
+            <Image
+              src={theme === 'dark' ? xLogoWhiteImage : xLogoBlackImage}
+              preview={false}
+              width={12}
+            />
+            <Typography.Link style={{ fontSize: 12 }}>
+              @HillTop_TRPG
+            </Typography.Link>
+          </Flex>
+        </Flex>
+        <Flex vertical align="flex-start">
+          <Typography.Text>Powered by</Typography.Text>
+          <Flex gap={4}>
+            <TooltipImage title="AWS Amplify" src={amplifyImg} />
+            <TooltipImage title="React" src={reactImg} />
+            <TooltipImage title="Ant Design" src={antdImg} />
+            <TooltipImage title="Redux Toolkit" src={reduxToolkitImg} />
+            <TooltipImage title="x-logo" src={xLogoBlackImage} />
+          </Flex>
         </Flex>
       </Flex>
-      <Flex vertical align="flex-start">
-        <Typography.Text>Powered by</Typography.Text>
-        <Flex gap={4}>
-          <TooltipImage title="AWS Amplify" src={amplifyImg}/>
-          <TooltipImage title="React" src={reactImg}/>
-          <TooltipImage title="Ant Design" src={antdImg}/>
-          <TooltipImage title="Redux Toolkit" src={reduxToolkitImg}/>
-          <TooltipImage title="x-logo" src={xLogoBlackImage}/>
-        </Flex>
-      </Flex>
-    </Flex>
+    </Layout.Footer>
   )
 }

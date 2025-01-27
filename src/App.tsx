@@ -14,6 +14,8 @@ import FetchUserAttributes from '@/FetchUserAttributes.tsx'
 import { servicesContext } from '@/context/servicesContext.ts'
 import Home from '@/pages/Home'
 import NotFound from '@/pages/NotFound.tsx'
+import Privacy from '@/pages/Privacy'
+import Rules from '@/pages/Rules'
 import services from '@/service'
 import { store } from '@/store'
 
@@ -41,6 +43,14 @@ const routes = createBrowserRouter([
       {
         index: true,
         Component: Home,
+      },
+      {
+        path: '/rules',
+        Component: Rules,
+      },
+      {
+        path: '/privacy',
+        Component: Privacy,
       },
       {
         path: '/public',

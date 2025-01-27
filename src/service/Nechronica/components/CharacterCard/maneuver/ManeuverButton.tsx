@@ -112,7 +112,7 @@ export default function ManeuverButton({
 
         <Popover
           content={hoverContent}
-          overlayInnerStyle={{ padding: 0 }}
+          styles={{ body: { padding: 0 } }}
           mouseEnterDelay={0.05}
           trigger={hoverContent ? 'hover' : []}
           open={hoverManeuverId === maneuverId}
@@ -120,7 +120,7 @@ export default function ManeuverButton({
         >
           <Popover
             content={clickContent}
-            overlayInnerStyle={{ padding: 0 }}
+            styles={{ body: { padding: 0 } }}
             mouseEnterDelay={0.05}
             trigger={onClick || !clickContent ? [] : ['click', 'contextMenu']}
             open={clickManeuverId === maneuverId}
