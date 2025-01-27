@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { MenuOutlined, MoonFilled, SunFilled } from '@ant-design/icons'
 import { Button, Flex, Segmented, Typography } from 'antd'
-import styles from './CustomFont.module.css'
+import { MENU_LINKS } from './constate.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
-import { MENU_LINKS } from '@/pages/Home/constate.ts'
+import styles from '@/pages/Home/CustomFont.module.css'
 import { themeSelector, useAppDispatch, useSelector } from '@/store'
 import { toggleTheme } from '@/store/themeSlice.ts'
 

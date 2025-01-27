@@ -9,9 +9,9 @@ import {
   Menu,
   theme as AntTheme,
 } from 'antd'
+import HomeHeaderContents from './HomeHeaderContents.tsx'
+import { MENU_LINKS } from './constate.ts'
 import useTitleCustomFont from '@/hooks/useTitleCustomFont.ts'
-import HomeHeaderContents from '@/pages/Home/HomeHeaderContents.tsx'
-import { MENU_LINKS } from '@/pages/Home/constate.ts'
 import { themeSelector, useSelector } from '@/store'
 
 const contentStyle: CSSProperties = {
@@ -20,6 +20,7 @@ const contentStyle: CSSProperties = {
   display: 'flex',
   justifyContent: 'center',
   alignContent: 'center',
+  overflow: 'hidden',
   height: 'fit-content',
 }
 

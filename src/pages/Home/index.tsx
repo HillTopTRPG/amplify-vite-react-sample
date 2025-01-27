@@ -42,6 +42,8 @@ export default function Home() {
   const [viewBackTalk, setViewBackTalk] = useState(false)
 
   const timerId = useRef<number | null>(null)
+  const topAnchorRef = useRef<HTMLDivElement>(null)
+  const bottomAnchorRef = useRef<HTMLDivElement>(null)
   const selectToolAnchorRef = useRef<HTMLDivElement>(null)
   const toolContainerRef = useRef<HTMLDivElement>(null)
   const debounce = useDebounce(10)
@@ -98,7 +100,12 @@ export default function Home() {
 
     return (
       <HomeLayout
-        footerContents={<HomeFooterContents status={status} />}
+        footerContents={
+          <HomeFooterContents
+            status={status}
+            refs={[topAnchorRef, selectToolAnchorRef, bottomAnchorRef]}
+          />
+        }
         layoutBack={
           <>
             <HomeBackImage status={status} lastStatus={lastStatus} />
@@ -119,6 +126,7 @@ export default function Home() {
           align="center"
           style={{ height: 'fit-content' }}
         >
+          <div ref={topAnchorRef}></div>
           <HomeTitleBlock view={viewTitleText || status > 0} />
           <HomeTextBlock
             texts={TOOL_DESCRIPTIONS}
@@ -151,6 +159,7 @@ export default function Home() {
               <SystemCard key={idx} {...tool} />
             ))}
           </Flex>
+          <div ref={bottomAnchorRef}></div>
           <div style={{ paddingBottom: '70vh' }} />
         </Flex>
       </HomeLayout>
