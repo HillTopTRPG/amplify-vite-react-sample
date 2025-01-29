@@ -1,7 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  BookOutlined,
   HomeOutlined,
   LogoutOutlined,
   MenuOutlined,
@@ -112,10 +111,14 @@ export default function AppMenu() {
     () => (
       <Layout.Header
         style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
           height: '3rem',
           lineHeight: '3rem',
           padding: '0 8px',
-          background: 'transparent',
+          background: token.colorBgContainer,
           color: theme === 'dark' ? token.colorBgContainer : token.colorBgBlur,
           borderBottom: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
           zIndex: 1,
@@ -125,9 +128,7 @@ export default function AppMenu() {
           gap={3}
           align="center"
           justify="center"
-          style={{
-            height: '100%',
-          }}
+          style={{ height: '100%' }}
         >
           <Button
             icon={<MenuOutlined />}
@@ -172,26 +173,6 @@ export default function AppMenu() {
               >
                 {useUsers.find((u) => u.userName === userName)?.viewName ??
                   (scope === 'private' ? 'あなた' : '全ユーザー')}
-              </Button>
-            </Dropdown>
-            <Typography.Text>/</Typography.Text>
-            <Dropdown
-              menu={{
-                items: getKeys(services).map((key) => ({
-                  key,
-                  label: services[key].serviceName,
-                  icon: <BookOutlined />,
-                })),
-                onClick: ({ key }) => setService(services, key),
-              }}
-              placement="bottomLeft"
-            >
-              <Button
-                type="text"
-                icon={<BookOutlined />}
-                style={{ padding: '0 5px' }}
-              >
-                {serviceName}
               </Button>
             </Dropdown>
             <MediaQuery {...MEDIA_QUERY.PC}>

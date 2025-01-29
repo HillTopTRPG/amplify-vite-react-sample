@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
-import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
+import { type NechronicaCharacter } from '@higanbina/ts/NechronicaDataHelper.ts'
 import { type GetProps } from 'antd'
 import { themeSelector, useSelector } from '@/store'
 

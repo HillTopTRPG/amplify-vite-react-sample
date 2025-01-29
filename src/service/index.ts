@@ -1,5 +1,5 @@
 import { type FC, type ComponentType, type CSSProperties } from 'react'
-import { service as nechronica } from './Nechronica/index.ts'
+import higanbina from '@higanbina/index.ts'
 import { type ScreenSize } from '@/hooks/useScreenSize.ts'
 
 export type CharacterGroupAdditionalData = {
@@ -37,7 +37,7 @@ export type Service = {
 export type Services = Record<string, Service>
 
 const services: Services = {
-  nechronica,
+  higanbina,
 } as const
 
 export default services

@@ -1,3 +1,4 @@
+import type { Schema } from '@amplify/data/resource.ts'
 import {
   type Nechronica,
   type NechronicaAdditionalData,
@@ -7,8 +8,7 @@ import {
   type NechronicaManeuver,
   type NechronicaRoice,
   type NechronicaType,
-} from '@Nechronica/ts/NechronicaDataHelper.ts'
-import type { Schema } from '@amplify/data/resource.ts'
+} from '@higanbina/ts/NechronicaDataHelper.ts'
 import { createAction, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { generateClient } from 'aws-amplify/api'
 import { useSelector } from 'react-redux'

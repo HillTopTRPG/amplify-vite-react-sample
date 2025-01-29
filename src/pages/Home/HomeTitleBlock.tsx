@@ -1,5 +1,6 @@
-import { type CSSProperties, Fragment, useMemo } from 'react'
+import { type CSSProperties, useMemo } from 'react'
 import { Flex, Typography } from 'antd'
+import Rubies from '@/layouts/HomeLayout/Rubies.tsx'
 import styles from '@/pages/Home/CustomFont.module.css'
 
 const TOOL_NAME = 'Memento Nexus'
@@ -12,8 +13,9 @@ const TITLE_TEXT_STYLE: CSSProperties = {
 
 interface Props {
   view: boolean
+  status: number
 }
-export default function HomeTitleBlock({ view }: Props) {
+export default function HomeTitleBlock({ view, status }: Props) {
   return useMemo(
     () => (
       <Flex
@@ -29,7 +31,7 @@ export default function HomeTitleBlock({ view }: Props) {
           backgroundColor: 'transparent',
           transition: 'opacity 200ms ease-in-out',
           opacity: view ? 1 : 0,
-          pointerEvents: view ? undefined : 'none',
+          pointerEvents: 'none',
         }}
       >
         <Typography.Text style={{ fontSize: 14, ...TITLE_TEXT_STYLE }}>
@@ -40,20 +42,19 @@ export default function HomeTitleBlock({ view }: Props) {
           className={styles.customFont}
           style={{ margin: 0, ...TITLE_TEXT_STYLE }}
         >
-          {TOOL_NAME.split(' ').map((n, idx) => (
-            <Fragment key={idx}>
-              {idx ? ' ' : null}
-              <ruby style={{ rubyPosition: 'under' }}>
-                {n}
-                <rp>(</rp>
-                <rt>{TOOL_NAME_KANA.split(' ')[idx]}</rt>
-                <rp>)</rp>
-              </ruby>
-            </Fragment>
-          ))}
+          <Rubies name={TOOL_NAME} kana={TOOL_NAME_KANA} />
         </Typography.Title>
+        {status > 0 ? (
+          <Typography.Title
+            level={4}
+            className={styles.customFont}
+            style={{ margin: '20px 0 0', ...TITLE_TEXT_STYLE }}
+          >
+            {status === 1 ? 'ツール一覧' : ''}
+          </Typography.Title>
+        ) : null}
       </Flex>
     ),
-    [view],
+    [view, status],
   )
 }

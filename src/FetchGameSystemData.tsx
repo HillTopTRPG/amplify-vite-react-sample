@@ -1,4 +1,6 @@
 import { type ReactNode, useEffect, useMemo } from 'react'
+import { theme } from 'antd'
+import { Helmet } from 'react-helmet-async'
 import useCharacterGroup from '@/hooks/gameData/useCharacterGroup.ts'
 import useCharacterGroupPublish from '@/hooks/gameData/useCharacterGroupPublish.ts'
 import useNechronicaCharacter from '@/hooks/gameData/useNechronicaCharacter.ts'
@@ -37,6 +39,17 @@ export default function FetchGameSystemData({ children }: Props) {
       ),
     )
   }, [characterGroups, dispatch, nechronicaCharacters])
+  const { token } = theme.useToken()
 
-  return useMemo(() => <>{children}</>, [children])
+  return useMemo(
+    () => (
+      <>
+        <Helmet>
+          <style>{`body { background-color: ${token.colorBgLayout}; }`}</style>
+        </Helmet>
+        {children}
+      </>
+    ),
+    [children, token.colorBgLayout],
+  )
 }

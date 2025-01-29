@@ -5,7 +5,6 @@ import {
   useContext,
   useState,
 } from 'react'
-import styles from '@Nechronica/components/Hoverable.module.css'
 import {
   CloseOutlined,
   MenuOutlined,
@@ -13,6 +12,7 @@ import {
   StarFilled,
   StarOutlined,
 } from '@ant-design/icons'
+import styles from '@higanbina/components/Hoverable.module.css'
 import {
   Badge,
   Button,

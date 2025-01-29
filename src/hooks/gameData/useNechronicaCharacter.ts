@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
+import { type Schema } from '@amplify/data/resource.ts'
 import type {
   Nechronica,
   NechronicaAdditionalData,
   NechronicaCharacter,
-} from '@Nechronica/ts/NechronicaDataHelper.ts'
-import { type Schema } from '@amplify/data/resource.ts'
+} from '@higanbina/ts/NechronicaDataHelper.ts'
 import { generateClient } from 'aws-amplify/api'
 import { type PublishObject } from './common.ts'
-import { nechronicaTypes } from '@/service/Nechronica'
+import { nechronicaTypes } from '@/service/higanbina'
 import { filterSelector, useAppDispatch, useSelector } from '@/store'
 import { setNechronicaCharacters } from '@/store/nechronicaSlice.ts'
 

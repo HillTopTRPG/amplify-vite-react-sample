@@ -23,7 +23,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@amplify/*": ["./amplify/*"],
-      "@Nechronica/*": ["./src/service/Nechronica/*"]
+      "@higanbina/*": ["./src/service/higanbina/*"]
     },
     "allowSyntheticDefaultImports": true
   },

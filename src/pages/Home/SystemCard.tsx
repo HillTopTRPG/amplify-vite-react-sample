@@ -6,24 +6,24 @@ import VersionItem from './VersionItem.tsx'
 import { themeSelector, useSelector } from '@/store'
 
 interface Props {
-  toolName: string
-  toolNameKana: string
+  name: string
+  kana: string
   since: string
   version: string
   iconImg: string
-  systems: string[]
+  system: string
   features: string[]
   description: string
   badge: string
   actions?: ReactNode[]
 }
 export default function SystemCard({
-  toolName,
-  toolNameKana,
+  name,
+  kana,
   since,
   version,
   iconImg,
-  systems,
+  system,
   features,
   description,
   badge,
@@ -84,9 +84,9 @@ export default function SystemCard({
           >
             <Typography.Title level={4} style={{ margin: 0, flexGrow: 1 }}>
               <ruby>
-                {toolName}
+                {name}
                 <rp>(</rp>
-                <rt>{toolNameKana}</rt>
+                <rt>{kana}</rt>
                 <rp>)</rp>
               </ruby>
             </Typography.Title>
@@ -96,7 +96,7 @@ export default function SystemCard({
             </Flex>
           </Flex>
           <Flex vertical gap={8} align="flex-start">
-            <SystemTags tags={systems} color="cyan" />
+            <SystemTags tags={[system]} color="cyan" />
             <SystemTags tags={features} color="green" />
             <Flex vertical align="flex-start" style={descriptionContainerStyle}>
               {description.split('\n').map((d, idx) => (
@@ -115,11 +115,11 @@ export default function SystemCard({
     features,
     iconImg,
     since,
-    systems,
+    system,
     theme,
     token.colorTextDescription,
-    toolName,
-    toolNameKana,
+    name,
+    kana,
     version,
   ])
 

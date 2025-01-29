@@ -9,21 +9,22 @@ export default function HomeTalk({ open }: Props) {
     () => (
       <Tooltip
         placement="topRight"
-        title="気楽にいこ"
+        title="気楽にいこ？"
         open={open}
         color="white"
         mouseEnterDelay={1}
         style={{ pointerEvents: 'none' }}
         styles={{
-          root: { pointerEvents: 'none' },
-          body: { backgroundColor: 'white', color: 'black', fontSize: 30 },
+          root: { pointerEvents: 'none', position: 'fixed' },
+          body: { backgroundColor: 'white', color: 'black', fontSize: 25 },
         }}
       >
         <div
           style={{
-            position: 'absolute',
-            left: 'calc(50% - 70px)',
-            top: 'calc(50% - 80px)',
+            position: 'fixed',
+            left: 'calc(50% - 80px)',
+            top: 'calc((100vh - 128px) * 0.26  + 64px)',
+            width: 2,
           }}
         ></div>
       </Tooltip>

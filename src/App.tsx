@@ -6,7 +6,7 @@ import {
   ScrollRestoration,
 } from 'react-router-dom'
 import type { Location } from 'react-router-dom'
-import nechronicaRoutes from '@Nechronica/Routes.tsx'
+import higanbinaRoutes from '@higanbina/Routes.tsx'
 import { Provider } from 'react-redux'
 import Authenticator from '@/Authenticator.tsx'
 import FetchGameSystemData from '@/FetchGameSystemData.tsx'
@@ -21,6 +21,7 @@ import { store } from '@/store'
 
 function Root() {
   const getKey = useCallback((l: Location) => l.pathname, [])
+
   return (
     <Provider store={store}>
       <FetchUserAttributes>
@@ -54,7 +55,7 @@ const routes = createBrowserRouter([
       },
       {
         path: '/public',
-        children: [nechronicaRoutes.public],
+        children: [higanbinaRoutes.public],
       },
       {
         path: '/private',
@@ -63,7 +64,7 @@ const routes = createBrowserRouter([
             <Outlet />
           </Authenticator>
         ),
-        children: [nechronicaRoutes.private],
+        children: [higanbinaRoutes.private],
       },
       {
         path: '*',

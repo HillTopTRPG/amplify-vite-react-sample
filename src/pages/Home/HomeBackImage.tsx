@@ -4,32 +4,28 @@ import { themeSelector, useSelector } from '@/store'
 
 interface Props {
   status: number
-  lastStatus: number
 }
-export default function HomeBackImage({ status, lastStatus }: Props) {
+export default function HomeBackImage({ status }: Props) {
   const theme = useSelector(themeSelector)
   return useMemo(() => {
-    const transform =
-      status === 1 ? 'scale(1.5)' : status === 2 ? 'scale(2)' : undefined
+    const scale = [1, 1.25, 1.5][status]
     return (
       <div
         style={{
-          position: 'absolute',
-          top: 0,
+          position: 'fixed',
+          top: 64,
           left: 0,
-          right: 0,
-          bottom: 0,
+          width: '100vw',
+          height: 'calc(100vh - 64px)',
           backgroundImage: `url(${backImg})`,
           backgroundSize: 'auto 100%',
           backgroundPositionX: 'center',
-          transform,
-          transition: [lastStatus, status].includes(2)
-            ? undefined
-            : 'transform 800ms ease-in-out',
+          transform: `scale(${scale})`,
+          transition: 'transform 800ms ease-in-out',
           transformOrigin: 'top center',
           filter: theme === 'dark' ? 'grayscale(0.7)' : undefined,
         }}
       ></div>
     )
-  }, [status, lastStatus, theme])
+  }, [status, theme])
 }
