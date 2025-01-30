@@ -1,5 +1,5 @@
 import { type CSSProperties, type ReactNode, useMemo } from 'react'
-import { Avatar, Badge, Card, Flex, Typography, theme as AntTheme } from 'antd'
+import { Avatar, Badge, Card, Flex, Typography, theme } from 'antd'
 import SinceItem from './SinceItem.tsx'
 import SystemTags from './SystemTags.tsx'
 import VersionItem from './VersionItem.tsx'
@@ -30,11 +30,11 @@ export default function SystemCard({
   badge,
   actions,
 }: Props) {
-  const theme = useAppSelector(selectTheme)
-  const { token } = AntTheme.useToken()
+  const themeType = useAppSelector(selectTheme)
+  const { token } = theme.useToken()
 
   const cardElm = useMemo(() => {
-    const rgb = theme === 'dark' ? 0 : 255
+    const rgb = themeType === 'dark' ? 0 : 255
     const descriptionContainerStyle: CSSProperties = {
       backgroundColor: `rgba(${rgb}, ${rgb}, ${rgb}, 0.4)`,
       borderRadius: 8,
@@ -117,7 +117,7 @@ export default function SystemCard({
     iconImg,
     since,
     system,
-    theme,
+    themeType,
     token.colorTextDescription,
     name,
     kana,

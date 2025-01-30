@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons'
 import { useAuthenticator } from '@aws-amplify/ui-react'
 import {
-  theme as AntdTheme,
+  theme,
   Button,
   Layout,
   Flex,
@@ -30,7 +30,7 @@ import {
   selectDrawerStatus,
   toggleDrawerStatus,
 } from '@/store/drawerStatusSlice.ts'
-import { selectTheme, toggleTheme } from '@/store/themeSlice.ts'
+import { selectTheme, toggleThemeType } from '@/store/themeSlice.ts'
 import {
   selectMe,
   selectUserAttributesLoading,
@@ -42,11 +42,11 @@ export default function AppMenu() {
   const users = useAppSelector(selectUsers)
   const me = useAppSelector(selectMe)
   const loading = useAppSelector(selectUserAttributesLoading)
-  const theme = useAppSelector(selectTheme)
+  const themeType = useAppSelector(selectTheme)
   const dispatch = useDispatch()
   const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
-  const { token } = AntdTheme.useToken()
+  const { token } = theme.useToken()
   const { signOut } = useAuthenticator()
   const navigate = useNavigate()
 
@@ -104,8 +104,9 @@ export default function AppMenu() {
           lineHeight: '3rem',
           padding: '0 8px',
           backgroundColor: token.colorBgContainer,
-          color: theme === 'dark' ? token.colorBgContainer : token.colorBgBlur,
-          borderBottom: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
+          color:
+            themeType === 'dark' ? token.colorBgContainer : token.colorBgBlur,
+          borderBottom: `solid 1px ${themeType === 'dark' ? '#222' : '#e7e7e7'}`,
           zIndex: 1,
         }}
       >
@@ -211,8 +212,8 @@ export default function AppMenu() {
           )}
           <Button
             type="text"
-            icon={theme === 'dark' ? <MoonFilled /> : <SunFilled />}
-            onClick={() => dispatch(toggleTheme())}
+            icon={themeType === 'dark' ? <MoonFilled /> : <SunFilled />}
+            onClick={() => dispatch(toggleThemeType())}
             size="middle"
           />
         </Flex>
@@ -230,7 +231,7 @@ export default function AppMenu() {
       screenSize.isFullView,
       screens,
       setScreen,
-      theme,
+      themeType,
       token.colorBgBlur,
       token.colorBgContainer,
       useUsers,

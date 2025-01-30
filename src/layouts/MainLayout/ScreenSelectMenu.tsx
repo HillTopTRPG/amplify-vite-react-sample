@@ -9,7 +9,7 @@ interface Props {
   onSelect?: (key: string) => void
 }
 export default function ScreenSelectMenu({ onSelect }: Props) {
-  const theme = useAppSelector(selectTheme)
+  const themeType = useAppSelector(selectTheme)
   const { screens, screen, setScreen } = useScreenNavigateInGlobal()
 
   const onSelectHandler = useCallback(
@@ -28,7 +28,7 @@ export default function ScreenSelectMenu({ onSelect }: Props) {
   return useMemo(
     () => (
       <Menu
-        theme={theme}
+        theme={themeType}
         mode="inline"
         onSelect={(e) => onSelectHandler(e.key)}
         selectedKeys={[screen]}
@@ -55,6 +55,6 @@ export default function ScreenSelectMenu({ onSelect }: Props) {
           }))}
       />
     ),
-    [onSelectHandler, screen, screens, theme],
+    [onSelectHandler, screen, screens, themeType],
   )
 }

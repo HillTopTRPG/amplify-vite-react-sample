@@ -1,6 +1,6 @@
 import { type CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { theme as AntTheme, Typography } from 'antd'
+import { theme, Typography } from 'antd'
 import styles from './SiteMap.module.css'
 import Rubies from '@/layouts/HomeLayout/Rubies.tsx'
 import { MENU_LINKS, TOOL_INFO_LIST } from '@/layouts/HomeLayout/constate.ts'
@@ -11,11 +11,11 @@ interface Props {
   onHomeNavigate: (refIndex: number) => void
 }
 export default function SiteMap({ onHomeNavigate }: Props) {
-  const { token } = AntTheme.useToken()
+  const { token } = theme.useToken()
   const navigate = useNavigate()
-  const theme = useAppSelector(selectTheme)
+  const themeType = useAppSelector(selectTheme)
 
-  const rgb = theme === 'dark' ? 0 : 246
+  const rgb = themeType === 'dark' ? 0 : 246
   const color = `rgb(${rgb}, ${rgb}, ${rgb})`
   const linkStyle: CSSProperties = {
     backgroundColor: color,

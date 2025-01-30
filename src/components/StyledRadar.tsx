@@ -64,7 +64,7 @@ interface Props {
   onChangeItem?: (type: 'pointerup' | 'pointermove', item: string) => void
 }
 export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
-  const theme = useAppSelector(selectTheme)
+  const themeType = useAppSelector(selectTheme)
   const [lastItem, setLastItem] = useState<string | null>(null)
 
   /* 現在は使ってないがホバーされたチャートの項目をハンドリングできる */
@@ -93,7 +93,7 @@ export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
 
   const config: GetProps<typeof Radar> = useMemo(
     () => ({
-      theme,
+      theme: themeType,
       data,
       width: size,
       height: size,
@@ -131,7 +131,7 @@ export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
       radiusAxis: false,
       tooltip: type === 'small' ? false : undefined,
     }),
-    [data, isAllZero, size, theme, type],
+    [data, isAllZero, size, themeType, type],
   )
 
   return useMemo(

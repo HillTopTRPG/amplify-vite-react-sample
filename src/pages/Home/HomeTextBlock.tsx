@@ -14,10 +14,10 @@ interface Props {
   style?: CSSProperties
 }
 export default function HomeTextBlock({ title, texts, style }: Props) {
-  const theme = useAppSelector(selectTheme)
+  const themeType = useAppSelector(selectTheme)
 
   return useMemo(() => {
-    const rgb = theme === 'dark' ? 0 : 255
+    const rgb = themeType === 'dark' ? 0 : 255
     const TEXT_STYLE: CSSProperties = {
       whiteSpace: 'pre-wrap',
       padding: '8px 16px 8px 16px',
@@ -76,5 +76,5 @@ export default function HomeTextBlock({ title, texts, style }: Props) {
         })}
       </Flex>
     )
-  }, [style, texts, theme, title])
+  }, [style, texts, themeType, title])
 }

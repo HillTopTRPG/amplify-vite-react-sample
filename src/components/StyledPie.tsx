@@ -10,9 +10,9 @@ export default function StyledPie({
   data: unknown[]
   height: number
 }) {
-  const theme = useAppSelector(selectTheme)
+  const themeType = useAppSelector(selectTheme)
   const config: GetProps<typeof Pie> = {
-    theme,
+    theme: themeType,
     data,
     angleField: 'value',
     colorField: 'title',

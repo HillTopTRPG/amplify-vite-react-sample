@@ -1,5 +1,5 @@
 import { type CSSProperties, type ReactNode, useRef } from 'react'
-import { ConfigProvider, Layout, theme as AntdTheme, theme } from 'antd'
+import { ConfigProvider, Layout, theme } from 'antd'
 import AppDrawer from './AppDrawer.tsx'
 import AppMenu from './AppMenu.tsx'
 import PageScrollDispatcher from './PageScrollDispatcher.tsx'
@@ -19,9 +19,9 @@ interface Props {
   children: ReactNode
 }
 export default function MainLayout({ containerStyle, children }: Props) {
-  const theme = useAppSelector(selectTheme)
-  const { token } = AntdTheme.useToken()
-  const algorithm = theme === 'dark' ? darkAlgorithm : defaultAlgorithm
+  const themeType = useAppSelector(selectTheme)
+  const { token } = theme.useToken()
+  const algorithm = themeType === 'dark' ? darkAlgorithm : defaultAlgorithm
   const scrollContainerRef = useRef<HTMLElement>(null)
   const drawerStatus = useAppSelector(selectDrawerStatus)
   const { isMobile } = useScreenSize(drawerStatus)

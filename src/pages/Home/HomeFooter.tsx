@@ -4,7 +4,7 @@ import {
   Flex,
   Typography,
   type ImageProps,
-  theme as AntTheme,
+  theme,
   Layout,
   Tabs,
 } from 'antd'
@@ -32,8 +32,8 @@ interface Props {
   refs?: RefObject<HTMLDivElement>[]
 }
 export default function HomeFooter({ status, refs }: Props) {
-  const { token } = AntTheme.useToken()
-  const theme = useAppSelector(selectTheme)
+  const { token } = theme.useToken()
+  const themeType = useAppSelector(selectTheme)
 
   const height = status === 2 ? 'calc((100vh - 128px) / 3 + 64px)' : 64
   const transition = 'height 500ms ease-in-out'
@@ -48,8 +48,8 @@ export default function HomeFooter({ status, refs }: Props) {
     alignItems: 'center',
     justifyContent: 'flex-end',
     overflow: 'hidden',
-    color: theme === 'dark' ? token.colorBgContainer : token.colorBgBlur,
-    borderBottom: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
+    color: themeType === 'dark' ? token.colorBgContainer : token.colorBgBlur,
+    borderBottom: `solid 1px ${themeType === 'dark' ? '#222' : '#e7e7e7'}`,
     padding: '0 0 8px',
     height,
     transition,
@@ -115,7 +115,9 @@ export default function HomeFooter({ status, refs }: Props) {
                 <Flex align="flex-end" gap={4}>
                   <Image src={hilltopImg} {...imageProps} />
                   <Image
-                    src={theme === 'dark' ? xLogoWhiteImage : xLogoBlackImage}
+                    src={
+                      themeType === 'dark' ? xLogoWhiteImage : xLogoBlackImage
+                    }
                     preview={false}
                     width={12}
                   />

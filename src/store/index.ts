@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import {
-  useSelector as rawUseSelector,
+  useSelector,
   type TypedUseSelectorHook,
   useDispatch,
 } from 'react-redux'
@@ -24,7 +24,7 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>
 
-export const useAppSelector: TypedUseSelectorHook<RootState> = rawUseSelector
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 type AppDispatch = typeof store.dispatch
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>()

@@ -17,19 +17,6 @@ function getPath(screen: keyof typeof service.screens) {
   )
 }
 
-// const screenRouteObj: RouteObject = {
-//   path: service.service,
-//   element: <Outlet />,
-//   children: getKeys(service.screens).map((screen) => ({
-//     path: getPath(screen),
-//     element: (
-//       <MainLayout containerStyle={service.screens[screen].containerStyle}>
-//         {React.createElement(service.screens[screen].contents)}
-//       </MainLayout>
-//     ),
-//   })),
-// }
-
 const children = getKeys(service.screens).map((screen) => ({
   path: getPath(screen),
   element: (

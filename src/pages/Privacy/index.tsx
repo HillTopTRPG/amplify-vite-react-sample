@@ -11,7 +11,7 @@ import { useAppSelector } from '@/store'
 import { selectTheme } from '@/store/themeSlice.ts'
 
 export default function Privacy() {
-  const theme = useAppSelector(selectTheme)
+  const themeType = useAppSelector(selectTheme)
   const { isMobile } = useScreenSize(false)
   const titleLevel = isMobile ? 3 : 2
   const subtitleLevel = isMobile ? 4 : 3
@@ -48,7 +48,7 @@ export default function Privacy() {
           style={{ margin: '0 20px', alignSelf: 'flex-start' }}
         >
           <img
-            src={theme === 'dark' ? xLogoWhiteImage : xLogoBlackImage}
+            src={themeType === 'dark' ? xLogoWhiteImage : xLogoBlackImage}
             width={16}
             height={16}
             alt=""

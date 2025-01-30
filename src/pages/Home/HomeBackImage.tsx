@@ -7,7 +7,7 @@ interface Props {
   status: number
 }
 export default function HomeBackImage({ status }: Props) {
-  const theme = useAppSelector(selectTheme)
+  const themeType = useAppSelector(selectTheme)
   return useMemo(() => {
     const scale = [1, 1.25, 1.5][status]
     return (
@@ -24,9 +24,9 @@ export default function HomeBackImage({ status }: Props) {
           transform: `scale(${scale})`,
           transition: 'transform 800ms ease-in-out',
           transformOrigin: 'top center',
-          filter: theme === 'dark' ? 'grayscale(0.7)' : undefined,
+          filter: themeType === 'dark' ? 'grayscale(0.7)' : undefined,
         }}
       ></div>
     )
-  }, [status, theme])
+  }, [status, themeType])
 }

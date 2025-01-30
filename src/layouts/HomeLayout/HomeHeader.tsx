@@ -1,19 +1,12 @@
 import { type CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MenuOutlined, MoonFilled, SunFilled } from '@ant-design/icons'
-import {
-  Button,
-  Flex,
-  Layout,
-  Segmented,
-  theme as AntTheme,
-  Typography,
-} from 'antd'
+import { Button, Flex, Layout, Segmented, theme, Typography } from 'antd'
 import { MENU_LINKS } from './constate.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import styles from '@/pages/Home/CustomFont.module.css'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectTheme, toggleTheme } from '@/store/themeSlice.ts'
+import { selectTheme, toggleThemeType } from '@/store/themeSlice.ts'
 
 interface Props {
   toggleDrawerOpen: () => void
@@ -22,8 +15,8 @@ interface Props {
 export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const theme = useAppSelector(selectTheme)
-  const { token } = AntTheme.useToken()
+  const themeType = useAppSelector(selectTheme)
+  const { token } = theme.useToken()
   const { width } = useScreenSize(false)
 
   const withIcon = width < 730
@@ -40,8 +33,8 @@ export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
     justifyContent: 'space-between',
     backgroundColor: token.colorBgLayout,
     gap: 18,
-    color: theme === 'dark' ? token.colorBgContainer : token.colorBgBlur,
-    borderBottom: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
+    color: themeType === 'dark' ? token.colorBgContainer : token.colorBgBlur,
+    borderBottom: `solid 1px ${themeType === 'dark' ? '#222' : '#e7e7e7'}`,
     padding: '0 20px',
   }
 
@@ -68,8 +61,8 @@ export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
       ) : null}
       <Segmented
         size="small"
-        value={theme}
-        onChange={() => dispatch(toggleTheme())}
+        value={themeType}
+        onChange={() => dispatch(toggleThemeType())}
         options={[
           { value: 'light', icon: <SunFilled /> },
           { value: 'dark', icon: <MoonFilled /> },

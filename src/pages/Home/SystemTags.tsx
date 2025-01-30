@@ -8,10 +8,10 @@ interface Props {
   color: string
 }
 export default function SystemTags({ tags, color }: Props) {
-  const theme = useAppSelector(selectTheme)
+  const themeType = useAppSelector(selectTheme)
   return useMemo(() => {
     const backgroundColor =
-      theme === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'
+      themeType === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'
     return (
       <Flex wrap gap="4px 8px" align="baseline" justify="flex-start">
         {tags.map((tag, index) => (
@@ -21,5 +21,5 @@ export default function SystemTags({ tags, color }: Props) {
         ))}
       </Flex>
     )
-  }, [color, tags, theme])
+  }, [color, tags, themeType])
 }
