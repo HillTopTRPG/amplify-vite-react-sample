@@ -1,11 +1,10 @@
 import { type CSSProperties, useId } from 'react'
 import { Col, Select } from 'antd'
+import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  makingNechronicaCharacterBaseSelector,
-  useAppDispatch,
-  useSelector,
-} from '@/store'
-import { setMakingBasicData } from '@/store/nechronicaSlice.ts'
+  selectMakingCharacterBase,
+  setMakingBasicData,
+} from '@/store/nechronicaSlice.ts'
 
 const options = [
   { label: '奈落', value: -2 },
@@ -29,7 +28,7 @@ interface Props {
 export default function SelectBasePositionItemSet({ thSpan, tdSpan }: Props) {
   const id = useId()
   const dispatch = useAppDispatch()
-  const { basePosition } = useSelector(makingNechronicaCharacterBaseSelector)
+  const { basePosition } = useAppSelector(selectMakingCharacterBase)
   return (
     <>
       <Col span={thSpan} style={flexCenterStyle}>

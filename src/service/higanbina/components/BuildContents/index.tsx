@@ -14,13 +14,13 @@ import {
 import BasicDesign from './BasicDesign'
 import CharacterTypeRadioGroup from './CharacterTypeRadioGroup.tsx'
 import PersonalDataDesign from './PersonalDataDesign'
+import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  makingNechronicaCharacterSelector,
-  nechronicaLoadingSelector,
-  useAppDispatch,
-  useSelector,
-} from '@/store'
-import { addMakingManeuver, addMakingRoice } from '@/store/nechronicaSlice.ts'
+  selectMakingCharacter,
+  selectNechronicaLoading,
+  addMakingManeuver,
+  addMakingRoice,
+} from '@/store/nechronicaSlice.ts'
 
 const maneuverContainerProps: Omit<FlexProps, 'children'> = {
   align: 'flex-start',
@@ -36,10 +36,8 @@ const dollOnlyCollapseKeys = ['basic', 'roice']
 
 export default function BuildContents() {
   const dispatch = useAppDispatch()
-  const loading = useSelector(nechronicaLoadingSelector)
-  const makingNechronicaCharacter = useSelector(
-    makingNechronicaCharacterSelector,
-  )
+  const loading = useAppSelector(selectNechronicaLoading)
+  const makingNechronicaCharacter = useAppSelector(selectMakingCharacter)
   const characterType = makingNechronicaCharacter.additionalData.type
 
   // TODO NechronicaCharacterに追加

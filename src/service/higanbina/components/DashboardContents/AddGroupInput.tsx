@@ -4,13 +4,14 @@ import { screens } from '@higanbina/screens'
 import { Button, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
-import { currentIsMeSelector, useAppDispatch, useSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { createCharacterGroup } from '@/store/commonSlice.ts'
+import { selectCurrentIsMe } from '@/store/userAttributesSlice.ts'
 
 export default function AddGroupInput() {
   const dispatch = useAppDispatch()
   const { scope } = useScreenNavigateInService(screens)
-  const currentIsMe = useSelector(currentIsMeSelector)
+  const currentIsMe = useAppSelector(selectCurrentIsMe)
   const [newGroupName, setNewGroupName] = useState('')
 
   const onCreateCharacterGroup = useCallback(() => {

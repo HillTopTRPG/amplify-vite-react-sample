@@ -1,12 +1,10 @@
 import { Empty, List } from 'antd'
 import EditableRoice from './EditableRoice.tsx'
-import {
-  makingNechronicaCharacterRoiceListSelector,
-  useSelector,
-} from '@/store'
+import { useAppSelector } from '@/store'
+import { selectMakingCharacterRoiceList } from '@/store/nechronicaSlice.ts'
 
 export default function RoiceDesign() {
-  const roiceList = useSelector(makingNechronicaCharacterRoiceListSelector)
+  const roiceList = useAppSelector(selectMakingCharacterRoiceList)
 
   return (
     <List

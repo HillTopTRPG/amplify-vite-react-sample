@@ -1,10 +1,12 @@
 import { Layout, theme as AntdTheme } from 'antd'
 import ScreenSelectMenu from './ScreenSelectMenu.tsx'
-import { drawerStatusSelector, themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 export default function Sider() {
-  const theme = useSelector(themeSelector)
-  const open = useSelector(drawerStatusSelector)
+  const theme = useAppSelector(selectTheme)
+  const open = useAppSelector(selectDrawerStatus)
   const { token } = AntdTheme.useToken()
 
   return (

@@ -1,7 +1,8 @@
 import { type ReactNode, useMemo } from 'react'
 import { Flex, type FlexProps, theme } from 'antd'
 import useScreenSize from '@/hooks/useScreenSize.ts'
-import { drawerStatusSelector, useAppDispatch, useSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
 import {
   setClickManeuverId,
   setHoverManeuverId,
@@ -29,7 +30,7 @@ export default function DetailSiderLayout({
   minMainContentsWidth,
 }: Props) {
   const dispatch = useAppDispatch()
-  const drawerStatus = useSelector(drawerStatusSelector)
+  const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
   const { token } = theme.useToken()
 

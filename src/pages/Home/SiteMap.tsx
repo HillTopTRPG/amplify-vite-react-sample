@@ -4,7 +4,8 @@ import { theme as AntTheme, Typography } from 'antd'
 import styles from './SiteMap.module.css'
 import Rubies from '@/layouts/HomeLayout/Rubies.tsx'
 import { MENU_LINKS, TOOL_INFO_LIST } from '@/layouts/HomeLayout/constate.ts'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 interface Props {
   onHomeNavigate: (refIndex: number) => void
@@ -12,7 +13,7 @@ interface Props {
 export default function SiteMap({ onHomeNavigate }: Props) {
   const { token } = AntTheme.useToken()
   const navigate = useNavigate()
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
 
   const rgb = theme === 'dark' ? 0 : 246
   const color = `rgb(${rgb}, ${rgb}, ${rgb})`

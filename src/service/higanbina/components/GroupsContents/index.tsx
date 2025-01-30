@@ -3,20 +3,18 @@ import GroupSmallCard from '@higanbina/components/DashboardContents/GroupSmallCa
 import { screens } from '@higanbina/screens'
 import { Flex, Spin } from 'antd'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import { useAppSelector } from '@/store'
 import {
-  currentUserSelector,
-  nechronicaCharacterGroupRelationsSelector,
-  nechronicaLoadingSelector,
-  useSelector,
-} from '@/store'
+  selectCharacterGroupRelations,
+  selectNechronicaLoading,
+} from '@/store/nechronicaSlice.ts'
+import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 
 export default function GroupsContents() {
-  const loading = useSelector(nechronicaLoadingSelector)
-  const characterGroupRelations = useSelector(
-    nechronicaCharacterGroupRelationsSelector,
-  )
+  const loading = useAppSelector(selectNechronicaLoading)
+  const characterGroupRelations = useAppSelector(selectCharacterGroupRelations)
 
-  const currentUser = useSelector(currentUserSelector)
+  const currentUser = useAppSelector(selectCurrentUser)
   const { scope } = useScreenNavigateInService(screens)
 
   const dataFilterFc = ({ owner }: { owner: string }): boolean => {

@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
 import backImg from '@/assets/main-back.png'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 interface Props {
   status: number
 }
 export default function HomeBackImage({ status }: Props) {
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
   return useMemo(() => {
     const scale = [1, 1.25, 1.5][status]
     return (

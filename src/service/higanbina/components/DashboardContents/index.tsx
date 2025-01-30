@@ -18,14 +18,14 @@ import CharacterTypeIcon from './CharacterTypeIcon.tsx'
 import CharacterTypeItemSet from './CharacterTypeItemSet.tsx'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
+import { useAppSelector } from '@/store'
+import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
 import {
-  currentUserSelector,
-  drawerStatusSelector,
-  nechronicaCharacterGroupRelationsSelector,
-  nechronicaCharactersSelector,
-  nechronicaLoadingSelector,
-  useSelector,
-} from '@/store'
+  selectCharacterGroupRelations,
+  selectNechronicaCharacters,
+  selectNechronicaLoading,
+} from '@/store/nechronicaSlice.ts'
+import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 
 const enemies = ['savant', 'horror', 'legion'] as const
 
@@ -35,15 +35,13 @@ const dollConst = [
 ] as const
 
 export default function DashboardContents() {
-  const loading = useSelector(nechronicaLoadingSelector)
-  const characters = useSelector(nechronicaCharactersSelector)
-  const characterGroupRelations = useSelector(
-    nechronicaCharacterGroupRelationsSelector,
-  )
+  const loading = useAppSelector(selectNechronicaLoading)
+  const characters = useAppSelector(selectNechronicaCharacters)
+  const characterGroupRelations = useAppSelector(selectCharacterGroupRelations)
   const { scope, setScreen } = useScreenNavigateInService(screens)
-  const drawerStatus = useSelector(drawerStatusSelector)
+  const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
-  const currentUser = useSelector(currentUserSelector)
+  const currentUser = useAppSelector(selectCurrentUser)
 
   const [summaryData, setSummaryData] = useState<{
     doll: {

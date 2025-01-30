@@ -1,19 +1,16 @@
 import { useCallback, useMemo } from 'react'
 import { BuildOutlined } from '@ant-design/icons'
 import { Button, message } from 'antd'
+import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  selectedManeuverInfosSelector,
-  useAppDispatch,
-  useSelector,
-} from '@/store'
-import {
+  selectSelectedManeuverInfos,
   setSelectedManeuverInfos,
   addMakingManeuver,
 } from '@/store/nechronicaSlice.ts'
 
 export default function ManeuverImportButton() {
   const dispatch = useAppDispatch()
-  const selectedManeuverInfos = useSelector(selectedManeuverInfosSelector)
+  const selectedManeuverInfos = useAppSelector(selectSelectedManeuverInfos)
   const [messageApi, contextHolder] = message.useMessage()
 
   const onClick = useCallback(() => {

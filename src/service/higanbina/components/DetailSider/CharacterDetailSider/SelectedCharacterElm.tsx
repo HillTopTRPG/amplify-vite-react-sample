@@ -1,13 +1,14 @@
 import CharacterCard from '@higanbina/components/CharacterCard'
 import { type NechronicaCharacter } from '@higanbina/ts/NechronicaDataHelper.ts'
 import { Flex, Spin, theme, Typography } from 'antd'
-import { nechronicaLoadingSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectNechronicaLoading } from '@/store/nechronicaSlice.ts'
 
 interface Props {
   characters: NechronicaCharacter[]
 }
 export default function SelectedCharacterElm({ characters }: Props) {
-  const loading = useSelector(nechronicaLoadingSelector)
+  const loading = useAppSelector(selectNechronicaLoading)
   const { token } = theme.useToken()
 
   if (loading) return <Spin size="large" />

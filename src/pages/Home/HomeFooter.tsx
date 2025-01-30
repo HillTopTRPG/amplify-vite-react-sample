@@ -17,7 +17,8 @@ import xLogoBlackImage from '@/assets/x-logo/logo-black.png'
 import xLogoWhiteImage from '@/assets/x-logo/logo-white.png'
 import SiteMap from '@/pages/Home/SiteMap.tsx'
 import TooltipImage from '@/pages/Home/TooltipImage.tsx'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 const imageProps: ImageProps = {
   preview: false,
@@ -32,7 +33,7 @@ interface Props {
 }
 export default function HomeFooter({ status, refs }: Props) {
   const { token } = AntTheme.useToken()
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
 
   const height = status === 2 ? 'calc((100vh - 128px) / 3 + 64px)' : 64
   const transition = 'height 500ms ease-in-out'

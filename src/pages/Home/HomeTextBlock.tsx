@@ -1,6 +1,7 @@
 import { type CSSProperties, useMemo } from 'react'
 import { Flex, type GetProps, Typography } from 'antd'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 const TITLE_PROPS: GetProps<typeof Typography.Title> = {
   level: 2,
@@ -13,7 +14,7 @@ interface Props {
   style?: CSSProperties
 }
 export default function HomeTextBlock({ title, texts, style }: Props) {
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
 
   return useMemo(() => {
     const rgb = theme === 'dark' ? 0 : 255

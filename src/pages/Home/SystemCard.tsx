@@ -3,7 +3,8 @@ import { Avatar, Badge, Card, Flex, Typography, theme as AntTheme } from 'antd'
 import SinceItem from './SinceItem.tsx'
 import SystemTags from './SystemTags.tsx'
 import VersionItem from './VersionItem.tsx'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 interface Props {
   name: string
@@ -29,7 +30,7 @@ export default function SystemCard({
   badge,
   actions,
 }: Props) {
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
   const { token } = AntTheme.useToken()
 
   const cardElm = useMemo(() => {

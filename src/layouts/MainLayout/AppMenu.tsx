@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   HomeOutlined,
@@ -23,50 +23,35 @@ import {
 import { useDispatch } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
-import { servicesContext } from '@/context/servicesContext.ts'
 import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
+import { useAppSelector } from '@/store'
 import {
-  drawerStatusSelector,
-  meSelector,
-  themeSelector,
-  userAttributesLoadingSelector,
-  usersSelector,
-  useSelector,
-} from '@/store'
-import { toggleDrawerStatus } from '@/store/drawerStatusSlice.ts'
-import { toggleTheme } from '@/store/themeSlice.ts'
-import { getKeys, isProperty } from '@/utils/types.ts'
+  selectDrawerStatus,
+  toggleDrawerStatus,
+} from '@/store/drawerStatusSlice.ts'
+import { selectTheme, toggleTheme } from '@/store/themeSlice.ts'
+import {
+  selectMe,
+  selectUserAttributesLoading,
+  selectUsers,
+} from '@/store/userAttributesSlice.ts'
+import { getKeys } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const users = useSelector(usersSelector)
-  const me = useSelector(meSelector)
-  const loading = useSelector(userAttributesLoadingSelector)
-  const theme = useSelector(themeSelector)
+  const users = useAppSelector(selectUsers)
+  const me = useAppSelector(selectMe)
+  const loading = useAppSelector(selectUserAttributesLoading)
+  const theme = useAppSelector(selectTheme)
   const dispatch = useDispatch()
-  const services = useContext(servicesContext)
-  const drawerStatus = useSelector(drawerStatusSelector)
+  const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
   const { token } = AntdTheme.useToken()
   const { signOut } = useAuthenticator()
   const navigate = useNavigate()
 
-  const {
-    scope,
-    userName,
-    service,
-    setService,
-    screens,
-    setScreen,
-    screenIcon,
-    screenLabel,
-  } = useScreenNavigateInGlobal()
-
-  const serviceName = useMemo(
-    () =>
-      isProperty(service, services) ? services[service].serviceName : 'unknown',
-    [service, services],
-  )
+  const { scope, userName, screens, setScreen, screenIcon, screenLabel } =
+    useScreenNavigateInGlobal()
 
   const dropdownProps: MenuProps = useMemo(
     () => ({
@@ -244,10 +229,7 @@ export default function AppMenu() {
       screenLabel,
       screenSize.isFullView,
       screens,
-      serviceName,
-      services,
       setScreen,
-      setService,
       theme,
       token.colorBgBlur,
       token.colorBgContainer,

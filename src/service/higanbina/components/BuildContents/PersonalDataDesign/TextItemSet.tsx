@@ -2,12 +2,11 @@ import { type CSSProperties, useId } from 'react'
 import { type NechronicaBasic } from '@higanbina/ts/NechronicaDataHelper.ts'
 import { Col } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
+import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  makingNechronicaCharacterBaseSelector,
-  useAppDispatch,
-  useSelector,
-} from '@/store'
-import { setMakingBasicData } from '@/store/nechronicaSlice.ts'
+  selectMakingCharacterBase,
+  setMakingBasicData,
+} from '@/store/nechronicaSlice.ts'
 import type { OnlyTypeKey } from '@/utils/types.ts'
 
 const flexCenterStyle: CSSProperties = {
@@ -33,7 +32,7 @@ export default function TextItemSet({
 }: Props) {
   const id = useId()
   const dispatch = useAppDispatch()
-  const basic = useSelector(makingNechronicaCharacterBaseSelector)
+  const basic = useAppSelector(selectMakingCharacterBase)
   return (
     <>
       <Col span={thSpan} style={flexCenterStyle}>

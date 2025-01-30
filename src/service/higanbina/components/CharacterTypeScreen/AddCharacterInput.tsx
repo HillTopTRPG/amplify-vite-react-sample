@@ -8,8 +8,9 @@ import {
 import { Button, type InputRef, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
-import { currentIsMeSelector, useAppDispatch, useSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { createNechronicaCharacter } from '@/store/nechronicaSlice.ts'
+import { selectCurrentIsMe } from '@/store/userAttributesSlice.ts'
 
 interface Props {
   label: string
@@ -23,7 +24,7 @@ export default function AddCharacterInput({
 }: Props) {
   const dispatch = useAppDispatch()
   const { scope } = useScreenNavigateInService(screens)
-  const currentIsMe = useSelector(currentIsMeSelector)
+  const currentIsMe = useAppSelector(selectCurrentIsMe)
   const [sheetId, setSheetId] = useState('')
 
   const onCreateCharacter = useCallback(async () => {

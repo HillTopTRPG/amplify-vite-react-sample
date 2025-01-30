@@ -11,6 +11,7 @@ import {
   getCurrentUser,
   type GetCurrentUserOutput,
 } from 'aws-amplify/auth'
+import { type RootState } from '@/store/index.ts'
 
 const client = generateClient<Schema>()
 
@@ -153,4 +154,16 @@ const userAttributesSlice = createSlice({
 })
 
 export const { finishFetch } = userAttributesSlice.actions
+
+const state =
+  <T extends keyof State>(p: T) =>
+  (state: RootState) =>
+    state.userAttributes[p]
+export const selectMe = state('me')
+export const selectCurrentUser = state('currentUser')
+export const selectCurrentIsMe = state('currentIsMe')
+export const selectUsers = state('users')
+export const selectUserAttributesLoading = state('loading')
+export const selectFilter = state('filter')
+
 export default userAttributesSlice.reducer

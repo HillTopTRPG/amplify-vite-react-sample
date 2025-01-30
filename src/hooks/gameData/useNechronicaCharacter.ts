@@ -8,8 +8,9 @@ import type {
 import { generateClient } from 'aws-amplify/api'
 import { type PublishObject } from './common.ts'
 import { nechronicaTypes } from '@/service/higanbina'
-import { filterSelector, useAppDispatch, useSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { setNechronicaCharacters } from '@/store/nechronicaSlice.ts'
+import { selectFilter } from '@/store/userAttributesSlice.ts'
 
 const client = generateClient<Schema>()
 
@@ -38,7 +39,7 @@ export default function useNechronicaCharacter(
   publishObjectsLoading: boolean,
 ) {
   const dispatch = useAppDispatch()
-  const filter = useSelector(filterSelector)
+  const filter = useAppSelector(selectFilter)
   useEffect(() => {
     if (publishObjectsLoading) return
     const sub = client.models.NechronicaCharacter.observeQuery({

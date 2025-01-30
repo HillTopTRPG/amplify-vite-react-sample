@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 import { Flex, Tag } from 'antd'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 interface Props {
   tags: string[]
   color: string
 }
 export default function SystemTags({ tags, color }: Props) {
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
   return useMemo(() => {
     const backgroundColor =
       theme === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'

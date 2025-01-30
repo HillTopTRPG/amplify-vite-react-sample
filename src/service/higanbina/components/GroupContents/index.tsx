@@ -10,29 +10,27 @@ import CharacterSmallCards from '../CharacterTypeScreen/CharacterSmallCards.tsx'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
-import {
-  currentUserSelector,
-  drawerStatusSelector,
-  nechronicaCharacterGroupRelationsSelector,
-  nechronicaCharactersSelector,
-  nechronicaLoadingSelector,
-  useSelector,
-} from '@/store'
+import { useAppSelector } from '@/store'
 import { updateCharacterGroup } from '@/store/commonSlice.ts'
+import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
+import {
+  selectCharacterGroupRelations,
+  selectNechronicaCharacters,
+  selectNechronicaLoading,
+} from '@/store/nechronicaSlice.ts'
+import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 import { typedOmit } from '@/utils/types.ts'
 
 export default function GroupContents() {
   const { groupId } = useParams()
 
-  const loading = useSelector(nechronicaLoadingSelector)
-  const characters = useSelector(nechronicaCharactersSelector)
-  const characterGroupRelations = useSelector(
-    nechronicaCharacterGroupRelationsSelector,
-  )
+  const loading = useAppSelector(selectNechronicaLoading)
+  const characters = useAppSelector(selectNechronicaCharacters)
+  const characterGroupRelations = useAppSelector(selectCharacterGroupRelations)
 
-  const currentUser = useSelector(currentUserSelector)
+  const currentUser = useAppSelector(selectCurrentUser)
   const { scope } = useScreenNavigateInService(screens)
-  const drawerStatus = useSelector(drawerStatusSelector)
+  const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
 
   const characterGroupRelation = useMemo(() => {

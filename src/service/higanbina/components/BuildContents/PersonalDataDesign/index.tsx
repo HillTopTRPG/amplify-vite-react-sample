@@ -3,11 +3,9 @@ import { Row } from 'antd'
 import SelectBasePositionItemSet from './SelectBasePositionItemSet.tsx'
 import TextItemSet from './TextItemSet.tsx'
 import useScreenSize from '@/hooks/useScreenSize.ts'
-import {
-  drawerStatusSelector,
-  makingNechronicaCharacterTypeSelector,
-  useSelector,
-} from '@/store'
+import { useAppSelector } from '@/store'
+import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
+import { selectMakingCharacterType } from '@/store/nechronicaSlice.ts'
 import { type OnlyTypeKey } from '@/utils/types.ts'
 
 const gridGutter: [number, number] = [5, 5] as const
@@ -29,9 +27,9 @@ type ItemSet =
   | ['basePosition', 'big' | 'small']
 
 export default function PersonalDataDesign() {
-  const drawerStatus = useSelector(drawerStatusSelector)
+  const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
-  const characterType = useSelector(makingNechronicaCharacterTypeSelector)
+  const characterType = useAppSelector(selectMakingCharacterType)
 
   const isWide = screenSize.viewPortWidth > 452
   const containerWidth = isWide ? 500 : 360

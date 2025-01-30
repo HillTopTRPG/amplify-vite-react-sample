@@ -2,7 +2,8 @@ import { getCharacterTypeSrc } from '@higanbina/index.ts'
 import { type NechronicaType } from '@higanbina/ts/NechronicaDataHelper.ts'
 import mapping from '@higanbina/ts/mapping.json'
 import { Avatar, Flex, Typography } from 'antd'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 const AVATAR_SIZE = 80
 
@@ -31,7 +32,7 @@ interface Props {
   color?: boolean
 }
 export default function CharacterAvatar({ type, position, color }: Props) {
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
   const avatarBgColor = MAP[type].color[theme === 'dark' ? 0 : 1]
   const characterAvatarGradient = `radial-gradient(${avatarBgColor},${avatarBgColor} 60%,transparent 75%)`
 

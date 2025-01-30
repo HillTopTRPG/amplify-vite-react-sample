@@ -25,24 +25,24 @@ import useKeyBind from '@/hooks/useKeyBind.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import { getCharacterTypeSrc } from '@/service/higanbina'
+import { useAppSelector } from '@/store'
+import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
 import {
-  currentUserSelector,
-  drawerStatusSelector,
-  nechronicaCharactersSelector,
-  nechronicaLoadingSelector,
-  useSelector,
-} from '@/store'
+  selectNechronicaCharacters,
+  selectNechronicaLoading,
+} from '@/store/nechronicaSlice.ts'
+import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 
 interface Props {
   characterType: NechronicaType
   label: string
 }
 export default function CharacterTypeScreen({ characterType, label }: Props) {
-  const loading = useSelector(nechronicaLoadingSelector)
-  const characters = useSelector(nechronicaCharactersSelector)
-  const currentUser = useSelector(currentUserSelector)
+  const loading = useAppSelector(selectNechronicaLoading)
+  const characters = useAppSelector(selectNechronicaCharacters)
+  const currentUser = useAppSelector(selectCurrentUser)
   const { scope } = useScreenNavigateInService(screens)
-  const drawerStatus = useSelector(drawerStatusSelector)
+  const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)

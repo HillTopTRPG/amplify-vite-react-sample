@@ -6,7 +6,8 @@ import { useMediaQuery } from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import { type Screen } from '@/service'
-import { currentUserSelector, meSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectCurrentUser, selectMe } from '@/store/userAttributesSlice.ts'
 
 interface Props {
   label: string
@@ -20,8 +21,8 @@ const ScreenContainer = forwardRef<HTMLElement, Props>(function Component(
 ) {
   const isMobile = useMediaQuery(MEDIA_QUERY.MOBILE)
   const { scope, getScreenUrl } = useScreenNavigateInService(screens)
-  const me = useSelector(meSelector)
-  const currentUser = useSelector(currentUserSelector)
+  const me = useAppSelector(selectMe)
+  const currentUser = useAppSelector(selectCurrentUser)
   const shareUrl = useMemo(
     () =>
       getScreenUrl((v) => ({

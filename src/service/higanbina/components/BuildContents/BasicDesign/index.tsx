@@ -9,12 +9,9 @@ import mapping from '@higanbina/ts/mapping.json'
 import { Col, type InputProps, Radio, Row } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
 import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
+import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  makingNechronicaCharacterBaseSelector,
-  useAppDispatch,
-  useSelector,
-} from '@/store'
-import {
+  selectMakingCharacterBase,
   setMakingAffection,
   setMakingBonusStatus,
   setMakingBasicData,
@@ -32,9 +29,8 @@ const flexCenterStyle: CSSProperties = {
 
 export default function BasicDesign() {
   const dispatch = useAppDispatch()
-  const { position, mainClass, subClass, bonusStatus, affection } = useSelector(
-    makingNechronicaCharacterBaseSelector,
-  )
+  const { position, mainClass, subClass, bonusStatus, affection } =
+    useAppSelector(selectMakingCharacterBase)
 
   const makeAffectionInputProps = useCallback(
     (property: 'armed' | 'mutation' | 'modification'): InputProps => {

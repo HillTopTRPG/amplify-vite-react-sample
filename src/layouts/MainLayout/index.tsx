@@ -6,7 +6,9 @@ import PageScrollDispatcher from './PageScrollDispatcher.tsx'
 import Sider from './Sider.tsx'
 import { scrollContainerContext } from '@/context/scrollContainer.ts'
 import useScreenSize, { type ScreenSize } from '@/hooks/useScreenSize.ts'
-import { drawerStatusSelector, themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 const { defaultAlgorithm, darkAlgorithm } = theme
 
@@ -17,13 +19,13 @@ interface Props {
   children: ReactNode
 }
 export default function MainLayout({ containerStyle, children }: Props) {
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
   const { token } = AntdTheme.useToken()
   const algorithm = theme === 'dark' ? darkAlgorithm : defaultAlgorithm
   const scrollContainerRef = useRef<HTMLElement>(null)
-  const drawerStatus = useSelector(drawerStatusSelector)
+  const drawerStatus = useAppSelector(selectDrawerStatus)
   const { isMobile } = useScreenSize(drawerStatus)
-  const open = useSelector(drawerStatusSelector)
+  const open = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
 
   return (

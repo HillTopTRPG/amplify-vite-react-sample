@@ -4,7 +4,8 @@ import type { Schema } from '@amplify/data/resource.ts'
 import { ConfigProvider, theme } from 'antd'
 import { generateClient } from 'aws-amplify/api'
 import useScreenLocation from '@/hooks/useScreenLocation.ts'
-import { themeSelector, useAppDispatch, useSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 import {
   fetchAttr,
   fetchCurrentUser,
@@ -27,11 +28,11 @@ export default function FetchUserAttributes({ children }: Props) {
   const { scope } = useScreenLocation()
   const [searchParams] = useSearchParams()
   const userName = searchParams.get('userName')
-  const themeType = useSelector(themeSelector)
+  const themeType = useAppSelector(selectTheme)
   const algorithm = themeType === 'dark' ? darkAlgorithm : defaultAlgorithm
 
-  const attrStatus = useSelector((state) => state.userAttributes.attrStatus)
-  const userStatus = useSelector((state) => state.userAttributes.userStatus)
+  const attrStatus = useAppSelector((state) => state.userAttributes.attrStatus)
+  const userStatus = useAppSelector((state) => state.userAttributes.userStatus)
   const dispatch = useAppDispatch()
 
   if (attrStatus === 'yet') {

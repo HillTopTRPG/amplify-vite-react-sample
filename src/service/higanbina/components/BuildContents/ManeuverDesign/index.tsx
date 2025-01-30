@@ -1,14 +1,14 @@
 import EditableManeuver from '@higanbina/components/BuildContents/ManeuverDesign/EditableManeuver.tsx'
+import { useAppSelector } from '@/store'
 import {
-  makingNechronicaCharacterBaseSelector,
-  makingNechronicaCharacterManeuverListSelector,
-  useSelector,
-} from '@/store'
+  selectMakingCharacterBase,
+  selectMakingCharacterManeuverList,
+} from '@/store/nechronicaSlice.ts'
 
 export default function ManeuverDesign() {
-  const maneuvers = useSelector(makingNechronicaCharacterManeuverListSelector)
-  const { position, mainClass, subClass } = useSelector(
-    makingNechronicaCharacterBaseSelector,
+  const maneuvers = useAppSelector(selectMakingCharacterManeuverList)
+  const { position, mainClass, subClass } = useAppSelector(
+    selectMakingCharacterBase,
   )
 
   return (

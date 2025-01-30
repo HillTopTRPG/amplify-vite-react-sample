@@ -1,11 +1,8 @@
 import ManeuverButton from '@higanbina/components/CharacterCard/maneuver/ManeuverButton.tsx'
 import ManeuverPopoverContents from '@higanbina/components/CharacterCard/maneuver/ManeuverPopoverContents'
+import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  selectedManeuverInfosSelector,
-  useAppDispatch,
-  useSelector,
-} from '@/store'
-import {
+  selectSelectedManeuverInfos,
   addSelectedManeuverInfo,
   type ManeuverInfo,
   removeSelectedManeuverInfo,
@@ -16,7 +13,7 @@ interface Props {
 }
 export default function ListManeuverButton({ maneuverInfo }: Props) {
   const dispatch = useAppDispatch()
-  const selectedManeuverInfos = useSelector(selectedManeuverInfosSelector)
+  const selectedManeuverInfos = useAppSelector(selectSelectedManeuverInfos)
   const { position, mainClass, subClass } =
     maneuverInfo.character.sheetData.basic
   const selected = selectedManeuverInfos.some(

@@ -21,16 +21,15 @@ import { type CheckboxGroupProps } from 'antd/es/checkbox/Group'
 import { cloneDeep } from 'lodash-es'
 import ManeuverDetailSider from '../DetailSider/ManeuverDetailSider'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
-import {
-  currentUserSelector,
-  nechronicaCharactersSelector,
-  nechronicaLoadingSelector,
-  selectedManeuverInfosSelector,
-  useAppDispatch,
-  useSelector,
-} from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { type ManeuverInfo } from '@/store/nechronicaSlice.ts'
 import { setSelectedManeuverInfos } from '@/store/nechronicaSlice.ts'
+import {
+  selectNechronicaCharacters,
+  selectNechronicaLoading,
+  selectSelectedManeuverInfos,
+} from '@/store/nechronicaSlice.ts'
+import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 
 const options: CheckboxGroupProps['options'] = [
   {
@@ -43,10 +42,10 @@ const options: CheckboxGroupProps['options'] = [
 
 export default function ManeuverContents() {
   const dispatch = useAppDispatch()
-  const loading = useSelector(nechronicaLoadingSelector)
-  const characters = useSelector(nechronicaCharactersSelector)
-  const selectedManeuverInfos = useSelector(selectedManeuverInfosSelector)
-  const currentUser = useSelector(currentUserSelector)
+  const loading = useAppSelector(selectNechronicaLoading)
+  const characters = useAppSelector(selectNechronicaCharacters)
+  const selectedManeuverInfos = useAppSelector(selectSelectedManeuverInfos)
+  const currentUser = useAppSelector(selectCurrentUser)
   const { scope } = useScreenNavigateInService(screens)
   const [target, setTarget] = useState<'own' | 'server'>('own')
 

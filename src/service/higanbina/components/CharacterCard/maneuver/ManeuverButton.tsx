@@ -12,13 +12,10 @@ import { type TextProps } from 'antd/es/typography/Text'
 import classNames from 'classnames'
 import ManeuverAvatar from './ManeuverAvatar.tsx'
 import styles from './ManeuverButton.module.css'
+import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  clickManeuverIdSelector,
-  hoverManeuverIdSelector,
-  useAppDispatch,
-  useSelector,
-} from '@/store'
-import {
+  selectClickManeuverId,
+  selectHoverManeuverId,
   setClickManeuverId,
   setHoverManeuverId,
 } from '@/store/nechronicaSlice.ts'
@@ -66,8 +63,8 @@ export default function ManeuverButton({
 }: Props) {
   const dispatch = useAppDispatch()
   const maneuverId = useId()
-  const hoverManeuverId = useSelector(hoverManeuverIdSelector)
-  const clickManeuverId = useSelector(clickManeuverIdSelector)
+  const hoverManeuverId = useAppSelector(selectHoverManeuverId)
+  const clickManeuverId = useAppSelector(selectClickManeuverId)
 
   const onEditOpenChange = useCallback(
     (open: boolean) => {

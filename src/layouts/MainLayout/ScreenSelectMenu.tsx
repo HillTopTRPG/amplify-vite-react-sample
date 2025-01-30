@@ -1,14 +1,15 @@
 import React, { useCallback, useMemo } from 'react'
 import { Flex, Menu } from 'antd'
 import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 import { getKeys, isIncludes } from '@/utils/types.ts'
 
 interface Props {
   onSelect?: (key: string) => void
 }
 export default function ScreenSelectMenu({ onSelect }: Props) {
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
   const { screens, screen, setScreen } = useScreenNavigateInGlobal()
 
   const onSelectHandler = useCallback(

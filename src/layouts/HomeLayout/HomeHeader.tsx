@@ -12,8 +12,8 @@ import {
 import { MENU_LINKS } from './constate.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import styles from '@/pages/Home/CustomFont.module.css'
-import { themeSelector, useAppDispatch, useSelector } from '@/store'
-import { toggleTheme } from '@/store/themeSlice.ts'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectTheme, toggleTheme } from '@/store/themeSlice.ts'
 
 interface Props {
   toggleDrawerOpen: () => void
@@ -22,7 +22,7 @@ interface Props {
 export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
   const { token } = AntTheme.useToken()
   const { width } = useScreenSize(false)
 

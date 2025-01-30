@@ -1,17 +1,16 @@
 import { nechronicaTypes } from '@higanbina/index.ts'
 import { Radio } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  makingNechronicaCharacterTypeSelector,
-  useAppDispatch,
-  useSelector,
-} from '@/store'
-import { setMakingCharacterType } from '@/store/nechronicaSlice.ts'
+  selectMakingCharacterType,
+  setMakingCharacterType,
+} from '@/store/nechronicaSlice.ts'
 
 export default function CharacterTypeRadioGroup() {
   const dispatch = useAppDispatch()
   const { t: i18nT } = useTranslation()
-  const characterType = useSelector(makingNechronicaCharacterTypeSelector)
+  const characterType = useAppSelector(selectMakingCharacterType)
 
   return (
     <Radio.Group

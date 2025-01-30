@@ -7,10 +7,11 @@ import xLogoWhiteImage from '@/assets/x-logo/logo-white.png'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import HomeLayout from '@/layouts/HomeLayout'
 import HomeFooter from '@/pages/Home/HomeFooter.tsx'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 export default function Privacy() {
-  const theme = useSelector(themeSelector)
+  const theme = useAppSelector(selectTheme)
   const { isMobile } = useScreenSize(false)
   const titleLevel = isMobile ? 3 : 2
   const subtitleLevel = isMobile ? 4 : 3
