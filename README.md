@@ -40,3 +40,8 @@ This library is licensed under the MIT-0 License. See the LICENSE file.
 | ソルジャー                       | 4694703 | https://charasheet.vampire-blood.net/4694703 |
 | ナイトメア                       | 5132480 | https://charasheet.vampire-blood.net/5132480 |
 | -                                | -       | https://charasheet.vampire-blood.net/        |
+
+使った画像メーカー
+ピクルー
+https://picrew.me/ja/image_maker/2279033
+https://picrew.me/ja/image_maker/2557153

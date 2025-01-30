@@ -9,7 +9,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@amplify': path.resolve(__dirname, './amplify'),
-      '@Nechronica': path.resolve(__dirname, './src/service/Nechronica'),
+      '@higanbina': path.resolve(__dirname, './src/service/higanbina'),
     },
   },
 })

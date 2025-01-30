@@ -6,8 +6,9 @@ import {
   type CharacterGroup,
   type CharacterGroupAdditionalData,
 } from '@/service'
-import { filterSelector, useAppDispatch, useSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { setCharacterGroups } from '@/store/commonSlice.ts'
+import { selectFilter } from '@/store/userAttributesSlice.ts'
 
 const client = generateClient<Schema>()
 
@@ -34,7 +35,7 @@ export default function useCharacterGroup(
   publishObjectsLoading: boolean,
 ) {
   const dispatch = useAppDispatch()
-  const filter = useSelector(filterSelector)
+  const filter = useAppSelector(selectFilter)
   useEffect(() => {
     if (publishObjectsLoading) return
     const sub = client.models.CharacterGroup.observeQuery({

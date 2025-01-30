@@ -1,15 +1,16 @@
 import { useEffect } from 'react'
+import { type Schema } from '@amplify/data/resource.ts'
 import type {
   Nechronica,
   NechronicaAdditionalData,
   NechronicaCharacter,
-} from '@Nechronica/ts/NechronicaDataHelper.ts'
-import { type Schema } from '@amplify/data/resource.ts'
+} from '@higanbina/ts/NechronicaDataHelper.ts'
 import { generateClient } from 'aws-amplify/api'
 import { type PublishObject } from './common.ts'
-import { nechronicaTypes } from '@/service/Nechronica'
-import { filterSelector, useAppDispatch, useSelector } from '@/store'
+import { nechronicaTypes } from '@/service/higanbina'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { setNechronicaCharacters } from '@/store/nechronicaSlice.ts'
+import { selectFilter } from '@/store/userAttributesSlice.ts'
 
 const client = generateClient<Schema>()
 
@@ -38,7 +39,7 @@ export default function useNechronicaCharacter(
   publishObjectsLoading: boolean,
 ) {
   const dispatch = useAppDispatch()
-  const filter = useSelector(filterSelector)
+  const filter = useAppSelector(selectFilter)
   useEffect(() => {
     if (publishObjectsLoading) return
     const sub = client.models.NechronicaCharacter.observeQuery({

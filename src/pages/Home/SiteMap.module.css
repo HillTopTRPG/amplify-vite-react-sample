@@ -1,0 +1,43 @@
+.sitemap {
+  ul,
+  li,
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.sitemap ul li ul {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  margin-left: 30px;
+}
+
+.sitemap ul li ul li {
+  margin-bottom: 0.25em;
+  position: relative;
+}
+
+.sitemap ul li ul li::before {
+  content: '';
+  position: absolute;
+  top: -0.25em;
+  left: -16px;
+  width: 1px;
+  height: calc(100% + 0.25em);
+  border-left: 2px solid currentcolor;
+}
+
+.sitemap ul li ul li:last-child::before {
+  height: calc(1em + 0.25em);
+}
+
+.sitemap ul li ul li::after {
+  content: '';
+  position: absolute;
+  top: 1em;
+  left: -16px;
+  width: 10px;
+  border-bottom: 2px solid currentcolor;
+}

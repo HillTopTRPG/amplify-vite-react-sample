@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
-import { type NechronicaCharacter } from '@Nechronica/ts/NechronicaDataHelper.ts'
 import { type Chart, type PlotEvent, Radar } from '@ant-design/plots'
 import { type Datum } from '@ant-design/plots/es/interface'
+import { type NechronicaCharacter } from '@higanbina/ts/NechronicaDataHelper.ts'
 import { type GetProps } from 'antd'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 const NECHRONICA_MANEUVER_TYPES = [
   'その他',
@@ -63,7 +64,7 @@ interface Props {
   onChangeItem?: (type: 'pointerup' | 'pointermove', item: string) => void
 }
 export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
-  const theme = useSelector(themeSelector)
+  const themeType = useAppSelector(selectTheme)
   const [lastItem, setLastItem] = useState<string | null>(null)
 
   /* 現在は使ってないがホバーされたチャートの項目をハンドリングできる */
@@ -92,7 +93,7 @@ export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
 
   const config: GetProps<typeof Radar> = useMemo(
     () => ({
-      theme,
+      theme: themeType,
       data,
       width: size,
       height: size,
@@ -130,7 +131,7 @@ export default function StyledRadar({ data, type, size, onChangeItem }: Props) {
       radiusAxis: false,
       tooltip: type === 'small' ? false : undefined,
     }),
-    [data, isAllZero, size, theme, type],
+    [data, isAllZero, size, themeType, type],
   )
 
   return useMemo(

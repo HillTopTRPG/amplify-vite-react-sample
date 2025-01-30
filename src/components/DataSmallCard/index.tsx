@@ -5,7 +5,6 @@ import {
   useContext,
   useState,
 } from 'react'
-import styles from '@Nechronica/components/Hoverable.module.css'
 import {
   CloseOutlined,
   MenuOutlined,
@@ -13,6 +12,7 @@ import {
   StarFilled,
   StarOutlined,
 } from '@ant-design/icons'
+import styles from '@higanbina/components/Hoverable.module.css'
 import {
   Badge,
   Button,
@@ -32,7 +32,8 @@ import {
 import OperationCardDrawer from '@/components/DataSmallCard/OperationCardDrawer.tsx'
 import ShareCardDrawer from '@/components/DataSmallCard/ShareCardDrawer.tsx'
 import useScreenLocation from '@/hooks/useScreenLocation.ts'
-import { currentIsMeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectCurrentIsMe } from '@/store/userAttributesSlice.ts'
 
 const cardStyle: CSSProperties = {
   width: 170,
@@ -102,7 +103,7 @@ export default function DataSmallCard({
   children,
 }: Props) {
   const { token } = theme.useToken()
-  const currentIsMe = useSelector(currentIsMeSelector)
+  const currentIsMe = useAppSelector(selectCurrentIsMe)
   const { scope } = useScreenLocation()
   const [shareOpen, setShareOpen] = useState(false)
   const [operationOpen, setOperationOpen] = useState('')

@@ -1,9 +1,9 @@
 import type { Schema } from '@amplify/data/resource.ts'
 import { createAction, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { generateClient } from 'aws-amplify/api'
-import { useSelector } from 'react-redux'
 import { type CharacterGroup } from '@/service'
-import { meSelector } from '@/store/index.ts'
+import { type RootState, useAppSelector } from '@/store/index.ts'
+import { selectMe } from '@/store/userAttributesSlice.ts'
 import { typedOmit, typedPick } from '@/utils/types.ts'
 
 const client = generateClient<Schema>()
@@ -47,7 +47,7 @@ const commonSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(createCharacterGroup, (state, action) => {
-      const me = useSelector(meSelector)
+      const me = useAppSelector(selectMe)
       const group = action.payload
       // 重複チェック
       const compare = (cg: CharacterGroup) =>
@@ -68,4 +68,8 @@ const commonSlice = createSlice({
 })
 
 export const { setCharacterGroups } = commonSlice.actions
+
+export const selectCharacterGroups = (state: RootState) =>
+  state.common.characterGroups
+
 export default commonSlice.reducer

@@ -1,7 +1,6 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  BookOutlined,
   HomeOutlined,
   LogoutOutlined,
   MenuOutlined,
@@ -11,7 +10,7 @@ import {
 } from '@ant-design/icons'
 import { useAuthenticator } from '@aws-amplify/ui-react'
 import {
-  theme as AntdTheme,
+  theme,
   Button,
   Layout,
   Flex,
@@ -24,50 +23,35 @@ import {
 import { useDispatch } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { MEDIA_QUERY } from '@/const/style.ts'
-import { servicesContext } from '@/context/servicesContext.ts'
 import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
+import { useAppSelector } from '@/store'
 import {
-  drawerStatusSelector,
-  meSelector,
-  themeSelector,
-  userAttributesLoadingSelector,
-  usersSelector,
-  useSelector,
-} from '@/store'
-import { toggleDrawerStatus } from '@/store/drawerStatusSlice.ts'
-import { updateTheme } from '@/store/themeSlice.ts'
-import { getKeys, isProperty } from '@/utils/types.ts'
+  selectDrawerStatus,
+  toggleDrawerStatus,
+} from '@/store/drawerStatusSlice.ts'
+import { selectTheme, toggleThemeType } from '@/store/themeSlice.ts'
+import {
+  selectMe,
+  selectUserAttributesLoading,
+  selectUsers,
+} from '@/store/userAttributesSlice.ts'
+import { getKeys } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const users = useSelector(usersSelector)
-  const me = useSelector(meSelector)
-  const loading = useSelector(userAttributesLoadingSelector)
-  const theme = useSelector(themeSelector)
+  const users = useAppSelector(selectUsers)
+  const me = useAppSelector(selectMe)
+  const loading = useAppSelector(selectUserAttributesLoading)
+  const themeType = useAppSelector(selectTheme)
   const dispatch = useDispatch()
-  const services = useContext(servicesContext)
-  const drawerStatus = useSelector(drawerStatusSelector)
+  const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
-  const { token } = AntdTheme.useToken()
+  const { token } = theme.useToken()
   const { signOut } = useAuthenticator()
   const navigate = useNavigate()
 
-  const {
-    scope,
-    userName,
-    service,
-    setService,
-    screens,
-    setScreen,
-    screenIcon,
-    screenLabel,
-  } = useScreenNavigateInGlobal()
-
-  const serviceName = useMemo(
-    () =>
-      isProperty(service, services) ? services[service].serviceName : 'unknown',
-    [service, services],
-  )
+  const { scope, userName, screens, setScreen, screenIcon, screenLabel } =
+    useScreenNavigateInGlobal()
 
   const dropdownProps: MenuProps = useMemo(
     () => ({
@@ -112,12 +96,17 @@ export default function AppMenu() {
     () => (
       <Layout.Header
         style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
           height: '3rem',
           lineHeight: '3rem',
           padding: '0 8px',
-          background: 'transparent',
-          color: theme === 'dark' ? token.colorBgContainer : token.colorBgBlur,
-          borderBottom: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
+          backgroundColor: token.colorBgContainer,
+          color:
+            themeType === 'dark' ? token.colorBgContainer : token.colorBgBlur,
+          borderBottom: `solid 1px ${themeType === 'dark' ? '#222' : '#e7e7e7'}`,
           zIndex: 1,
         }}
       >
@@ -125,9 +114,7 @@ export default function AppMenu() {
           gap={3}
           align="center"
           justify="center"
-          style={{
-            height: '100%',
-          }}
+          style={{ height: '100%' }}
         >
           <Button
             icon={<MenuOutlined />}
@@ -172,26 +159,6 @@ export default function AppMenu() {
               >
                 {useUsers.find((u) => u.userName === userName)?.viewName ??
                   (scope === 'private' ? 'あなた' : '全ユーザー')}
-              </Button>
-            </Dropdown>
-            <Typography.Text>/</Typography.Text>
-            <Dropdown
-              menu={{
-                items: getKeys(services).map((key) => ({
-                  key,
-                  label: services[key].serviceName,
-                  icon: <BookOutlined />,
-                })),
-                onClick: ({ key }) => setService(services, key),
-              }}
-              placement="bottomLeft"
-            >
-              <Button
-                type="text"
-                icon={<BookOutlined />}
-                style={{ padding: '0 5px' }}
-              >
-                {serviceName}
               </Button>
             </Dropdown>
             <MediaQuery {...MEDIA_QUERY.PC}>
@@ -245,10 +212,8 @@ export default function AppMenu() {
           )}
           <Button
             type="text"
-            icon={theme === 'dark' ? <MoonFilled /> : <SunFilled />}
-            onClick={() =>
-              dispatch(updateTheme(theme === 'dark' ? 'light' : 'dark'))
-            }
+            icon={themeType === 'dark' ? <MoonFilled /> : <SunFilled />}
+            onClick={() => dispatch(toggleThemeType())}
             size="middle"
           />
         </Flex>
@@ -265,11 +230,8 @@ export default function AppMenu() {
       screenLabel,
       screenSize.isFullView,
       screens,
-      serviceName,
-      services,
       setScreen,
-      setService,
-      theme,
+      themeType,
       token.colorBgBlur,
       token.colorBgContainer,
       useUsers,

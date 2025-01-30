@@ -1,3 +1,4 @@
+import type { Schema } from '@amplify/data/resource.ts'
 import {
   type Nechronica,
   type NechronicaAdditionalData,
@@ -7,13 +8,12 @@ import {
   type NechronicaManeuver,
   type NechronicaRoice,
   type NechronicaType,
-} from '@Nechronica/ts/NechronicaDataHelper.ts'
-import type { Schema } from '@amplify/data/resource.ts'
+} from '@higanbina/ts/NechronicaDataHelper.ts'
 import { createAction, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { generateClient } from 'aws-amplify/api'
-import { useSelector } from 'react-redux'
 import { type CharacterGroup } from '@/service'
-import { meSelector } from '@/store/index.ts'
+import { type RootState, useAppSelector } from '@/store/index.ts'
+import { selectMe } from '@/store/userAttributesSlice.ts'
 import { type OnlyTypeKey, type PromiseType, typedOmit } from '@/utils/types.ts'
 
 const client = generateClient<Schema>()
@@ -117,7 +117,7 @@ interface State {
   selectedManeuverInfos: ManeuverInfo[]
   characterGroupRelations: CharacterGroupRelation[]
   characterGroupRelationsStatus: 'yet' | 'done'
-  makingNechronicaCharacter: NechronicaCharacter
+  makingCharacter: NechronicaCharacter
 }
 
 const initialState: State = {
@@ -129,7 +129,7 @@ const initialState: State = {
   selectedManeuverInfos: [],
   characterGroupRelations: [],
   characterGroupRelationsStatus: 'yet',
-  makingNechronicaCharacter: structuredClone(INITIAL_NECHRONICA_CHARACTER),
+  makingCharacter: structuredClone(INITIAL_NECHRONICA_CHARACTER),
 }
 
 const updateListData = <
@@ -139,14 +139,14 @@ const updateListData = <
   property: T,
 ) => {
   return (state: State, action: PayloadAction<{ index: number; data: V }>) => {
-    state.makingNechronicaCharacter.sheetData[property][action.payload.index] =
+    state.makingCharacter.sheetData[property][action.payload.index] =
       action.payload.data
   }
 }
 
 const deleteListData = (property: 'maneuverList' | 'roiceList') => {
   return (state: State, action: PayloadAction<number>) => {
-    const character = state.makingNechronicaCharacter
+    const character = state.makingCharacter
     character.sheetData = {
       ...character.sheetData,
       [property]: character.sheetData[property].filter(
@@ -209,7 +209,7 @@ const nechronicaSlice = createSlice({
       state.selectedManeuverInfos.splice(idx, 1)
     },
     setMakingCharacterType: (state, action: PayloadAction<NechronicaType>) => {
-      state.makingNechronicaCharacter.additionalData.type = action.payload
+      state.makingCharacter.additionalData.type = action.payload
     },
     setMakingBasicData: (
       state: State,
@@ -224,7 +224,7 @@ const nechronicaSlice = createSlice({
           }
       >,
     ) => {
-      const sheetData = state.makingNechronicaCharacter.sheetData
+      const sheetData = state.makingCharacter.sheetData
       sheetData.basic = {
         ...sheetData.basic,
         [action.payload.property]: action.payload.value,
@@ -234,8 +234,7 @@ const nechronicaSlice = createSlice({
       state: State,
       action: PayloadAction<NechronicaBasic['bonusStatus']>,
     ) => {
-      state.makingNechronicaCharacter.sheetData.basic.bonusStatus =
-        action.payload
+      state.makingCharacter.sheetData.basic.bonusStatus = action.payload
     },
     setMakingAffection: (
       state: State,
@@ -244,14 +243,14 @@ const nechronicaSlice = createSlice({
         value: string
       }>,
     ) => {
-      const basic = state.makingNechronicaCharacter.sheetData.basic
+      const basic = state.makingCharacter.sheetData.basic
       basic.affection[action.payload.property] = action.payload.value
     },
     addMakingManeuver: (
       state,
       action: PayloadAction<NechronicaManeuver | undefined>,
     ) => {
-      const list = state.makingNechronicaCharacter.sheetData.maneuverList
+      const list = state.makingCharacter.sheetData.maneuverList
       list.push(action.payload ?? structuredClone(INITIAL_NECHRONICA_MANEUVER))
     },
     updateMakingManeuver: updateListData('maneuverList'),
@@ -260,7 +259,7 @@ const nechronicaSlice = createSlice({
       state,
       action: PayloadAction<NechronicaRoice | undefined>,
     ) => {
-      const list = state.makingNechronicaCharacter.sheetData.roiceList
+      const list = state.makingCharacter.sheetData.roiceList
       list.push(action?.payload ?? structuredClone(INITIAL_NECHRONICA_ROICE))
     },
     updateMakingRoice: updateListData('roiceList'),
@@ -268,7 +267,7 @@ const nechronicaSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(createNechronicaCharacter, (state, action) => {
-      const me = useSelector(meSelector)
+      const me = useAppSelector(selectMe)
       const character = action.payload
       // 重複チェック
       const compare = (c: NechronicaCharacter) =>
@@ -311,4 +310,29 @@ export const {
   updateMakingRoice,
   deleteMakingRoice,
 } = nechronicaSlice.actions
+
+const state =
+  <T extends keyof State>(p: T) =>
+  (state: RootState) =>
+    state.nechronica[p]
+export const selectNechronicaLoading = state('loading')
+export const selectNechronicaCharacters = state('characters')
+export const selectSelectedManeuverInfos = state('selectedManeuverInfos')
+export const selectHoverManeuverId = state('hoverManeuverId')
+export const selectClickManeuverId = state('clickManeuverId')
+export const selectCharacterGroupRelations = state('characterGroupRelations')
+export const selectMakingCharacter = state('makingCharacter')
+const additionalData =
+  <T extends keyof NechronicaAdditionalData>(p: T) =>
+  (state: RootState) =>
+    state.nechronica.makingCharacter.additionalData[p]
+export const selectMakingCharacterType = additionalData('type')
+const sheetData =
+  <T extends keyof Nechronica>(p: T) =>
+  (state: RootState) =>
+    state.nechronica.makingCharacter.sheetData[p]
+export const selectMakingCharacterBase = sheetData('basic')
+export const selectMakingCharacterManeuverList = sheetData('maneuverList')
+export const selectMakingCharacterRoiceList = sheetData('roiceList')
+
 export default nechronicaSlice.reducer

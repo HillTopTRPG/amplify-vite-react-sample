@@ -1,14 +1,15 @@
 import React, { useCallback, useMemo } from 'react'
 import { Flex, Menu } from 'antd'
 import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
-import { themeSelector, useSelector } from '@/store'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 import { getKeys, isIncludes } from '@/utils/types.ts'
 
 interface Props {
   onSelect?: (key: string) => void
 }
 export default function ScreenSelectMenu({ onSelect }: Props) {
-  const theme = useSelector(themeSelector)
+  const themeType = useAppSelector(selectTheme)
   const { screens, screen, setScreen } = useScreenNavigateInGlobal()
 
   const onSelectHandler = useCallback(
@@ -27,12 +28,12 @@ export default function ScreenSelectMenu({ onSelect }: Props) {
   return useMemo(
     () => (
       <Menu
-        theme={theme}
+        theme={themeType}
         mode="inline"
         onSelect={(e) => onSelectHandler(e.key)}
         selectedKeys={[screen]}
         style={{
-          background: 'transparent',
+          backgroundColor: 'transparent',
           border: 'none',
           flexGrow: 1,
           width: '100%',
@@ -54,6 +55,6 @@ export default function ScreenSelectMenu({ onSelect }: Props) {
           }))}
       />
     ),
-    [onSelectHandler, screen, screens, theme],
+    [onSelectHandler, screen, screens, themeType],
   )
 }

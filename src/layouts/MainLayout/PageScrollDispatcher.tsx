@@ -2,8 +2,8 @@ import { type RefObject, useCallback, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useDebounce } from '@/hooks/useDebounce.tsx'
-import { scrollMapSelector, useSelector } from '@/store'
-import { updateScrollMap } from '@/store/scrollMapSlice.ts'
+import { useAppSelector } from '@/store'
+import { selectScrollMap, updateScrollMap } from '@/store/scrollMapSlice.ts'
 
 interface Props {
   scrollContainer: RefObject<HTMLElement>
@@ -14,7 +14,7 @@ export default function PageScrollDispatcher({
   forceTop,
 }: Props) {
   const dispatch = useDispatch()
-  const scrollMap = useSelector(scrollMapSelector)
+  const scrollMap = useAppSelector(selectScrollMap)
   const debounce = useDebounce(100)
   const { pathname } = useLocation()
 
