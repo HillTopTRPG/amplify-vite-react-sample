@@ -6,6 +6,7 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import { servicesContext } from '@/context/servicesContext.ts'
+import { parsePathName } from '@/hooks/useScreenLocation.ts'
 import { type Services } from '@/service'
 
 export default function useScreenNavigateInGlobal() {
@@ -19,9 +20,9 @@ export default function useScreenNavigateInGlobal() {
   const [searchParams] = useSearchParams()
   const userName = searchParams.get('userName')
 
-  const [scope, service, screenRaw, urlParam] = location.pathname
-    .split('/')
-    .slice(1)
+  const { service, scope, screenRaw, urlParam } = parsePathName(
+    location.pathname,
+  )
 
   const screens = useMemo(
     () => services[service]?.screens ?? {},
@@ -56,6 +57,8 @@ export default function useScreenNavigateInGlobal() {
         queryParam: baseQueryParams,
       })
 
+      const scopeBlock = props.scope === 'private' ? '/private' : ''
+
       const urlParamBlock =
         props.screen in screens && screens[props.screen].param && props.urlParam
           ? `/${props.urlParam}`
@@ -67,7 +70,7 @@ export default function useScreenNavigateInGlobal() {
       const queryParamBlock = props.queryParam.length
         ? `/?${new URLSearchParams(props.queryParam).toString()}`
         : ''
-      return `/${props.scope}/${service}${screenBlock}${urlParamBlock}${queryParamBlock}`
+      return `/${service}${scopeBlock}${screenBlock}${urlParamBlock}${queryParamBlock}`
     },
     [baseQueryParams, scope, screen, screens, service, urlParam],
   )

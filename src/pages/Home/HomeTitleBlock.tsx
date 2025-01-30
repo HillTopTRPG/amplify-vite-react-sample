@@ -28,7 +28,6 @@ export default function HomeTitleBlock({ view, status }: Props) {
           transform: 'translateX(-50%)',
           width: '100%',
           margin: '15px auto 230px',
-          backgroundColor: 'transparent',
           transition: 'opacity 200ms ease-in-out',
           opacity: view ? 1 : 0,
           pointerEvents: 'none',

@@ -1,5 +1,5 @@
 import { type CSSProperties, type ReactNode, useRef } from 'react'
-import { ConfigProvider, Layout, theme } from 'antd'
+import { ConfigProvider, Layout, theme as AntdTheme, theme } from 'antd'
 import AppDrawer from './AppDrawer.tsx'
 import AppMenu from './AppMenu.tsx'
 import PageScrollDispatcher from './PageScrollDispatcher.tsx'
@@ -18,6 +18,7 @@ interface Props {
 }
 export default function MainLayout({ containerStyle, children }: Props) {
   const theme = useSelector(themeSelector)
+  const { token } = AntdTheme.useToken()
   const algorithm = theme === 'dark' ? darkAlgorithm : defaultAlgorithm
   const scrollContainerRef = useRef<HTMLElement>(null)
   const drawerStatus = useSelector(drawerStatusSelector)
@@ -38,7 +39,7 @@ export default function MainLayout({ containerStyle, children }: Props) {
             <Layout
               style={{
                 ...containerStyle,
-                backgroundColor: 'transparent',
+                backgroundColor: token.colorBgLayout,
                 position: 'relative',
                 paddingTop: '3rem',
                 zIndex: 0,
@@ -51,6 +52,7 @@ export default function MainLayout({ containerStyle, children }: Props) {
                   position: 'relative',
                   paddingLeft: isMobile ? 0 : open ? 200 : 50,
                   transition: 'padding-left 250ms',
+                  backgroundColor: 'transparent',
                   ...(containerStyle?.call(null, screenSize) || {}),
                 }}
                 ref={scrollContainerRef}

@@ -5,6 +5,7 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
+import { parsePathName } from '@/hooks/useScreenLocation.ts'
 import { type Screen, type Services } from '@/service'
 
 export default function useScreenNavigateInService(
@@ -23,9 +24,9 @@ export default function useScreenNavigateInService(
   const [searchParams] = useSearchParams()
   const userName = searchParams.get('userName')
 
-  const [scope, service, screenRaw, urlParam] = location.pathname
-    .split('/')
-    .slice(1)
+  const { service, scope, screenRaw, urlParam } = parsePathName(
+    location.pathname,
+  )
 
   const screen = useMemo(
     () =>

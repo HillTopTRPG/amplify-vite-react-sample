@@ -26,7 +26,7 @@ export default function ClassAvatar({ value }: Props) {
           border: 'none',
           userSelect: 'none',
           display: 'inline-block',
-          background: '#efefef22',
+          backgroundColor: '#efefef22',
           borderRadius: '50%',
           boxShadow:
             '4px 4px 9px 0px rgba(255,255,255,0.45) inset, -4px -4px 9px 0px rgba(0, 0, 0, 0.06) inset',

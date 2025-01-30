@@ -118,7 +118,7 @@ export default function AppMenu() {
           height: '3rem',
           lineHeight: '3rem',
           padding: '0 8px',
-          background: token.colorBgContainer,
+          backgroundColor: token.colorBgContainer,
           color: theme === 'dark' ? token.colorBgContainer : token.colorBgBlur,
           borderBottom: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
           zIndex: 1,

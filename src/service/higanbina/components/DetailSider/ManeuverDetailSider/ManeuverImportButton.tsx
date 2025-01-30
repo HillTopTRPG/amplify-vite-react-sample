@@ -28,7 +28,10 @@ export default function ManeuverImportButton() {
 
   return useMemo(
     () => (
-      <Button style={{ marginLeft: 8, marginTop: 8 }} onClick={onClick}>
+      <Button
+        style={{ marginLeft: 8, marginTop: 8, alignSelf: 'flex-start' }}
+        onClick={onClick}
+      >
         {contextHolder}
         <BuildOutlined />
         選択マニューバをビルド画面にコピー

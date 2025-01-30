@@ -8,7 +8,6 @@ import {
 import type { Location } from 'react-router-dom'
 import higanbinaRoutes from '@higanbina/Routes.tsx'
 import { Provider } from 'react-redux'
-import Authenticator from '@/Authenticator.tsx'
 import FetchGameSystemData from '@/FetchGameSystemData.tsx'
 import FetchUserAttributes from '@/FetchUserAttributes.tsx'
 import { servicesContext } from '@/context/servicesContext.ts'
@@ -53,19 +52,7 @@ const routes = createBrowserRouter([
         path: '/privacy',
         Component: Privacy,
       },
-      {
-        path: '/public',
-        children: [higanbinaRoutes.public],
-      },
-      {
-        path: '/private',
-        element: (
-          <Authenticator>
-            <Outlet />
-          </Authenticator>
-        ),
-        children: [higanbinaRoutes.private],
-      },
+      higanbinaRoutes,
       {
         path: '*',
         Component: NotFound,

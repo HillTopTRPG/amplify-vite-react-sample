@@ -21,7 +21,7 @@ export default function Sider() {
         left: 0,
         bottom: 0,
         zIndex: 100,
-        background: token.colorBgContainer,
+        backgroundColor: token.colorBgContainer,
         borderRight: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
       }}
     >

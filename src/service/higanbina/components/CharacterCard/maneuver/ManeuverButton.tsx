@@ -117,6 +117,7 @@ export default function ManeuverButton({
           trigger={hoverContent ? 'hover' : []}
           open={hoverManeuverId === maneuverId}
           onOpenChange={onViewOpenChange}
+          destroyTooltipOnHide
         >
           <Popover
             content={clickContent}
@@ -125,6 +126,7 @@ export default function ManeuverButton({
             trigger={onClick || !clickContent ? [] : ['click', 'contextMenu']}
             open={clickManeuverId === maneuverId}
             onOpenChange={onEditOpenChange}
+            destroyTooltipOnHide
           >
             {stackedAvatar}
           </Popover>

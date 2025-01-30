@@ -32,7 +32,7 @@ export default function ScreenSelectMenu({ onSelect }: Props) {
         onSelect={(e) => onSelectHandler(e.key)}
         selectedKeys={[screen]}
         style={{
-          background: 'transparent',
+          backgroundColor: 'transparent',
           border: 'none',
           flexGrow: 1,
           width: '100%',

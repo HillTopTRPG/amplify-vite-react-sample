@@ -43,6 +43,6 @@ export const TOOL_INFO_LIST: ToolInfo[] = [
     features: ['キャラ管理️', 'キャラメイク', 'シナリオ管理', 'セッション'],
     description: 'Waddlefyのネクロニカ専用機能を\n更にパワーアップさせた超力作',
     badge: '',
-    actions: [{ to: '/public/higanbina', label: '利用する' }],
+    actions: [{ to: '/higanbina', label: '利用する' }],
   },
 ]

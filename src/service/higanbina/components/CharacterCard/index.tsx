@@ -159,7 +159,6 @@ export default function CharacterCard({ character }: Props) {
           </Flex>
           <div
             style={{
-              width: '100%',
               height: 160,
               marginTop: -10,
               pointerEvents: 'none',

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Outlet, type RouteObject } from 'react-router-dom'
+import { Authenticator } from '@aws-amplify/ui-react'
 import { tap } from 'lodash-es'
 import service from './index'
 import MainLayout from '@/layouts/MainLayout'
@@ -16,22 +17,45 @@ function getPath(screen: keyof typeof service.screens) {
   )
 }
 
-const screenRouteObj: RouteObject = {
+// const screenRouteObj: RouteObject = {
+//   path: service.service,
+//   element: <Outlet />,
+//   children: getKeys(service.screens).map((screen) => ({
+//     path: getPath(screen),
+//     element: (
+//       <MainLayout containerStyle={service.screens[screen].containerStyle}>
+//         {React.createElement(service.screens[screen].contents)}
+//       </MainLayout>
+//     ),
+//   })),
+// }
+
+const children = getKeys(service.screens).map((screen) => ({
+  path: getPath(screen),
+  element: (
+    <MainLayout containerStyle={service.screens[screen].containerStyle}>
+      {React.createElement(service.screens[screen].contents)}
+    </MainLayout>
+  ),
+}))
+
+const routes: RouteObject = {
   path: service.service,
   element: <Outlet />,
-  children: getKeys(service.screens).map((screen) => ({
-    path: getPath(screen),
-    element: (
-      <MainLayout containerStyle={service.screens[screen].containerStyle}>
-        {React.createElement(service.screens[screen].contents)}
-      </MainLayout>
-    ),
-  })),
-}
-
-const routes = {
-  public: screenRouteObj,
-  private: screenRouteObj,
+  children: [
+    {
+      children,
+    },
+    {
+      path: 'private',
+      element: (
+        <Authenticator>
+          <Outlet />
+        </Authenticator>
+      ),
+      children,
+    },
+  ],
 }
 
 export default routes

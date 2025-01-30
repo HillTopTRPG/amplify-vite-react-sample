@@ -38,7 +38,7 @@ export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: token.colorBgContainer,
+    backgroundColor: token.colorBgLayout,
     gap: 18,
     color: theme === 'dark' ? token.colorBgContainer : token.colorBgBlur,
     borderBottom: `solid 1px ${theme === 'dark' ? '#222' : '#e7e7e7'}`,
@@ -47,11 +47,7 @@ export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
 
   return (
     <Layout.Header style={headerStyle}>
-      <Flex
-        vertical
-        align="flex-start"
-        style={{ flexGrow: 1, backgroundColor: 'transparent' }}
-      >
+      <Flex vertical align="flex-start" style={{ flexGrow: 1 }}>
         <Typography.Title
           level={3}
           className={styles.customFont}
