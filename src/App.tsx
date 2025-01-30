@@ -11,6 +11,7 @@ import { Provider } from 'react-redux'
 import FetchGameSystemData from '@/FetchGameSystemData.tsx'
 import FetchUserAttributes from '@/FetchUserAttributes.tsx'
 import { servicesContext } from '@/context/servicesContext.ts'
+import useTitleCustomFont from '@/hooks/useTitleCustomFont.ts'
 import Home from '@/pages/Home'
 import NotFound from '@/pages/NotFound.tsx'
 import Privacy from '@/pages/Privacy'
@@ -20,6 +21,7 @@ import { store } from '@/store'
 
 function Root() {
   const getKey = useCallback((l: Location) => l.pathname, [])
+  useTitleCustomFont()
 
   return (
     <Provider store={store}>

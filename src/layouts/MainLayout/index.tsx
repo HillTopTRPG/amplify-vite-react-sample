@@ -1,16 +1,14 @@
 import { type CSSProperties, type ReactNode, useRef } from 'react'
-import { ConfigProvider, Layout, theme } from 'antd'
+import { Layout, theme } from 'antd'
 import AppDrawer from './AppDrawer.tsx'
 import AppMenu from './AppMenu.tsx'
 import PageScrollDispatcher from './PageScrollDispatcher.tsx'
 import Sider from './Sider.tsx'
 import { scrollContainerContext } from '@/context/scrollContainer.ts'
 import useScreenSize, { type ScreenSize } from '@/hooks/useScreenSize.ts'
+import AppBreadcrumb from '@/layouts/MainLayout/AppBreadcrumb.tsx'
 import { useAppSelector } from '@/store'
 import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
-import { selectTheme } from '@/store/themeSlice.ts'
-
-const { defaultAlgorithm, darkAlgorithm } = theme
 
 interface Props {
   containerStyle:
@@ -19,9 +17,7 @@ interface Props {
   children: ReactNode
 }
 export default function MainLayout({ containerStyle, children }: Props) {
-  const themeType = useAppSelector(selectTheme)
   const { token } = theme.useToken()
-  const algorithm = themeType === 'dark' ? darkAlgorithm : defaultAlgorithm
   const scrollContainerRef = useRef<HTMLElement>(null)
   const drawerStatus = useAppSelector(selectDrawerStatus)
   const { isMobile } = useScreenSize(drawerStatus)
@@ -32,38 +28,34 @@ export default function MainLayout({ containerStyle, children }: Props) {
     <>
       <PageScrollDispatcher scrollContainer={scrollContainerRef} />
       <scrollContainerContext.Provider value={scrollContainerRef}>
-        <ConfigProvider
-          theme={{ algorithm }}
-          divider={{ style: { margin: '5px 0' } }}
-        >
-          <Layout>
-            <AppMenu />
-            <Layout
+        <Layout>
+          <AppMenu />
+          <Layout
+            style={{
+              ...containerStyle,
+              backgroundColor: token.colorBgLayout,
+              position: 'relative',
+              paddingTop: '3rem',
+              zIndex: 0,
+            }}
+          >
+            {isMobile ? <AppDrawer /> : <Sider />}
+            <Layout.Content
+              className="main-scroll-container"
               style={{
-                ...containerStyle,
-                backgroundColor: token.colorBgLayout,
                 position: 'relative',
-                paddingTop: '3rem',
-                zIndex: 0,
+                paddingLeft: isMobile ? 0 : open ? 200 : 50,
+                transition: 'padding-left 250ms',
+                backgroundColor: 'transparent',
+                ...(containerStyle?.call(null, screenSize) || {}),
               }}
+              ref={scrollContainerRef}
             >
-              {isMobile ? <AppDrawer /> : <Sider />}
-              <Layout.Content
-                className="main-scroll-container"
-                style={{
-                  position: 'relative',
-                  paddingLeft: isMobile ? 0 : open ? 200 : 50,
-                  transition: 'padding-left 250ms',
-                  backgroundColor: 'transparent',
-                  ...(containerStyle?.call(null, screenSize) || {}),
-                }}
-                ref={scrollContainerRef}
-              >
-                {children}
-              </Layout.Content>
-            </Layout>
+              <AppBreadcrumb />
+              {children}
+            </Layout.Content>
           </Layout>
-        </ConfigProvider>
+        </Layout>
       </scrollContainerContext.Provider>
     </>
   )

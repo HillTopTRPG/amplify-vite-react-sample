@@ -1,13 +1,6 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  HomeOutlined,
-  LogoutOutlined,
-  MenuOutlined,
-  MoonFilled,
-  SunFilled,
-  UserOutlined,
-} from '@ant-design/icons'
+import { LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons'
 import { useAuthenticator } from '@aws-amplify/ui-react'
 import {
   theme,
@@ -21,25 +14,22 @@ import {
   Spin,
 } from 'antd'
 import { useDispatch } from 'react-redux'
-import MediaQuery from 'react-responsive'
-import { MEDIA_QUERY } from '@/const/style.ts'
+import ThemeTypeSwitch from '@/components/ThemeTypeSwitch.tsx'
 import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
+import styles from '@/pages/Home/CustomFont.module.css'
 import { useAppSelector } from '@/store'
 import {
   selectDrawerStatus,
   toggleDrawerStatus,
 } from '@/store/drawerStatusSlice.ts'
-import { selectTheme, toggleThemeType } from '@/store/themeSlice.ts'
+import { selectTheme } from '@/store/themeSlice.ts'
 import {
   selectMe,
   selectUserAttributesLoading,
-  selectUsers,
 } from '@/store/userAttributesSlice.ts'
-import { getKeys } from '@/utils/types.ts'
 
 export default function AppMenu() {
-  const users = useAppSelector(selectUsers)
   const me = useAppSelector(selectMe)
   const loading = useAppSelector(selectUserAttributesLoading)
   const themeType = useAppSelector(selectTheme)
@@ -50,8 +40,7 @@ export default function AppMenu() {
   const { signOut } = useAuthenticator()
   const navigate = useNavigate()
 
-  const { scope, userName, screens, setScreen, screenIcon, screenLabel } =
-    useScreenNavigateInGlobal()
+  const { scope, setScreen } = useScreenNavigateInGlobal()
 
   const dropdownProps: MenuProps = useMemo(
     () => ({
@@ -73,23 +62,6 @@ export default function AppMenu() {
       },
     }),
     [signOut],
-  )
-
-  const useUsers = useMemo(
-    () =>
-      users
-        ? (me
-            ? [me, ...users.filter((u) => u.userName !== me?.userName)]
-            : [...users]
-          ).map((user) => ({
-            ...user,
-            viewName:
-              user.userName === me?.userName && scope === 'private'
-                ? 'あなた'
-                : user.userName,
-          }))
-        : [],
-    [me, scope, users],
   )
 
   return useMemo(
@@ -121,75 +93,14 @@ export default function AppMenu() {
             type="text"
             onClick={() => dispatch(toggleDrawerStatus())}
           />
-          <Flex align="center" justify="flex-start" style={{ flexGrow: 1 }}>
-            <Button
-              type="text"
-              icon={<HomeOutlined />}
-              onClick={() => navigate('/')}
-              style={{ padding: '0 5px' }}
-            />
-            <Typography.Text>/</Typography.Text>
-            <Dropdown
-              menu={{
-                items: [
-                  scope === 'public'
-                    ? { key: '', label: '全ユーザー', icon: <UserOutlined /> }
-                    : null,
-                  ...useUsers.map((user) => ({
-                    key: user.userName,
-                    label: user.viewName,
-                    icon: <UserOutlined />,
-                  })),
-                ].filter((v) => v),
-                onClick: ({ key }) =>
-                  setScreen((v) => ({
-                    ...v,
-                    queryParam: [
-                      ['userName', key],
-                      ...v.queryParam.filter(([p]) => p !== 'userName'),
-                    ],
-                  })),
-              }}
-              placement="bottomLeft"
-            >
-              <Button
-                type="text"
-                icon={<UserOutlined />}
-                style={{ padding: '0 5px' }}
-              >
-                {useUsers.find((u) => u.userName === userName)?.viewName ??
-                  (scope === 'private' ? 'あなた' : '全ユーザー')}
-              </Button>
-            </Dropdown>
-            <MediaQuery {...MEDIA_QUERY.PC}>
-              <Typography.Text>/</Typography.Text>
-              <Dropdown
-                menu={{
-                  items: getKeys(screens)
-                    .filter((key) => !screens[key].param)
-                    .map((key) => ({
-                      key,
-                      label: screens[key].label,
-                      icon: React.createElement(screens[key].icon),
-                    })),
-                  onClick: ({ key }) =>
-                    setScreen((v) => ({
-                      ...v,
-                      screen: key,
-                      queryParam: v.queryParam.filter(
-                        ([p]) => p === 'userName',
-                      ),
-                    })),
-                }}
-                placement="bottomLeft"
-              >
-                <Button type="text" style={{ padding: '0 5px' }}>
-                  {React.createElement(screenIcon)}
-                  <Typography.Text>{screenLabel}</Typography.Text>
-                </Button>
-              </Dropdown>
-            </MediaQuery>
-          </Flex>
+          <Typography.Title
+            level={5}
+            className={styles.customFont}
+            style={{ margin: 0, cursor: 'pointer', flexGrow: 1 }}
+            onClick={() => navigate('/')}
+          >
+            Memento Nexus
+          </Typography.Title>
           {!loading && scope === 'public' ? (
             <Button
               onClick={() => setScreen((v) => ({ ...v, scope: 'private' }))}
@@ -210,12 +121,7 @@ export default function AppMenu() {
               </Button>
             </Dropdown>
           )}
-          <Button
-            type="text"
-            icon={themeType === 'dark' ? <MoonFilled /> : <SunFilled />}
-            onClick={() => dispatch(toggleThemeType())}
-            size="middle"
-          />
+          <ThemeTypeSwitch />
         </Flex>
       </Layout.Header>
     ),
@@ -226,16 +132,11 @@ export default function AppMenu() {
       me,
       navigate,
       scope,
-      screenIcon,
-      screenLabel,
       screenSize.isFullView,
-      screens,
       setScreen,
       themeType,
       token.colorBgBlur,
       token.colorBgContainer,
-      useUsers,
-      userName,
     ],
   )
 }
