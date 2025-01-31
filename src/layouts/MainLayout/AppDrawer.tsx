@@ -30,6 +30,8 @@ export default function AppDrawer() {
           content: {
             marginTop: 48,
             height: 'calc(100% - 48px)',
+            position: 'fixed',
+            width: 200,
           },
           body: {
             padding: 0,

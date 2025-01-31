@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 import { Flex, Spin, Typography } from 'antd'
+import useNechronicaLoading from '@/hooks/gameData/useNechronicaLoading.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import { useAppSelector } from '@/store'
 import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
-import { selectNechronicaLoading } from '@/store/nechronicaSlice.ts'
 
 interface Props {
   label: string
@@ -11,7 +11,7 @@ interface Props {
   children: React.ReactNode
 }
 export default function Style2({ label, columns, children }: Props) {
-  const loading = useAppSelector(selectNechronicaLoading)
+  const loading = useNechronicaLoading()
   const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
   const useColumns =

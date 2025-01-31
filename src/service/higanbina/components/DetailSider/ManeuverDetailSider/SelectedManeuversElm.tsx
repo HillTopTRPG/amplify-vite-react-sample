@@ -1,15 +1,15 @@
 import ManeuverPopoverContents from '@higanbina/components/CharacterCard/maneuver/ManeuverPopoverContents'
 import { Flex, Spin, theme, Typography } from 'antd'
 import { cloneDeep } from 'lodash-es'
+import useNechronicaLoading from '@/hooks/gameData/useNechronicaLoading.ts'
 import { useAppSelector } from '@/store'
 import {
-  selectNechronicaLoading,
   selectSelectedManeuverInfos,
   updateNechronicaCharacter,
 } from '@/store/nechronicaSlice.ts'
 
 export default function SelectedManeuversElm() {
-  const loading = useAppSelector(selectNechronicaLoading)
+  const loading = useNechronicaLoading()
   const selectedManeuverInfos = useAppSelector(selectSelectedManeuverInfos)
 
   const { token } = theme.useToken()

@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom'
 import { screens } from '@higanbina/screens'
 import { type NechronicaCharacter } from '@higanbina/ts/NechronicaDataHelper.ts'
 import mapping from '@higanbina/ts/mapping.json'
+import { thru } from 'lodash-es'
+import useNechronicaLoading from '@/hooks/gameData/useNechronicaLoading.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import { parseIntOrNull } from '@/service/common/PrimaryDataUtility.ts'
@@ -13,8 +15,15 @@ export type Filter = {
   class: number[]
 }
 
-export function useSearchCharacter(characters: NechronicaCharacter[]) {
+export default function useNechronicaSearchCharacter(
+  characters: NechronicaCharacter[],
+) {
+  const loading = useNechronicaLoading()
   const [searchParams] = useSearchParams()
+  const { setScreen } = useScreenNavigateInService(screens)
+  const [selectedCharacters, setSelectedCharacters] = useSelectIds()
+  const [hoverCharacter, setHoverCharacter] = useState<string | null>(null)
+  const [detailList, setDetailList] = useState<NechronicaCharacter[]>([])
 
   const filter = useMemo(() => {
     const getNumberArrayValue = (param: string) =>
@@ -28,10 +37,6 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
       class: getNumberArrayValue('class'),
     }
   }, [searchParams])
-
-  const { setScreen } = useScreenNavigateInService(screens)
-  const [selectedCharacters, setSelectedCharacters] = useSelectIds()
-  const [hoverCharacter, setHoverCharacter] = useState<string | null>(null)
 
   const searchedCharacters = useMemo(
     () =>
@@ -87,9 +92,8 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
     [characters, filter],
   )
 
-  const [detailList, setDetailList] = useState<NechronicaCharacter[]>([])
-
   useEffect(() => {
+    if (loading) return
     const list = [...selectedCharacters]
     if (hoverCharacter) {
       const index = list.indexOf(hoverCharacter)
@@ -97,11 +101,14 @@ export function useSearchCharacter(characters: NechronicaCharacter[]) {
       list.unshift(hoverCharacter)
     }
     setDetailList(
-      list
-        .map((id) => characters.find((c) => c.id === id))
-        .filter((c): c is NechronicaCharacter => Boolean(c)),
+      list.flatMap((id) =>
+        thru(
+          characters.find((c) => c.id === id),
+          (v) => (v ? [v] : []),
+        ),
+      ),
     )
-  }, [characters, hoverCharacter, selectedCharacters, setDetailList])
+  }, [characters, hoverCharacter, loading, selectedCharacters])
 
   return {
     filter,

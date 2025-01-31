@@ -4,12 +4,5 @@ export type PublishObject = {
   readonly public: boolean
 }
 
-export const sortPublishObjects = (items: PublishObject[]) => {
-  const newItems = [...items]
-  newItems.sort((a, b) => {
-    if (a.id < b.id) return -1
-    if (a.id > b.id) return 1
-    return 0
-  })
-  return newItems
-}
+export const sortPublishObjects = (items: PublishObject[]) =>
+  structuredClone(items).sort((a, b) => a.id.localeCompare(b.id))

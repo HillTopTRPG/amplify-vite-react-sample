@@ -11,9 +11,9 @@ import {
 } from '@higanbina/ts/NechronicaDataHelper.ts'
 import { createAction, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { generateClient } from 'aws-amplify/api'
-import { type CharacterGroup } from '@/service'
 import { type RootState, useAppSelector } from '@/store/index.ts'
 import { selectMe } from '@/store/userAttributesSlice.ts'
+import { simpleReducer } from '@/store/util.ts'
 import { type OnlyTypeKey, type PromiseType, typedOmit } from '@/utils/types.ts'
 
 const client = generateClient<Schema>()
@@ -104,10 +104,6 @@ export type ManeuverInfo = {
 export const getManeuverInfoKey = (info: ManeuverInfo) =>
   `${info.character.id}-${info.maneuverIndex}`
 
-type CharacterGroupRelation = CharacterGroup & {
-  characters: NechronicaCharacter[]
-}
-
 interface State {
   loading: boolean
   characters: NechronicaCharacter[]
@@ -115,8 +111,6 @@ interface State {
   hoverManeuverId: string
   clickManeuverId: string
   selectedManeuverInfos: ManeuverInfo[]
-  characterGroupRelations: CharacterGroupRelation[]
-  characterGroupRelationsStatus: 'yet' | 'done'
   makingCharacter: NechronicaCharacter
 }
 
@@ -127,8 +121,6 @@ const initialState: State = {
   hoverManeuverId: '',
   clickManeuverId: '',
   selectedManeuverInfos: [],
-  characterGroupRelations: [],
-  characterGroupRelationsStatus: 'yet',
   makingCharacter: structuredClone(INITIAL_NECHRONICA_CHARACTER),
 }
 
@@ -170,33 +162,12 @@ const nechronicaSlice = createSlice({
     ) => {
       state.characters = action.payload
       state.charactersStatus = 'done'
-      if (state.characterGroupRelationsStatus === 'done') {
-        state.loading = false
-      }
+      state.loading = false
     },
-    setNechronicaCharacterGroupRelations: (
-      state,
-      action: PayloadAction<CharacterGroupRelation[]>,
-    ) => {
-      state.characterGroupRelations = action.payload
-      state.characterGroupRelationsStatus = 'done'
-      if (state.charactersStatus === 'done') {
-        state.loading = false
-      }
-    },
-    setHoverManeuverId: (state, action: PayloadAction<string>) => {
-      state.hoverManeuverId = action.payload
-    },
-    setClickManeuverId: (state, action: PayloadAction<string>) => {
-      state.clickManeuverId = action.payload
-    },
-    setSelectedManeuverInfos: (
-      state,
-      action: PayloadAction<ManeuverInfo[]>,
-    ) => {
-      state.selectedManeuverInfos = action.payload
-    },
-    addSelectedManeuverInfo: (state, action: PayloadAction<ManeuverInfo>) => {
+    setHoverManeuverId: simpleReducer('hoverManeuverId'),
+    setClickManeuverId: simpleReducer('clickManeuverId'),
+    setSelectedManeuverInfos: simpleReducer('selectedManeuverInfos'),
+    addSelectedManeuverInfo: (state, action) => {
       state.selectedManeuverInfos.push(action.payload)
     },
     removeSelectedManeuverInfo: (
@@ -299,7 +270,6 @@ export const {
   setSelectedManeuverInfos,
   addSelectedManeuverInfo,
   removeSelectedManeuverInfo,
-  setNechronicaCharacterGroupRelations,
   setMakingCharacterType,
   setMakingBasicData,
   setMakingBonusStatus,
@@ -320,7 +290,6 @@ export const selectNechronicaCharacters = state('characters')
 export const selectSelectedManeuverInfos = state('selectedManeuverInfos')
 export const selectHoverManeuverId = state('hoverManeuverId')
 export const selectClickManeuverId = state('clickManeuverId')
-export const selectCharacterGroupRelations = state('characterGroupRelations')
 export const selectMakingCharacter = state('makingCharacter')
 const additionalData =
   <T extends keyof NechronicaAdditionalData>(p: T) =>

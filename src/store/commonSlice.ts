@@ -43,6 +43,7 @@ const commonSlice = createSlice({
     setCharacterGroups: (state, action: PayloadAction<CharacterGroup[]>) => {
       state.characterGroups = action.payload
       state.characterGroupsStatus = 'done'
+      state.loading = false
     },
   },
   extraReducers: (builder) => {
@@ -71,5 +72,6 @@ export const { setCharacterGroups } = commonSlice.actions
 
 export const selectCharacterGroups = (state: RootState) =>
   state.common.characterGroups
+export const selectCommonLoading = (state: RootState) => state.common.loading
 
 export default commonSlice.reducer

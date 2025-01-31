@@ -25,6 +25,7 @@ interface Props {
   children: ReactNode
 }
 export default function FetchUserAttributes({ children }: Props) {
+  const dispatch = useAppDispatch()
   const { scope } = useScreenLocation()
   const [searchParams] = useSearchParams()
   const userName = searchParams.get('userName')
@@ -33,7 +34,6 @@ export default function FetchUserAttributes({ children }: Props) {
 
   const attrStatus = useAppSelector((state) => state.userAttributes.attrStatus)
   const userStatus = useAppSelector((state) => state.userAttributes.userStatus)
-  const dispatch = useAppDispatch()
 
   if (attrStatus === 'yet') {
     // eslint-disable-next-line no-console

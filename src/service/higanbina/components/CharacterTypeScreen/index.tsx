@@ -1,70 +1,37 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useContext, useMemo, useRef } from 'react'
 import AddCharacterInput from '@higanbina/components/CharacterTypeScreen/AddCharacterInput.tsx'
 import CharacterSmallCards from '@higanbina/components/CharacterTypeScreen/CharacterSmallCards.tsx'
 import CharacterDetailSider from '@higanbina/components/DetailSider/CharacterDetailSider'
 import SponsorShip from '@higanbina/components/SponsorShip.tsx'
-import { useSearchCharacter } from '@higanbina/hooks/useSearchCharacter.ts'
 import { screens } from '@higanbina/screens'
-import {
-  type NechronicaCharacter,
-  type NechronicaType,
-} from '@higanbina/ts/NechronicaDataHelper.ts'
+import { type NechronicaType } from '@higanbina/ts/NechronicaDataHelper.ts'
 import { Flex, FloatButton, type InputRef, Spin } from 'antd'
 import DollFilterCollapse from './filter/DollFilterCollapse.tsx'
 import MenuImageIcon from '@/components/MenuImageIcon.tsx'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import { scrollContainerContext } from '@/context/scrollContainer.ts'
+import useNechronicaLoading from '@/hooks/gameData/useNechronicaLoading.ts'
+import useNechronicaSearchCharacter from '@/hooks/gameData/useNechronicaSearchCharacter.ts'
+import useNechronicaTypeFilteredCharacters from '@/hooks/gameData/useNechronicaTypeFilteredCharacters.tsx'
 import useKeyBind from '@/hooks/useKeyBind.ts'
-import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import { getCharacterTypeSrc } from '@/service/higanbina'
 import { useAppSelector } from '@/store'
 import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
-import {
-  selectNechronicaCharacters,
-  selectNechronicaLoading,
-} from '@/store/nechronicaSlice.ts'
-import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 
 interface Props {
   characterType: NechronicaType
   label: string
 }
 export default function CharacterTypeScreen({ characterType, label }: Props) {
-  const loading = useAppSelector(selectNechronicaLoading)
-  const characters = useAppSelector(selectNechronicaCharacters)
-  const currentUser = useAppSelector(selectCurrentUser)
-  const { scope } = useScreenNavigateInService(screens)
+  const loading = useNechronicaLoading()
   const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
   const sheetIdInputRef = useRef<InputRef>(null)
   const searchInputRef = useRef<InputRef>(null)
   const scrollContainerRef = useContext(scrollContainerContext)
 
-  const makeUseCharacters = useCallback(
-    () =>
-      characters.filter((c) => {
-        if (c.additionalData.type !== characterType) return false
-        if (scope === 'public' && !currentUser) return true
-        return c.owner === currentUser?.userName
-      }),
-    [characterType, characters, currentUser, scope],
-  )
-
-  const [useCharacters, setUseCharacters] =
-    useState<NechronicaCharacter[]>(makeUseCharacters)
-
-  useEffect(() => {
-    if (loading) return
-    setUseCharacters(makeUseCharacters())
-  }, [loading, makeUseCharacters])
+  const useCharacters = useNechronicaTypeFilteredCharacters(characterType)
 
   useKeyBind({
     key: 'k',
@@ -90,7 +57,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
     setSelectedCharacters,
     setHoverCharacter,
     detailList,
-  } = useSearchCharacter(useCharacters)
+  } = useNechronicaSearchCharacter(useCharacters)
 
   const loadingElm = useMemo(
     () => (

@@ -7,7 +7,7 @@ import { selectUserAttributesLoading } from '@/store/userAttributesSlice.ts'
 
 const client = generateClient<Schema>()
 
-export default function useCharacterGroupPublish() {
+export default function useSubscribePartialNechronicaCharacter() {
   const userAttributesLoading = useAppSelector(selectUserAttributesLoading)
 
   const [objects, setObjects] = useState<PublishObject[]>([])
@@ -15,7 +15,7 @@ export default function useCharacterGroupPublish() {
 
   useEffect(() => {
     if (userAttributesLoading) return
-    const sub = client.models.CharacterGroup.observeQuery({
+    const sub = client.models.NechronicaCharacter.observeQuery({
       selectionSet: ['id', 'owner', 'public'],
     }).subscribe({
       next: ({ items }: { items: PublishObject[] }) => {
@@ -25,7 +25,7 @@ export default function useCharacterGroupPublish() {
     })
     return () => {
       // eslint-disable-next-line no-console
-      console.log('Unsubscribed CharacterGroup(Picked) observeQuery')
+      console.log('Unsubscribed NechronicaCharacter(Picked) observeQuery')
       sub.unsubscribe()
     }
   }, [userAttributesLoading])

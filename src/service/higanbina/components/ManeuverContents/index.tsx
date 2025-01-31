@@ -1,10 +1,4 @@
-import {
-  type ReactElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { type ReactElement, useCallback, useEffect, useMemo } from 'react'
 import AllManeuvers from '@higanbina/components/ManeuverContents/AllManeuvers.tsx'
 import ArmedManeuvers from '@higanbina/components/ManeuverContents/ArmedManeuvers.tsx'
 import BasicManeuvers from '@higanbina/components/ManeuverContents/BasicManeuvers.tsx'
@@ -16,58 +10,35 @@ import PositionSkillManeuvers from '@higanbina/components/ManeuverContents/Posit
 import TreasureManeuvers from '@higanbina/components/ManeuverContents/TreasureManeuvers.tsx'
 import { getIconClass } from '@higanbina/index.ts'
 import { screens } from '@higanbina/screens'
-import { Collapse, type CollapseProps, Flex, Radio, Spin } from 'antd'
-import { type CheckboxGroupProps } from 'antd/es/checkbox/Group'
+import { Collapse, type CollapseProps, Flex, Spin } from 'antd'
 import { cloneDeep } from 'lodash-es'
 import ManeuverDetailSider from '../DetailSider/ManeuverDetailSider'
+import useNechronicaFilteredCharacters from '@/hooks/gameData/useNechronicaFilteredCharacters.tsx'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { type ManeuverInfo } from '@/store/nechronicaSlice.ts'
 import { setSelectedManeuverInfos } from '@/store/nechronicaSlice.ts'
-import {
-  selectNechronicaCharacters,
-  selectNechronicaLoading,
-  selectSelectedManeuverInfos,
-} from '@/store/nechronicaSlice.ts'
+import { selectSelectedManeuverInfos } from '@/store/nechronicaSlice.ts'
 import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
-
-const options: CheckboxGroupProps['options'] = [
-  {
-    label: '自分のもの',
-    value: 'own',
-    style: { whiteSpace: 'nowrap' },
-  },
-  { label: 'サーバー内', value: 'server', style: { whiteSpace: 'nowrap' } },
-] as const
 
 export default function ManeuverContents() {
   const dispatch = useAppDispatch()
-  const loading = useAppSelector(selectNechronicaLoading)
-  const characters = useAppSelector(selectNechronicaCharacters)
   const selectedManeuverInfos = useAppSelector(selectSelectedManeuverInfos)
   const currentUser = useAppSelector(selectCurrentUser)
   const { scope } = useScreenNavigateInService(screens)
-  const [target, setTarget] = useState<'own' | 'server'>('own')
 
-  const useCharacters = useMemo(
-    () =>
-      characters.filter((c) => {
-        if (scope === 'public' && !currentUser) return true
-        if (target === 'server') return true
-        return c.owner === currentUser?.userName
-      }),
-    [characters, currentUser, scope, target],
-  )
+  const [loading, useCharacters] = useNechronicaFilteredCharacters()
 
   const getSourceManeuver = useCallback(
     (info: ManeuverInfo) => {
-      return characters.find((c) => c.id === info.character.id)?.sheetData
+      return useCharacters.find((c) => c.id === info.character.id)?.sheetData
         .maneuverList[info.maneuverIndex]
     },
-    [characters],
+    [useCharacters],
   )
 
   useEffect(() => {
+    if (loading) return
     if (
       JSON.stringify(selectedManeuverInfos.map((info) => info.maneuver)) ===
       JSON.stringify(selectedManeuverInfos.map(getSourceManeuver))
@@ -77,7 +48,9 @@ export default function ManeuverContents() {
     dispatch(
       setSelectedManeuverInfos(
         selectedManeuverInfos.map((info) => {
-          const character = characters.find((c) => c.id === info.character.id)
+          const character = useCharacters.find(
+            (c) => c.id === info.character.id,
+          )
           const newInfo = cloneDeep(info)
           if (!character) return newInfo
           newInfo.maneuver =
@@ -86,7 +59,13 @@ export default function ManeuverContents() {
         }),
       ),
     )
-  }, [characters, selectedManeuverInfos, getSourceManeuver, dispatch])
+  }, [
+    useCharacters,
+    selectedManeuverInfos,
+    getSourceManeuver,
+    dispatch,
+    loading,
+  ])
 
   const maneuvers: ManeuverInfo[] = useMemo(
     () =>
@@ -109,13 +88,7 @@ export default function ManeuverContents() {
               data.character.owner !== currentUser?.userName)
           )
         })
-        .sort((a, b) => {
-          const aName = a.maneuver.name
-          const bName = b.maneuver.name
-          if (aName < bName) return -1
-          if (aName > bName) return 1
-          return 0
-        }),
+        .sort((a, b) => a.maneuver.name.localeCompare(b.maneuver.name)),
     [currentUser?.userName, scope, useCharacters],
   )
 
@@ -131,7 +104,7 @@ export default function ManeuverContents() {
 
   const items: CollapseProps['items'] = useMemo(
     () => [
-      AllManeuvers({ maneuvers, getCountDetail }),
+      AllManeuvers({ loading, maneuvers, getCountDetail }),
       PositionSkillManeuvers({ maneuvers, getCountDetail }),
       ClassSkillManeuvers({ maneuvers, getCountDetail }),
       ModificationManeuvers({ maneuvers, getCountDetail }),
@@ -157,14 +130,6 @@ export default function ManeuverContents() {
           wrap
           gap={11}
         >
-          <Radio.Group
-            value={target}
-            onChange={(e) => setTarget(e.target.value)}
-            options={options}
-            defaultValue="own"
-            optionType="button"
-            buttonStyle="solid"
-          />
           <Collapse
             items={items}
             size="small"
@@ -175,7 +140,7 @@ export default function ManeuverContents() {
         <ManeuverDetailSider />
       </>
     ),
-    [items, target],
+    [items],
   )
 
   if (loading) return <Spin size="large" />
