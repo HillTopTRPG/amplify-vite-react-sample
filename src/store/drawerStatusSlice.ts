@@ -3,7 +3,7 @@ import { type RootState } from '@/store/index.ts'
 
 const initialState: boolean = false
 
-const drawerStatusSlice = createSlice({
+const slice = createSlice({
   name: 'drawerStatus',
   initialState,
   reducers: {
@@ -16,8 +16,8 @@ const drawerStatusSlice = createSlice({
   },
 })
 
-export const { setDrawerStatus, toggleDrawerStatus } = drawerStatusSlice.actions
+export const { setDrawerStatus, toggleDrawerStatus } = slice.actions
 
 export const selectDrawerStatus = (state: RootState) => state.drawerStatus
 
-export default drawerStatusSlice.reducer
+export default slice.reducer

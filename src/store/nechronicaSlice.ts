@@ -4,17 +4,15 @@ import {
   type NechronicaAdditionalData,
   type NechronicaBasic,
   type NechronicaCharacter,
-  type NechronicaDataHelper,
   type NechronicaManeuver,
   type NechronicaRoice,
   type NechronicaType,
 } from '@higanbina/ts/NechronicaDataHelper.ts'
-import { createAction, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { generateClient } from 'aws-amplify/api'
-import { type RootState, useAppSelector } from '@/store/index.ts'
-import { selectMe } from '@/store/userAttributesSlice.ts'
+import { type RootState } from '@/store/index.ts'
 import { simpleReducer } from '@/store/util.ts'
-import { type OnlyTypeKey, type PromiseType, typedOmit } from '@/utils/types.ts'
+import { type OnlyTypeKey, typedOmit } from '@/utils/types.ts'
 
 const client = generateClient<Schema>()
 
@@ -148,11 +146,7 @@ const deleteListData = (property: 'maneuverList' | 'roiceList') => {
   }
 }
 
-export const createNechronicaCharacter = createAction<
-  NonNullable<PromiseType<ReturnType<typeof NechronicaDataHelper.fetch>>>
->('nechronica/createCharacter')
-
-const nechronicaSlice = createSlice({
+const slice = createSlice({
   name: 'nechronica',
   initialState,
   reducers: {
@@ -236,31 +230,6 @@ const nechronicaSlice = createSlice({
     updateMakingRoice: updateListData('roiceList'),
     deleteMakingRoice: deleteListData('roiceList'),
   },
-  extraReducers: (builder) => {
-    builder.addCase(createNechronicaCharacter, (state, action) => {
-      const me = useAppSelector(selectMe)
-      const character = action.payload
-      // 重複チェック
-      const compare = (c: NechronicaCharacter) =>
-        (['type', 'sheetId'] as const).every(
-          (p) => c.additionalData[p] === character.additionalData[p],
-        ) && c.owner === me?.userName
-      if (state.characters.some(compare)) return
-
-      const additionalData: NechronicaAdditionalData = {
-        ...character.additionalData,
-        stared: false,
-      }
-
-      client.models.NechronicaCharacter.create({
-        name: character.sheetData.basic.characterName,
-        additionalData: JSON.stringify(additionalData),
-        sheetData: JSON.stringify(character.sheetData),
-        owner: me?.userName || '',
-        public: false,
-      })
-    })
-  },
 })
 
 export const {
@@ -279,7 +248,7 @@ export const {
   addMakingRoice,
   updateMakingRoice,
   deleteMakingRoice,
-} = nechronicaSlice.actions
+} = slice.actions
 
 const state =
   <T extends keyof State>(p: T) =>
@@ -304,4 +273,4 @@ export const selectMakingCharacterBase = sheetData('basic')
 export const selectMakingCharacterManeuverList = sheetData('maneuverList')
 export const selectMakingCharacterRoiceList = sheetData('roiceList')
 
-export default nechronicaSlice.reducer
+export default slice.reducer

@@ -60,7 +60,7 @@ export const fetchCurrentUser = createAsyncThunk(
   getCurrentUser,
 )
 
-const userAttributesSlice = createSlice({
+const slice = createSlice({
   name: 'userAttributes',
   initialState,
   reducers: {
@@ -153,7 +153,7 @@ const userAttributesSlice = createSlice({
   },
 })
 
-export const { finishFetch } = userAttributesSlice.actions
+export const { finishFetch } = slice.actions
 
 const state =
   <T extends keyof State>(p: T) =>
@@ -166,4 +166,4 @@ export const selectUsers = state('users')
 export const selectUserAttributesLoading = state('loading')
 export const selectFilter = state('filter')
 
-export default userAttributesSlice.reducer
+export default slice.reducer
