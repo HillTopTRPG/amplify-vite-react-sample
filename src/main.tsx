@@ -16,8 +16,6 @@ const dict = {
   ja: {
     'Your passwords must match': 'パスワードが一致しません',
     'Enter your email': 'メールアドレス',
-    Nickname: '表示ユーザー名',
-    'Enter your Nickname': '表示ユーザー名を入力',
   },
 }
 

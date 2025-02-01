@@ -6,12 +6,7 @@ import {
 } from '@reduxjs/toolkit'
 import { type GetProps } from 'antd'
 import { generateClient } from 'aws-amplify/api'
-import {
-  fetchUserAttributes,
-  type FetchUserAttributesOutput,
-  getCurrentUser,
-  type GetCurrentUserOutput,
-} from 'aws-amplify/auth'
+import { getCurrentUser, type GetCurrentUserOutput } from 'aws-amplify/auth'
 import type Avatar from 'boring-avatars'
 import { type RootState } from '@/store/index.ts'
 
@@ -28,9 +23,7 @@ export type User = Schema['User']['type'] & {
 }
 
 interface State {
-  attr: FetchUserAttributesOutput | undefined
   loading: boolean
-  attrStatus: 'yet' | 'loading' | 'done'
   user: GetCurrentUserOutput | null
   userStatus: 'yet' | 'loading' | 'done'
   users: User[]
@@ -40,9 +33,7 @@ interface State {
   filter: object
 }
 const initialState: State = {
-  attr: undefined,
   loading: true,
-  attrStatus: 'yet',
   user: null,
   userStatus: 'yet',
   users: [],
@@ -55,11 +46,6 @@ const initialState: State = {
     },
   },
 }
-
-export const fetchAttr = createAsyncThunk(
-  'amplifyApi/fetchUserAttributes',
-  fetchUserAttributes,
-)
 
 export const fetchCurrentUser = createAsyncThunk(
   'amplifyApi/getCurrentUser',
@@ -120,6 +106,7 @@ const slice = createSlice({
         console.log('create user', state.user.username)
         client.models.User.create({
           userName: state.user.username,
+          displayName: state.user.username,
           setting: JSON.stringify({
             avatarSrc: state.user.username,
           }),
@@ -128,20 +115,6 @@ const slice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchAttr.pending, (state) => {
-        state.attrStatus = 'loading'
-      })
-      .addCase(
-        fetchAttr.fulfilled,
-        (state, action: PayloadAction<FetchUserAttributesOutput>) => {
-          state.attr = action.payload
-          state.attrStatus = 'done'
-        },
-      )
-      .addCase(fetchAttr.rejected, (state) => {
-        state.attrStatus = 'done'
-      })
     builder
       .addCase(fetchCurrentUser.pending, (state) => {
         state.userStatus = 'loading'

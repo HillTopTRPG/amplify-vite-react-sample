@@ -5,7 +5,6 @@ import { generateClient } from 'aws-amplify/api'
 import useScreenLocation from '@/hooks/useScreenLocation.ts'
 import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  fetchAttr,
   fetchCurrentUser,
   finishFetch,
   type User,
@@ -56,24 +55,16 @@ export default function FetchUserAttributes({ children }: Props) {
   const [searchParams] = useSearchParams()
   const userName = searchParams.get('userName')
 
-  const attrStatus = useAppSelector((state) => state.userAttributes.attrStatus)
   const userStatus = useAppSelector((state) => state.userAttributes.userStatus)
 
-  if (attrStatus === 'yet') {
-    // eslint-disable-next-line no-console
-    console.log('fetchAttr')
-    dispatch(fetchAttr())
-  }
-
-  useEffect(() => {
-    if (attrStatus !== 'done' || userStatus !== 'yet') return
+  if (userStatus === 'yet') {
     // eslint-disable-next-line no-console
     console.log('fetchCurrentUser')
     dispatch(fetchCurrentUser())
-  }, [attrStatus, dispatch, userStatus])
+  }
 
   useEffect(() => {
-    if (attrStatus !== 'done' || userStatus !== 'done') return
+    if (userStatus !== 'done') return
 
     // eslint-disable-next-line no-console
     console.log('get user records.')
@@ -88,7 +79,7 @@ export default function FetchUserAttributes({ children }: Props) {
       },
     })
     return void sub.unsubscribe
-  }, [attrStatus, dispatch, scope, userName, userStatus])
+  }, [dispatch, scope, userName, userStatus])
 
   return children
 }
