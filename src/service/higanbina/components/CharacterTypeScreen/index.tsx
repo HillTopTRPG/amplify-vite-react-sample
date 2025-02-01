@@ -7,7 +7,6 @@ import { screens } from '@higanbina/screens'
 import { type NechronicaType } from '@higanbina/ts/NechronicaDataHelper.ts'
 import { Flex, FloatButton, type InputRef, Spin } from 'antd'
 import DollFilterCollapse from './filter/DollFilterCollapse.tsx'
-import MenuImageIcon from '@/components/MenuImageIcon.tsx'
 import ScreenContainer from '@/components/ScreenContainer.tsx'
 import { scrollContainerContext } from '@/context/scrollContainer.ts'
 import useNechronicaLoading from '@/hooks/gameData/useNechronicaLoading.ts'
@@ -15,7 +14,6 @@ import useNechronicaSearchCharacter from '@/hooks/gameData/useNechronicaSearchCh
 import useNechronicaTypeFilteredCharacters from '@/hooks/gameData/useNechronicaTypeFilteredCharacters.tsx'
 import useKeyBind from '@/hooks/useKeyBind.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
-import { getCharacterTypeSrc } from '@/service/higanbina'
 import { useAppSelector } from '@/store'
 import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
 
@@ -61,11 +59,7 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
 
   const loadingElm = useMemo(
     () => (
-      <ScreenContainer
-        label={label}
-        icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
-        screens={screens}
-      >
+      <ScreenContainer label={label} screens={screens}>
         <Spin size="large" />
         <div
           style={{
@@ -80,16 +74,12 @@ export default function CharacterTypeScreen({ characterType, label }: Props) {
         </div>
       </ScreenContainer>
     ),
-    [characterType, label],
+    [label],
   )
 
   const mainContents = useMemo(
     () => (
-      <ScreenContainer
-        label={label}
-        icon={MenuImageIcon(getCharacterTypeSrc(characterType, 1))}
-        screens={screens}
-      >
+      <ScreenContainer label={label} screens={screens}>
         <AddCharacterInput
           label={label}
           characterType={characterType}

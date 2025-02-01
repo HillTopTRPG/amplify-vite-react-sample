@@ -4,6 +4,7 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit'
+import { type GetProps } from 'antd'
 import { generateClient } from 'aws-amplify/api'
 import {
   fetchUserAttributes,
@@ -11,13 +12,18 @@ import {
   getCurrentUser,
   type GetCurrentUserOutput,
 } from 'aws-amplify/auth'
+import type Avatar from 'boring-avatars'
 import { type RootState } from '@/store/index.ts'
 
 const client = generateClient<Schema>()
 
-type User = Schema['User']['type'] & {
+export type User = Schema['User']['type'] & {
   setting: {
-    darkMode: boolean
+    avatarProps: {
+      name: string
+      variant: GetProps<typeof Avatar>['variant']
+      colors: string[]
+    }
   }
 }
 
@@ -115,7 +121,7 @@ const slice = createSlice({
         client.models.User.create({
           userName: state.user.username,
           setting: JSON.stringify({
-            darkMode: false,
+            avatarSrc: state.user.username,
           }),
         })
       }

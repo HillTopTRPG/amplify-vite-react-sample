@@ -36,11 +36,10 @@ export default function ScreenSelectMenu({ onSelect }: Props) {
           backgroundColor: 'transparent',
           border: 'none',
           flexGrow: 1,
-          width: '100%',
           display: 'flex',
           flexDirection: 'column',
           alignContent: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
         }}
         items={getKeys(screens)
           .filter((key) => key === screen || !screens[key].param)

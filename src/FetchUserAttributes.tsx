@@ -10,15 +10,44 @@ import {
   fetchAttr,
   fetchCurrentUser,
   finishFetch,
+  type User,
 } from '@/store/userAttributesSlice.ts'
 
 const client = generateClient<Schema>()
 const { defaultAlgorithm, darkAlgorithm } = theme
 
-type User = Schema['User']['type'] & {
-  setting: {
-    darkMode: boolean
+function parseUserSetting(item: { userName: string; setting: string }) {
+  const setting = JSON.parse(item.setting)
+  if (
+    !('avatarProps' in setting) ||
+    !setting.avatarProps ||
+    typeof setting.avatarProps !== 'object'
+  ) {
+    setting.avatarProps = {}
   }
+  const checkAndSetValue = (property: string, value: string) => {
+    if (
+      !(property in setting.avatarProps) ||
+      typeof setting.avatarProps[property] !== 'string'
+    ) {
+      setting.avatarProps[property] = value
+    }
+  }
+  checkAndSetValue('name', item.userName)
+  checkAndSetValue('variant', 'beam')
+  if (
+    !('colors' in setting.avatarProps) ||
+    !Array.isArray(setting.avatarProps.colors)
+  ) {
+    setting.avatarProps.colors = [
+      '#264653',
+      '#2a9d8f',
+      '#e9c46a',
+      '#f4a261',
+      '#e76f51',
+    ]
+  }
+  return setting as User['setting']
 }
 
 interface Props {
@@ -57,7 +86,8 @@ export default function FetchUserAttributes({ children }: Props) {
     const sub = client.models.User.observeQuery().subscribe({
       next: ({ items }) => {
         const users = items.map((item) => {
-          return { ...item, setting: JSON.parse(item.setting) } as User
+          const setting = parseUserSetting(item)
+          return { ...item, setting } as User
         })
         dispatch(finishFetch({ scope, userName, users }))
       },

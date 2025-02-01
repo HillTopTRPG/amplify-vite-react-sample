@@ -114,7 +114,7 @@ export default function ManeuverContents() {
       BasicManeuvers({ maneuvers, getCountDetail }),
       OtherManeuvers({ maneuvers, getCountDetail }),
     ],
-    [maneuvers, getCountDetail],
+    [getCountDetail, loading, maneuvers],
   )
 
   const contents = useMemo(

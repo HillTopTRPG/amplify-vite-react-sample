@@ -1,16 +1,8 @@
-import React, {
-  forwardRef,
-  type ReactNode,
-  type Ref,
-  useId,
-  useMemo,
-} from 'react'
+import { forwardRef, type ReactNode, type Ref, useId, useMemo } from 'react'
 import { UserOutlined } from '@ant-design/icons'
 import { Flex, Select, Typography } from 'antd'
 import { Helmet } from 'react-helmet-async'
-import { useMediaQuery } from 'react-responsive'
 import SharePageButton from '@/components/SharePageButton.tsx'
-import { MEDIA_QUERY } from '@/const/style.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import AppBreadcrumb from '@/layouts/MainLayout/AppBreadcrumb.tsx'
 import { type Screen } from '@/service'
@@ -19,17 +11,15 @@ import { selectMe, selectUsers } from '@/store/userAttributesSlice.ts'
 
 interface Props {
   label: string
-  icon: React.FC
   screens: Record<string, Screen>
   topContents?: ReactNode
   children?: ReactNode
 }
 const ScreenContainer = forwardRef<HTMLElement, Props>(function Component(
-  { label, icon, screens, children, topContents }: Props,
+  { label, screens, children, topContents }: Props,
   ref: Ref<HTMLElement>,
 ) {
   const id = useId()
-  const isMobile = useMediaQuery(MEDIA_QUERY.MOBILE)
   const { scope, userName, setScreen } = useScreenNavigateInService(screens)
   const me = useAppSelector(selectMe)
   const users = useAppSelector(selectUsers)
@@ -116,9 +106,7 @@ const ScreenContainer = forwardRef<HTMLElement, Props>(function Component(
     ),
     [
       children,
-      icon,
       id,
-      isMobile,
       label,
       me?.userName,
       ref,
