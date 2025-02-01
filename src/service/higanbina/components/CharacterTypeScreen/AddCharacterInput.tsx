@@ -7,9 +7,9 @@ import {
 } from '@higanbina/ts/NechronicaDataHelper.ts'
 import { Button, type InputRef, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
+import useCreateNechronicaCharacter from '@/hooks/gameData/useCreateNechronicaCharacter.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
-import { useAppDispatch, useAppSelector } from '@/store'
-import { createNechronicaCharacter } from '@/store/nechronicaSlice.ts'
+import { useAppSelector } from '@/store'
 import { selectCurrentIsMe } from '@/store/userAttributesSlice.ts'
 
 interface Props {
@@ -22,10 +22,10 @@ export default function AddCharacterInput({
   characterType,
   sheetIdInputRef,
 }: Props) {
-  const dispatch = useAppDispatch()
   const { scope } = useScreenNavigateInService(screens)
   const currentIsMe = useAppSelector(selectCurrentIsMe)
   const [sheetId, setSheetId] = useState('')
+  const createNechronicaCharacter = useCreateNechronicaCharacter()
 
   const onCreateCharacter = useCallback(async () => {
     if (!sheetId.trim()) return
@@ -39,8 +39,14 @@ export default function AddCharacterInput({
     setSheetId('')
     sheetIdInputRef?.current?.blur()
     sheetIdInputRef?.current?.focus()
-    dispatch(createNechronicaCharacter(sheetData))
-  }, [characterType, currentIsMe, dispatch, sheetId, sheetIdInputRef])
+    createNechronicaCharacter(sheetData)
+  }, [
+    characterType,
+    createNechronicaCharacter,
+    currentIsMe,
+    sheetId,
+    sheetIdInputRef,
+  ])
 
   const elm = useMemo(
     () => (

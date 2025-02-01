@@ -1,6 +1,6 @@
 import { type CSSProperties, useId } from 'react'
-import type { Filter } from '@higanbina/hooks/useSearchCharacter.ts'
 import { Input, Space, Typography } from 'antd'
+import type { Filter } from '@/hooks/gameData/useNechronicaSearchCharacter.ts'
 
 const CONTAINER_STYLE: CSSProperties = {
   alignItems: 'stretch',

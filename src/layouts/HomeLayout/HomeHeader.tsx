@@ -1,19 +1,19 @@
 import { type CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MenuOutlined, MoonFilled, SunFilled } from '@ant-design/icons'
-import { Button, Flex, Layout, Segmented, theme, Typography } from 'antd'
+import { MenuOutlined } from '@ant-design/icons'
+import { Button, Flex, Layout, theme, Typography } from 'antd'
 import { MENU_LINKS } from './constate.ts'
+import ThemeTypeSwitch from '@/components/ThemeTypeSwitch.tsx'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import styles from '@/pages/Home/CustomFont.module.css'
-import { useAppDispatch, useAppSelector } from '@/store'
-import { selectTheme, toggleThemeType } from '@/store/themeSlice.ts'
+import { useAppSelector } from '@/store'
+import { selectTheme } from '@/store/themeSlice.ts'
 
 interface Props {
   toggleDrawerOpen: () => void
   hideMenu?: boolean
 }
 export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const themeType = useAppSelector(selectTheme)
   const { token } = theme.useToken()
@@ -43,7 +43,7 @@ export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
       <Flex vertical align="flex-start" style={{ flexGrow: 1 }}>
         <Typography.Title
           level={3}
-          className={styles.customFont}
+          className={styles.toolTitleFont}
           style={{ margin: 0, cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >
@@ -59,16 +59,7 @@ export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
           ))}
         </>
       ) : null}
-      <Segmented
-        size="small"
-        value={themeType}
-        onChange={() => dispatch(toggleThemeType())}
-        options={[
-          { value: 'light', icon: <SunFilled /> },
-          { value: 'dark', icon: <MoonFilled /> },
-        ]}
-        style={{ backgroundColor: '#888', color: 'white' }}
-      />
+      <ThemeTypeSwitch />
       {!hideMenu && withIcon ? (
         <Button
           type="text"

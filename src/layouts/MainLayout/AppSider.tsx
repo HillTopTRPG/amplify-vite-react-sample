@@ -1,10 +1,11 @@
-import { Layout, theme } from 'antd'
-import ScreenSelectMenu from './ScreenSelectMenu.tsx'
+import { Flex, Layout, theme } from 'antd'
+import AppMenuExtraItems from './AppMenuExtraItems.tsx'
+import AppMenuMainItems from './AppMenuMainItems.tsx'
 import { useAppSelector } from '@/store'
 import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
 import { selectTheme } from '@/store/themeSlice.ts'
 
-export default function Sider() {
+export default function AppSider() {
   const themeType = useAppSelector(selectTheme)
   const open = useAppSelector(selectDrawerStatus)
   const { token } = theme.useToken()
@@ -19,15 +20,20 @@ export default function Sider() {
       style={{
         position: 'fixed',
         top: '3rem',
-        width: 200,
         left: 0,
         bottom: 0,
         zIndex: 100,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
         backgroundColor: token.colorBgContainer,
         borderRight: `solid 1px ${themeType === 'dark' ? '#222' : '#e7e7e7'}`,
       }}
     >
-      <ScreenSelectMenu />
+      <Flex vertical style={{ height: 'calc(100vh - 3rem)' }}>
+        <AppMenuMainItems />
+        <AppMenuExtraItems />
+      </Flex>
     </Layout.Sider>
   )
 }

@@ -4,6 +4,7 @@ const schema = a.schema({
   User: a
     .model({
       userName: a.string().required(),
+      displayName: a.string().required(),
       setting: a.string().required(),
     })
     .authorization((allow) => [

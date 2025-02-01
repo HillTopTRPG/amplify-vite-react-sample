@@ -8,7 +8,7 @@ export default function MenuImageIcon(src: string) {
       height={16}
       preview={false}
       style={{
-        transform: 'scale(1.6)',
+        transform: 'scale(1.5)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

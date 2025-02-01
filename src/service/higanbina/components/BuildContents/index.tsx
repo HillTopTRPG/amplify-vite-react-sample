@@ -14,10 +14,10 @@ import {
 import BasicDesign from './BasicDesign'
 import CharacterTypeRadioGroup from './CharacterTypeRadioGroup.tsx'
 import PersonalDataDesign from './PersonalDataDesign'
+import useNechronicaLoading from '@/hooks/gameData/useNechronicaLoading.ts'
 import { useAppDispatch, useAppSelector } from '@/store'
 import {
   selectMakingCharacter,
-  selectNechronicaLoading,
   addMakingManeuver,
   addMakingRoice,
 } from '@/store/nechronicaSlice.ts'
@@ -36,7 +36,7 @@ const dollOnlyCollapseKeys = ['basic', 'roice']
 
 export default function BuildContents() {
   const dispatch = useAppDispatch()
-  const loading = useAppSelector(selectNechronicaLoading)
+  const loading = useNechronicaLoading()
   const makingNechronicaCharacter = useAppSelector(selectMakingCharacter)
   const characterType = makingNechronicaCharacter.additionalData.type
 

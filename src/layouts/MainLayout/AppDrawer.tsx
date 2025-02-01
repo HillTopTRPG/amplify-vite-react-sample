@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react'
-import { Drawer } from 'antd'
+import { Drawer, Flex } from 'antd'
 import { useDispatch } from 'react-redux'
-import ScreenSelectMenu from './ScreenSelectMenu.tsx'
+import AppMenuExtraItems from './AppMenuExtraItems.tsx'
+import AppMenuMainItems from './AppMenuMainItems.tsx'
 import { useAppSelector } from '@/store'
 import {
   selectDrawerStatus,
@@ -30,6 +31,8 @@ export default function AppDrawer() {
           content: {
             marginTop: 48,
             height: 'calc(100% - 48px)',
+            position: 'fixed',
+            width: 200,
           },
           body: {
             padding: 0,
@@ -39,7 +42,10 @@ export default function AppDrawer() {
           },
         }}
       >
-        <ScreenSelectMenu onSelect={() => setOpenStatus(false)} />
+        <Flex vertical style={{ height: 'calc(100vh - 3rem)' }}>
+          <AppMenuMainItems />
+          <AppMenuExtraItems />
+        </Flex>
       </Drawer>
     ),
     [open, setOpenStatus],

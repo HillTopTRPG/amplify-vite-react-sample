@@ -11,12 +11,12 @@ import UnGroupConfirmButton from './UnGroupConfirmButton.tsx'
 import DataSmallCard from '@/components/DataSmallCard'
 import DeleteConfirmButton from '@/components/DeleteConfirmButton.tsx'
 import StyledRadar, { makeChartData } from '@/components/StyledRadar.tsx'
+import useNechronicaGroupRelations from '@/hooks/gameData/useNechronicaGroupRelations.ts'
 import { useAppSelector } from '@/store'
 import { updateCharacterGroup } from '@/store/commonSlice.ts'
 import {
   deleteNechronicaCharacter,
   updateNechronicaCharacter,
-  selectCharacterGroupRelations,
 } from '@/store/nechronicaSlice.ts'
 import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 import { typedOmit } from '@/utils/types.ts'
@@ -38,7 +38,7 @@ export default function CharacterSmallCard({
   onUnGroup,
 }: Props) {
   const { token } = theme.useToken()
-  const characterGroupRelations = useAppSelector(selectCharacterGroupRelations)
+  const characterGroupRelations = useNechronicaGroupRelations()
   const currentUser = useAppSelector(selectCurrentUser)
 
   const useCharacterGroupRelations = useMemo(

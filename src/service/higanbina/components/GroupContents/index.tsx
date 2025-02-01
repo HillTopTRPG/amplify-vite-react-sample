@@ -1,51 +1,33 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import CharacterDetailSider from '@higanbina/components/DetailSider/CharacterDetailSider'
-import { useSearchCharacter } from '@higanbina/hooks/useSearchCharacter.ts'
-import { screens } from '@higanbina/screens'
 import type { CharacterGroupRelation } from '@higanbina/ts/NechronicaDataHelper.ts'
 import { Button, Flex, Modal, Result, Spin } from 'antd'
 import CharacterSmallCard from '../CharacterTypeScreen/CharacterSmallCard.tsx'
 import CharacterSmallCards from '../CharacterTypeScreen/CharacterSmallCards.tsx'
-import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import useNechronicaFilteredCharacters from '@/hooks/gameData/useNechronicaFilteredCharacters.tsx'
+import useNechronicaGroupRelations from '@/hooks/gameData/useNechronicaGroupRelations.ts'
+import useNechronicaSearchCharacter from '@/hooks/gameData/useNechronicaSearchCharacter.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import { useSelectIds } from '@/hooks/useSelectIds.ts'
 import { useAppSelector } from '@/store'
 import { updateCharacterGroup } from '@/store/commonSlice.ts'
 import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
-import {
-  selectCharacterGroupRelations,
-  selectNechronicaCharacters,
-  selectNechronicaLoading,
-} from '@/store/nechronicaSlice.ts'
-import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 import { typedOmit } from '@/utils/types.ts'
 
 export default function GroupContents() {
   const { groupId } = useParams()
 
-  const loading = useAppSelector(selectNechronicaLoading)
-  const characters = useAppSelector(selectNechronicaCharacters)
-  const characterGroupRelations = useAppSelector(selectCharacterGroupRelations)
-
-  const currentUser = useAppSelector(selectCurrentUser)
-  const { scope } = useScreenNavigateInService(screens)
+  const characterGroupRelations = useNechronicaGroupRelations()
   const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)
+
+  const [loading, useCharacters] = useNechronicaFilteredCharacters()
 
   const characterGroupRelation = useMemo(() => {
     if (loading) return null
     return characterGroupRelations.find((cg) => cg.id === groupId) ?? null
   }, [characterGroupRelations, groupId, loading])
-
-  const useCharacters = useMemo(
-    () =>
-      characters.filter((c) => {
-        if (scope === 'public' && !currentUser) return true
-        return c.owner === currentUser?.userName
-      }),
-    [characters, currentUser, scope],
-  )
 
   const {
     searchedCharacters,
@@ -53,7 +35,7 @@ export default function GroupContents() {
     setSelectedCharacters,
     setHoverCharacter,
     detailList,
-  } = useSearchCharacter(characterGroupRelation?.characters ?? [])
+  } = useNechronicaSearchCharacter(characterGroupRelation?.characters ?? [])
 
   const [selectIds, setSelectIds, onSelectCharacter] = useSelectIds()
 

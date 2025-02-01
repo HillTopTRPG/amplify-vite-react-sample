@@ -38,7 +38,7 @@ export default function HomeTitleBlock({ view, status }: Props) {
         </Typography.Text>
         <Typography.Title
           level={2}
-          className={styles.customFont}
+          className={styles.toolTitleFont}
           style={{ margin: 0, ...TITLE_TEXT_STYLE }}
         >
           <Rubies name={TOOL_NAME} kana={TOOL_NAME_KANA} />
@@ -46,7 +46,7 @@ export default function HomeTitleBlock({ view, status }: Props) {
         {status > 0 ? (
           <Typography.Title
             level={4}
-            className={styles.customFont}
+            className={styles.toolTitleFont}
             style={{ margin: '20px 0 0', ...TITLE_TEXT_STYLE }}
           >
             {status === 1 ? 'ツール一覧' : ''}

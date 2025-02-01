@@ -23,9 +23,5 @@ export const auth = defineAuth({
       mutable: false,
       required: false,
     },
-    nickname: {
-      mutable: true,
-      required: true,
-    },
   },
 })

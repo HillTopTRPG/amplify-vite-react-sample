@@ -7,7 +7,7 @@ type Theme = 'dark' | 'light'
 const initialState: Theme =
   (localStorage.getItem(LOCAL_STORAGE_KEY) as 'dark' | 'light') ?? 'dark'
 
-const themeSlice = createSlice({
+const slice = createSlice({
   name: 'theme',
   initialState,
   reducers: {
@@ -19,8 +19,8 @@ const themeSlice = createSlice({
   },
 })
 
-export const { toggleThemeType } = themeSlice.actions
+export const { toggleThemeType } = slice.actions
 
 export const selectTheme = (state: RootState) => state.theme
 
-export default themeSlice.reducer
+export default slice.reducer

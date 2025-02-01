@@ -60,6 +60,8 @@ export default function useScreenNavigateInService(
         queryParam: baseQueryParams,
       })
 
+      const scopeBlock = props.scope === 'private' ? '/private' : ''
+
       const urlParamBlock =
         props.screen in screens && screens[props.screen].param && props.urlParam
           ? `/${props.urlParam}`
@@ -71,7 +73,7 @@ export default function useScreenNavigateInService(
       const queryParamBlock = props.queryParam.length
         ? `/?${new URLSearchParams(props.queryParam).toString()}`
         : ''
-      return `/${props.scope}/${service}${screenBlock}${urlParamBlock}${queryParamBlock}`
+      return `/${service}${scopeBlock}${screenBlock}${urlParamBlock}${queryParamBlock}`
     },
     [baseQueryParams, scope, screen, screens, service, urlParam],
   )

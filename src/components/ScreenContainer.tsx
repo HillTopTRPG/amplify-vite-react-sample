@@ -1,40 +1,43 @@
-import React, { forwardRef, type ReactNode, type Ref, useMemo } from 'react'
-import { SelectOutlined, ShareAltOutlined } from '@ant-design/icons'
-import { Button, Flex, Popover, QRCode, Space, Typography } from 'antd'
+import { forwardRef, type ReactNode, type Ref, useId, useMemo } from 'react'
+import { UserOutlined } from '@ant-design/icons'
+import { Flex, Select, Typography } from 'antd'
 import { Helmet } from 'react-helmet-async'
-import { useMediaQuery } from 'react-responsive'
-import { MEDIA_QUERY } from '@/const/style.ts'
+import SharePageButton from '@/components/SharePageButton.tsx'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
+import AppBreadcrumb from '@/layouts/MainLayout/AppBreadcrumb.tsx'
 import { type Screen } from '@/service'
 import { useAppSelector } from '@/store'
-import { selectCurrentUser, selectMe } from '@/store/userAttributesSlice.ts'
+import { selectMe, selectUsers } from '@/store/userAttributesSlice.ts'
 
 interface Props {
   label: string
-  icon: React.FC
   screens: Record<string, Screen>
+  topContents?: ReactNode
   children?: ReactNode
 }
 const ScreenContainer = forwardRef<HTMLElement, Props>(function Component(
-  { label, icon, screens, children }: Props,
+  { label, screens, children, topContents }: Props,
   ref: Ref<HTMLElement>,
 ) {
-  const isMobile = useMediaQuery(MEDIA_QUERY.MOBILE)
-  const { scope, getScreenUrl } = useScreenNavigateInService(screens)
+  const id = useId()
+  const { scope, userName, setScreen } = useScreenNavigateInService(screens)
   const me = useAppSelector(selectMe)
-  const currentUser = useAppSelector(selectCurrentUser)
-  const shareUrl = useMemo(
-    () =>
-      getScreenUrl((v) => ({
-        ...v,
-        scope: 'public',
-        queryParam: [
-          ['userName', currentUser?.userName ?? me?.userName ?? ''],
-          ...v.queryParam.filter(([p]) => p !== 'userName'),
-        ],
-      })),
-    [currentUser?.userName, getScreenUrl, me?.userName],
-  )
+  const users = useAppSelector(selectUsers)
+
+  const useUsers = useMemo(() => {
+    return users
+      ? (me
+          ? [me, ...users.filter((u) => u.userName !== me?.userName)]
+          : [...users]
+        ).map((user) => ({
+          ...user,
+          viewName:
+            user.userName === me?.userName && scope === 'private'
+              ? 'あなた'
+              : user.userName,
+        }))
+      : []
+  }, [me, scope, users])
 
   return useMemo(
     () => (
@@ -42,7 +45,7 @@ const ScreenContainer = forwardRef<HTMLElement, Props>(function Component(
         vertical
         className="screen-container"
         style={{
-          padding: '24px 12px',
+          padding: '0 12px 24px',
           boxSizing: 'border-box',
           minHeight: '100vh',
           position: 'relative',
@@ -52,40 +55,68 @@ const ScreenContainer = forwardRef<HTMLElement, Props>(function Component(
         <Helmet>
           <title>{label}</title>
         </Helmet>
-        <Typography.Title level={3} style={{ marginTop: -12 }}>
-          <Space>
-            {isMobile ? React.createElement(icon) : null}
-            {label}
-            {scope === 'public' ? null : (
-              <Popover
-                title="共有"
-                trigger="click"
-                content={
-                  <Flex vertical align="flex-start" gap={6}>
-                    <Flex align="center" gap={6}>
-                      <Typography.Text style={{ color: 'inherit' }}>
-                        <Typography.Link href={shareUrl} target="_blank">
-                          共有ページのリンク
-                          <SelectOutlined />
-                        </Typography.Link>
-                      </Typography.Text>
-                      <Typography.Text
-                        copyable={{ format: 'text/plain', text: shareUrl }}
-                      />
-                    </Flex>
-                    <QRCode value={shareUrl} size={100} />
-                  </Flex>
+        {topContents || <AppBreadcrumb screens={screens} />}
+        <Flex align="center" style={{ marginBottom: 12 }}>
+          <label htmlFor={id}>
+            <Typography.Text style={{ color: 'gray' }}>表示：</Typography.Text>
+          </label>
+          <Select
+            id={id}
+            showSearch
+            variant="borderless"
+            prefix={<UserOutlined />}
+            value={userName ?? (scope === 'public' ? '' : (me?.userName ?? ''))}
+            style={{ width: 'auto' }}
+            options={[
+              ...(scope === 'public'
+                ? [{ value: '', label: '全ユーザー', icon: <UserOutlined /> }]
+                : []),
+              ...useUsers.map((user) => ({
+                value: user.userName,
+                label: user.viewName,
+                icon: <UserOutlined />,
+              })),
+            ]}
+            onChange={(key) => {
+              setScreen((v) => {
+                const newValue = structuredClone(v)
+                const idx = newValue.queryParam.findIndex(
+                  ([param]) => param === 'userName',
+                )
+                if (idx >= 0) {
+                  if (key) {
+                    newValue.queryParam.splice(idx, 1, ['userName', key])
+                  } else {
+                    newValue.queryParam.splice(idx, 1)
+                  }
+                } else {
+                  if (key) {
+                    newValue.queryParam.push(['userName', key])
+                  }
                 }
-              >
-                <Button type="text" icon={<ShareAltOutlined />} />
-              </Popover>
-            )}
-          </Space>
-        </Typography.Title>
+                return newValue
+              })
+            }}
+            placement="bottomLeft"
+          />
+          <SharePageButton screens={screens} />
+        </Flex>
         {children}
       </Flex>
     ),
-    [children, icon, isMobile, label, ref, scope, shareUrl],
+    [
+      children,
+      id,
+      label,
+      me?.userName,
+      ref,
+      scope,
+      screens,
+      setScreen,
+      topContents,
+      useUsers,
+      userName,
+    ],
   )
 })
 

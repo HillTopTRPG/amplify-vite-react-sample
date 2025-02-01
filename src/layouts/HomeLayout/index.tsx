@@ -1,7 +1,6 @@
 import { type CSSProperties, type ReactNode, useState } from 'react'
 import { type FlexProps, Layout } from 'antd'
 import HomeHeader from './HomeHeader.tsx'
-import useTitleCustomFont from '@/hooks/useTitleCustomFont.ts'
 import HomeDrawer from '@/layouts/HomeLayout/HomeDrawer.tsx'
 
 const contentStyle: CSSProperties = {
@@ -28,8 +27,6 @@ export default function HomeLayout({
   hideMenu,
 }: Props) {
   const [drawerOpen, setDrawerOpen] = useState(false)
-
-  useTitleCustomFont()
 
   return (
     <Layout onScrollCapture={onScrollCapture}>

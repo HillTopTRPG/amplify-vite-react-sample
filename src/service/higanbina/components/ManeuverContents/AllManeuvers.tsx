@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react'
 import ListManeuverButton from '@higanbina/components/ManeuverContents/ListManeuverButton.tsx'
-import { Empty, Flex, type FlexProps } from 'antd'
+import { Empty, Flex, type FlexProps, Spin } from 'antd'
 import { type ItemType } from 'rc-collapse/es/interface'
 import { type ManeuverInfo } from '@/store/nechronicaSlice.ts'
 
@@ -15,10 +15,12 @@ const CONTAINER_PROPS: Omit<FlexProps, 'children'> = {
 } as const
 
 interface Props {
+  loading: boolean
   maneuvers: ManeuverInfo[]
   getCountDetail: (elms: ReactElement[]) => number
 }
 export default function AllManeuvers({
+  loading,
   maneuvers,
   getCountDetail,
 }: Props): ItemType {
@@ -34,7 +36,9 @@ export default function AllManeuvers({
     label: `全てのマニューバ(${getCountDetail(allManeuvers)}/${allManeuvers.length})`,
     children: (
       <Flex {...CONTAINER_PROPS}>
-        {allManeuvers.length ? (
+        {loading ? (
+          <Spin />
+        ) : allManeuvers.length ? (
           allManeuvers
         ) : (
           <Empty

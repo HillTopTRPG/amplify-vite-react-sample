@@ -3,28 +3,26 @@ import { PlusOutlined } from '@ant-design/icons'
 import { screens } from '@higanbina/screens'
 import { Button, Space } from 'antd'
 import InputWrap from '@/components/InputWrap.tsx'
+import useCreateCharacterGroup from '@/hooks/gameData/useCreateCharacterGroup.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
-import { useAppDispatch, useAppSelector } from '@/store'
-import { createCharacterGroup } from '@/store/commonSlice.ts'
+import { useAppSelector } from '@/store'
 import { selectCurrentIsMe } from '@/store/userAttributesSlice.ts'
 
 export default function AddGroupInput() {
-  const dispatch = useAppDispatch()
   const { scope } = useScreenNavigateInService(screens)
   const currentIsMe = useAppSelector(selectCurrentIsMe)
   const [newGroupName, setNewGroupName] = useState('')
+  const createCharacterGroup = useCreateCharacterGroup()
 
   const onCreateCharacterGroup = useCallback(() => {
     if (!newGroupName.trim()) return
-    dispatch(
-      createCharacterGroup({
-        system: 'nechronica',
-        name: newGroupName,
-        characterIds: [],
-      }),
-    )
+    createCharacterGroup({
+      system: 'nechronica',
+      name: newGroupName,
+      characterIds: [],
+    })
     setNewGroupName('')
-  }, [dispatch, newGroupName])
+  }, [createCharacterGroup, newGroupName])
 
   const elm = useMemo(
     () => (

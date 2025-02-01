@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { FilterOutlined } from '@ant-design/icons'
 import TextFilter from '@higanbina/components/CharacterTypeScreen/filter/TextFilter.tsx'
-import { type Filter } from '@higanbina/hooks/useSearchCharacter.ts'
 import { getCharacterTypeSrc, getClassSrc } from '@higanbina/index.ts'
 import {
   type NechronicaCharacter,
@@ -18,6 +17,7 @@ import {
 } from 'antd'
 import CharacterFilterCheck from './CharacterFilterCheck.tsx'
 import styles from './DollFilterCollapse.module.css'
+import { type Filter } from '@/hooks/gameData/useNechronicaSearchCharacter.ts'
 
 interface Props {
   filter: Filter

@@ -16,15 +16,13 @@ import { Flex, type GetProps, Tabs } from 'antd'
 import { sum } from 'lodash-es'
 import CharacterTypeIcon from './CharacterTypeIcon.tsx'
 import CharacterTypeItemSet from './CharacterTypeItemSet.tsx'
+import useNechronicaGroupRelations from '@/hooks/gameData/useNechronicaGroupRelations.ts'
+import useNechronicaLoading from '@/hooks/gameData/useNechronicaLoading.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import useScreenSize from '@/hooks/useScreenSize.ts'
 import { useAppSelector } from '@/store'
 import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
-import {
-  selectCharacterGroupRelations,
-  selectNechronicaCharacters,
-  selectNechronicaLoading,
-} from '@/store/nechronicaSlice.ts'
+import { selectNechronicaCharacters } from '@/store/nechronicaSlice.ts'
 import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 
 const enemies = ['savant', 'horror', 'legion'] as const
@@ -35,9 +33,9 @@ const dollConst = [
 ] as const
 
 export default function DashboardContents() {
-  const loading = useAppSelector(selectNechronicaLoading)
+  const loading = useNechronicaLoading()
   const characters = useAppSelector(selectNechronicaCharacters)
-  const characterGroupRelations = useAppSelector(selectCharacterGroupRelations)
+  const characterGroupRelations = useNechronicaGroupRelations()
   const { scope, setScreen } = useScreenNavigateInService(screens)
   const drawerStatus = useAppSelector(selectDrawerStatus)
   const screenSize = useScreenSize(drawerStatus)

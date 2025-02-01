@@ -2,17 +2,15 @@ import AddGroupInput from '@higanbina/components/DashboardContents/AddGroupInput
 import GroupSmallCard from '@higanbina/components/DashboardContents/GroupSmallCard.tsx'
 import { screens } from '@higanbina/screens'
 import { Flex, Spin } from 'antd'
+import useNechronicaGroupRelations from '@/hooks/gameData/useNechronicaGroupRelations.ts'
+import useNechronicaLoading from '@/hooks/gameData/useNechronicaLoading.ts'
 import useScreenNavigateInService from '@/hooks/useScreenNavigateInService.ts'
 import { useAppSelector } from '@/store'
-import {
-  selectCharacterGroupRelations,
-  selectNechronicaLoading,
-} from '@/store/nechronicaSlice.ts'
 import { selectCurrentUser } from '@/store/userAttributesSlice.ts'
 
 export default function GroupsContents() {
-  const loading = useAppSelector(selectNechronicaLoading)
-  const characterGroupRelations = useAppSelector(selectCharacterGroupRelations)
+  const loading = useNechronicaLoading()
+  const characterGroupRelations = useNechronicaGroupRelations()
 
   const currentUser = useAppSelector(selectCurrentUser)
   const { scope } = useScreenNavigateInService(screens)

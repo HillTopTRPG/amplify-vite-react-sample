@@ -133,7 +133,6 @@ export default function HomeFooter({ status, refs }: Props) {
                   <TooltipImage title="React" src={reactImg} />
                   <TooltipImage title="Ant Design" src={antdImg} />
                   <TooltipImage title="Redux Toolkit" src={reduxToolkitImg} />
-                  <TooltipImage title="x-logo" src={xLogoBlackImage} />
                 </Flex>
               </Flex>
             </>

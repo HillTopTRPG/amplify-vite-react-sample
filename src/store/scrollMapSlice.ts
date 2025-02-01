@@ -3,7 +3,7 @@ import { type RootState } from '@/store/index.ts'
 
 const initialState: Record<string, number> = {}
 
-const scrollMapSlice = createSlice({
+const slice = createSlice({
   name: 'scrollMap',
   initialState,
   reducers: {
@@ -16,8 +16,8 @@ const scrollMapSlice = createSlice({
   },
 })
 
-export const { updateScrollMap } = scrollMapSlice.actions
+export const { updateScrollMap } = slice.actions
 
 export const selectScrollMap = (state: RootState) => state.scrollMap
 
-export default scrollMapSlice.reducer
+export default slice.reducer
