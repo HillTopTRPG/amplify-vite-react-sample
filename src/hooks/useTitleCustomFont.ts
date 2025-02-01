@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 
 const FONT_URLS = [
   'https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap',
+  'https://fonts.googleapis.com/css2?family=RocknRoll+One&family=Zen+Kurenaido&display=swap',
 ] as const
 
 const loadFonts = () => {

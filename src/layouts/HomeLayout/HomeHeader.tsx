@@ -43,7 +43,7 @@ export default function HomeHeader({ toggleDrawerOpen, hideMenu }: Props) {
       <Flex vertical align="flex-start" style={{ flexGrow: 1 }}>
         <Typography.Title
           level={3}
-          className={styles.customFont}
+          className={styles.toolTitleFont}
           style={{ margin: 0, cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >

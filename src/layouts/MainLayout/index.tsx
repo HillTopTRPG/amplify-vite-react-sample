@@ -6,7 +6,6 @@ import PageScrollDispatcher from './PageScrollDispatcher.tsx'
 import Sider from './Sider.tsx'
 import { scrollContainerContext } from '@/context/scrollContainer.ts'
 import useScreenSize, { type ScreenSize } from '@/hooks/useScreenSize.ts'
-import AppBreadcrumb from '@/layouts/MainLayout/AppBreadcrumb.tsx'
 import { useAppSelector } from '@/store'
 import { selectDrawerStatus } from '@/store/drawerStatusSlice.ts'
 
@@ -51,7 +50,6 @@ export default function MainLayout({ containerStyle, children }: Props) {
               }}
               ref={scrollContainerRef}
             >
-              <AppBreadcrumb />
               {children}
             </Layout.Content>
           </Layout>

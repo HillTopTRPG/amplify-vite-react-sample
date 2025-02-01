@@ -95,7 +95,7 @@ export default function AppMenu() {
           />
           <Typography.Title
             level={5}
-            className={styles.customFont}
+            className={styles.toolTitleFont}
             style={{ margin: 0, cursor: 'pointer', flexGrow: 1 }}
             onClick={() => navigate('/')}
           >
