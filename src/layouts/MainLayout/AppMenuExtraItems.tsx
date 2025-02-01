@@ -1,35 +1,37 @@
 import { Menu } from 'antd'
 import Avatar from 'boring-avatars'
+import useScreenNavigateInGlobal from '@/hooks/useScreenNavigateInGlobal.ts'
 import { useAppSelector } from '@/store'
 import { selectTheme } from '@/store/themeSlice.ts'
 import { selectMe } from '@/store/userAttributesSlice.ts'
 
-export default function AppUserMenu() {
+export default function AppMenuExtraItems() {
   const themeType = useAppSelector(selectTheme)
   const me = useAppSelector(selectMe)
+  const { screen, setScreen } = useScreenNavigateInGlobal()
   if (!me) return null
 
-  const onSelectHandler = (key: string) => {
-    if (me.userName !== key) return
-    console.log(key)
+  const onSelectHandler = () => {
+    setScreen((v) => ({
+      ...v,
+      screen: 'profile',
+      queryParam: [],
+    }))
   }
 
   return (
     <Menu
       theme={themeType}
       mode="inline"
-      onSelect={(e) => onSelectHandler(e.key)}
+      onSelect={onSelectHandler}
+      selectedKeys={[screen]}
       style={{
         backgroundColor: 'transparent',
         border: 'none',
-        display: 'flex',
-        flexDirection: 'column',
-        alignContent: 'center',
-        justifyContent: 'flex-start',
       }}
       items={[
         {
-          key: me.userName,
+          key: 'profile',
           icon: <Avatar {...me.setting.avatarProps} size={16} />,
           label: me.userName,
         },

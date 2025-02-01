@@ -8,7 +8,7 @@ import { getKeys, isIncludes } from '@/utils/types.ts'
 interface Props {
   onSelect?: (key: string) => void
 }
-export default function ScreenSelectMenu({ onSelect }: Props) {
+export default function AppMenuMainItems({ onSelect }: Props) {
   const themeType = useAppSelector(selectTheme)
   const { screens, screen, setScreen } = useScreenNavigateInGlobal()
 
@@ -36,13 +36,13 @@ export default function ScreenSelectMenu({ onSelect }: Props) {
           backgroundColor: 'transparent',
           border: 'none',
           flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignContent: 'center',
-          justifyContent: 'flex-start',
         }}
         items={getKeys(screens)
-          .filter((key) => key === screen || !screens[key].param)
+          .filter((key) => {
+            const screenObj = screens[key]
+            if (screenObj.hideMenu) return false
+            return key === screen || !screenObj.param
+          })
           .map((key) => ({
             key,
             icon: (

@@ -2,8 +2,8 @@ import { type CSSProperties, type ReactNode, useRef } from 'react'
 import { Layout, theme } from 'antd'
 import AppDrawer from './AppDrawer.tsx'
 import AppMenu from './AppMenu.tsx'
+import AppSider from './AppSider.tsx'
 import PageScrollDispatcher from './PageScrollDispatcher.tsx'
-import Sider from './Sider.tsx'
 import { scrollContainerContext } from '@/context/scrollContainer.ts'
 import useScreenSize, { type ScreenSize } from '@/hooks/useScreenSize.ts'
 import { useAppSelector } from '@/store'
@@ -38,7 +38,7 @@ export default function MainLayout({ containerStyle, children }: Props) {
               zIndex: 0,
             }}
           >
-            {isMobile ? <AppDrawer /> : <Sider />}
+            {isMobile ? <AppDrawer /> : <AppSider />}
             <Layout.Content
               className="main-scroll-container"
               style={{

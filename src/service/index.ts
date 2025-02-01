@@ -25,6 +25,7 @@ export type Screen = {
   containerStyle?: (
     screenSize: ScreenSize,
   ) => CSSProperties | false | null | undefined
+  hideMenu?: boolean
   contents: ComponentType
 }
 
