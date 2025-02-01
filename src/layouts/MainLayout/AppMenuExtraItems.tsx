@@ -9,6 +9,7 @@ export default function AppMenuExtraItems() {
   const themeType = useAppSelector(selectTheme)
   const me = useAppSelector(selectMe)
   const { screen, setScreen } = useScreenNavigateInGlobal()
+
   if (!me) return null
 
   const onSelectHandler = () => {

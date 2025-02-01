@@ -8,8 +8,7 @@ import {
 import type { Location } from 'react-router-dom'
 import higanbinaRoutes from '@higanbina/Routes.tsx'
 import { Provider } from 'react-redux'
-import FetchGameSystemData from '@/FetchGameSystemData.tsx'
-import FetchUserAttributes from '@/FetchUserAttributes.tsx'
+import ThemeType from '@/ThemeType.tsx'
 import { servicesContext } from '@/context/servicesContext.ts'
 import useTitleCustomFont from '@/hooks/useTitleCustomFont.ts'
 import Home from '@/pages/Home'
@@ -25,14 +24,12 @@ function Root() {
 
   return (
     <Provider store={store}>
-      <FetchUserAttributes>
-        <FetchGameSystemData>
-          <servicesContext.Provider value={services}>
-            <ScrollRestoration getKey={getKey} />
-            <Outlet />
-          </servicesContext.Provider>
-        </FetchGameSystemData>
-      </FetchUserAttributes>
+      <ThemeType>
+        <servicesContext.Provider value={services}>
+          <ScrollRestoration getKey={getKey} />
+          <Outlet />
+        </servicesContext.Provider>
+      </ThemeType>
     </Provider>
   )
 }

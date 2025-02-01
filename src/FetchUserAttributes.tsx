@@ -1,11 +1,9 @@
-import { type ReactNode, useEffect, useMemo } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import type { Schema } from '@amplify/data/resource.ts'
-import { ConfigProvider, theme } from 'antd'
 import { generateClient } from 'aws-amplify/api'
 import useScreenLocation from '@/hooks/useScreenLocation.ts'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectTheme } from '@/store/themeSlice.ts'
 import {
   fetchAttr,
   fetchCurrentUser,
@@ -14,7 +12,6 @@ import {
 } from '@/store/userAttributesSlice.ts'
 
 const client = generateClient<Schema>()
-const { defaultAlgorithm, darkAlgorithm } = theme
 
 function parseUserSetting(item: { userName: string; setting: string }) {
   const setting = JSON.parse(item.setting)
@@ -58,8 +55,6 @@ export default function FetchUserAttributes({ children }: Props) {
   const { scope } = useScreenLocation()
   const [searchParams] = useSearchParams()
   const userName = searchParams.get('userName')
-  const themeType = useAppSelector(selectTheme)
-  const algorithm = themeType === 'dark' ? darkAlgorithm : defaultAlgorithm
 
   const attrStatus = useAppSelector((state) => state.userAttributes.attrStatus)
   const userStatus = useAppSelector((state) => state.userAttributes.userStatus)
@@ -95,15 +90,5 @@ export default function FetchUserAttributes({ children }: Props) {
     return void sub.unsubscribe
   }, [attrStatus, dispatch, scope, userName, userStatus])
 
-  return useMemo(
-    () => (
-      <ConfigProvider
-        theme={{ algorithm }}
-        divider={{ style: { margin: '5px 0' } }}
-      >
-        {children}
-      </ConfigProvider>
-    ),
-    [algorithm, children],
-  )
+  return children
 }
